@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>web3-service-agent</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.92);
+      --panel-soft: rgba(30, 41, 59, 0.96);
+      --line: rgba(148, 163, 184, 0.14);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-soft: rgba(59, 130, 246, 0.14);
+      --assistant: rgba(15, 23, 42, 0.96);
+      --user: linear-gradient(135deg, #2563eb, #7c3aed);
+      --danger: rgba(248, 113, 113, 0.14);
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.22), transparent 42%),
+        linear-gradient(180deg, #0f172a 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    .app-shell {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(2, 6, 23, 0.9);
+    }
+
+    .topbar {
+      padding: calc(14px + env(safe-area-inset-top)) 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(2, 6, 23, 0.84);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand-block {
+      min-width: 0;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: var(--primary-soft);
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      color: #dbeafe;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .views {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow-y: auto;
+      padding: 16px 16px calc(92px + env(safe-area-inset-bottom));
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .home-view {
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      background: rgba(148, 163, 184, 0.08);
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
+    .hero-title,
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .hero-copy,
+    .section-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .phone-preview {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(37, 99, 235, 0.18), transparent 100%),
+        rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(96, 165, 250, 0.16);
+    }
+
+    .preview-header,
+    .preview-row,
+    .feature-item,
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .preview-header {
+      margin-bottom: 14px;
+    }
+
+    .preview-chip {
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(59, 130, 246, 0.18);
+      font-size: 12px;
+      color: #dbeafe;
+    }
+
+    .preview-phone {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 20px;
+    }
+
+    .preview-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    .preview-card + .preview-card {
+      margin-top: 10px;
+    }
+
+    .mini-thread {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-bubble {
+      max-width: 82%;
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .mini-bubble.assistant {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mini-bubble.user {
+      margin-left: auto;
+      background: rgba(59, 130, 246, 0.18);
+      color: #dbeafe;
+    }
+
+    .feature-list,
+    .quick-grid,
+    .entry-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .info-card,
+    .entry-card {
+      padding: 16px;
+    }
+
+    .feature-item,
+    .list-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+
+    .feature-item strong,
+    .list-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .feature-item span,
+    .list-item span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .quick-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .quick-button,
+    .entry-button,
+    .composer button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .quick-button,
+    .entry-button {
+      width: 100%;
+      text-align: left;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .quick-button strong,
+    .entry-button strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .quick-button span,
+    .entry-button span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .chat-view {
+      padding-bottom: calc(170px + env(safe-area-inset-bottom));
+    }
+
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      gap: 14px;
+    }
+
+    .chat-intro {
+      padding: 18px;
+    }
+
+    .prompt-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .prompt-row button {
+      border: 0;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+
+    .thread-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+      padding: 16px;
+    }
+
+    .thread {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .message.user .avatar {
+      order: 2;
+      background: rgba(59, 130, 246, 0.18);
+    }
+
+    .bubble {
+      max-width: min(82%, 560px);
+      padding: 13px 14px;
+      border-radius: 20px;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .message.assistant .bubble {
+      background: var(--assistant);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .message.user .bubble {
+      background: var(--user);
+    }
+
+    .message.system .bubble {
+      background: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.24);
+      color: #fecaca;
+    }
+
+    .message.pending .bubble::after {
+      content: " ···";
+      animation: blink 1s infinite;
+    }
+
+    .tool-calls {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tool-call {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #dbeafe;
+      font-size: 12px;
+    }
+
+    .composer-wrap {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(430px, 100vw);
+      bottom: calc(72px + env(safe-area-inset-bottom));
+      padding: 0 16px;
+      pointer-events: none;
+    }
+
+    .composer-wrap.hidden {
+      display: none;
+    }
+
+    .composer {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .composer-field {
+      flex: 1;
+      max-width: calc(100% - 82px);
+      padding: 0 12px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    .composer textarea {
+      width: 100%;
+      resize: none;
+      min-height: 24px;
+      max-height: 144px;
+      padding: 10px 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .composer button {
+      min-width: 68px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .composer button:disabled {
+      opacity: 0.56;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(2, 6, 23, 0.94);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+
+    .tabbar button {
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 4px;
+      cursor: pointer;
+    }
+
+    .tabbar button.active {
+      color: var(--text);
+      background: var(--primary-soft);
+    }
+
+    .tab-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .tab-label {
+      font-size: 12px;
+      text-transform: lowercase;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.4; }
+    }
+
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        padding: 20px 0;
+      }
+
+      .app-shell {
+        width: min(430px, 100vw);
+        height: calc(100dvh - 40px);
+        border-radius: 34px;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.06), var(--shadow);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand">web3-service-agent</div>
+        <div class="subtitle" id="page-subtitle">移动端 H5 入口</div>
+      </div>
+      <div class="status-pill" id="page-title">home</div>
+    </header>
+
+    <main class="views" id="views">
+      <section class="view home-view active" data-view="home">
+        <div class="stack">
+          <article class="card hero-card">
+            <div class="eyebrow">H5 Mobile UI</div>
+            <h1 class="hero-title">像手机 App 一样的 Web3 入口</h1>
+            <p class="hero-copy">默认进入 home 页面，底部固定菜单切换到 market、trade、pay、asset。现在 5 个页面都可以直接聊天，输入框固定在底部菜单上方，方便随时提问和滚动查看历史消息。</p>
+            <div class="phone-preview">
+              <div class="preview-header">
+                <div>
+                  <strong>Mobile First</strong>
+                  <div class="subtitle">底部导航 + 顶部标题 + 固定输入框</div>
+                </div>
+                <div class="preview-phone">📱</div>
+              </div>
+              <div class="preview-card">
+                <div class="preview-row">
+                  <strong>home</strong>
+                  <span class="preview-chip">默认页面</span>
+                </div>
+                <div class="mini-thread">
+                  <div class="mini-bubble assistant">这里是首页，可以展示概览、快捷入口和推荐动作。</div>
+                  <div class="mini-bubble user">点击底部菜单就能切换到聊天业务页。</div>
+                </div>
+              </div>
+              <div class="preview-card">
+                <div class="preview-row">
+                  <strong>market / trade / pay / asset</strong>
+                  <span class="preview-chip">聊天页</span>
+                </div>
+                <div class="mini-thread">
+                  <div class="mini-bubble assistant">每个页面都可以单独滚动查看聊天记录。</div>
+                  <div class="mini-bubble user">风格接近 ChatGPT，适合后续接真实业务能力。</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card info-card">
+            <h2 class="section-title">快捷进入</h2>
+            <p class="section-copy">点击任意入口，直接跳到对应业务聊天页。</p>
+            <div class="entry-grid">
+              <button type="button" class="entry-button" data-open-tab="market">
+                <strong>market</strong>
+                <span>行情分析、价格、热点币种</span>
+              </button>
+              <button type="button" class="entry-button" data-open-tab="trade">
+                <strong>trade</strong>
+                <span>交易路线、换币、执行问答</span>
+              </button>
+              <button type="button" class="entry-button" data-open-tab="pay">
+                <strong>pay</strong>
+                <span>支付、转账、收款场景</span>
+              </button>
+              <button type="button" class="entry-button" data-open-tab="asset">
+                <strong>asset</strong>
+                <span>钱包资产、持仓、收益概览</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="card info-card">
+            <h2 class="section-title">页面结构</h2>
+            <div class="feature-list">
+              <div class="feature-item">
+                <div>
+                  <strong>home</strong>
+                  <span>移动首页、概览信息、快捷入口</span>
+                </div>
+                <span>默认</span>
+              </div>
+              <div class="feature-item">
+                <div>
+                  <strong>market</strong>
+                  <span>市场问答，适合价格与行情分析</span>
+                </div>
+                <span>chat</span>
+              </div>
+              <div class="feature-item">
+                <div>
+                  <strong>trade</strong>
+                  <span>交易问答，适合 swap、quote、route</span>
+                </div>
+                <span>chat</span>
+              </div>
+              <div class="feature-item">
+                <div>
+                  <strong>pay</strong>
+                  <span>支付问答，适合付款与转账流程</span>
+                </div>
+                <span>chat</span>
+              </div>
+              <div class="feature-item">
+                <div>
+                  <strong>asset</strong>
+                  <span>资产问答，适合余额、持仓和收益</span>
+                </div>
+                <span>chat</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card chat-intro">
+            <h2 class="section-title">home chat</h2>
+            <p class="section-copy">这里是 home 页面聊天区，适合做总入口问答、导航问答或通用助手对话。</p>
+            <div class="prompt-row">
+              <button type="button" data-prompt="给我介绍一下这个 Web3 Agent 的主要能力">能力介绍</button>
+              <button type="button" data-prompt="帮我推荐一个适合开始使用的功能入口">功能入口</button>
+              <button type="button" data-prompt="我现在应该先看 market、trade、pay 还是 asset">页面建议</button>
+            </div>
+          </article>
+
+          <article class="card thread-card">
+            <div class="thread" id="home-thread"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view chat-view" data-view="market">
+        <div class="chat-panel">
+          <article class="card chat-intro">
+            <h1 class="section-title">market</h1>
+            <p class="section-copy">这里是市场聊天页，聊天记录可滚动查看，适合承接行情、价格、热点和市场摘要能力。</p>
+            <div class="prompt-row">
+              <button type="button" data-prompt="帮我看一下 BTC 和 ETH 的最新行情">BTC / ETH 行情</button>
+              <button type="button" data-prompt="给我一份今天的市场摘要">今日市场摘要</button>
+              <button type="button" data-prompt="最近哪些代币值得关注">关注代币</button>
+            </div>
+          </article>
+          <article class="card thread-card">
+            <div class="thread" id="market-thread"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view chat-view" data-view="trade">
+        <div class="chat-panel">
+          <article class="card chat-intro">
+            <h1 class="section-title">trade</h1>
+            <p class="section-copy">这里是交易聊天页，支持滚动对话，适合后续接 swap、quote、route、approve、bridge 等能力。</p>
+            <div class="prompt-row">
+              <button type="button" data-prompt="帮我规划一笔 ETH 换 USDC 的交易步骤">交易步骤</button>
+              <button type="button" data-prompt="给我一份跨链到 Base 的操作建议">跨链建议</button>
+              <button type="button" data-prompt="解释一下 swap 时需要注意哪些风险">交易风险</button>
+            </div>
+          </article>
+          <article class="card thread-card">
+            <div class="thread" id="trade-thread"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view chat-view" data-view="pay">
+        <div class="chat-panel">
+          <article class="card chat-intro">
+            <h1 class="section-title">pay</h1>
+            <p class="section-copy">这里是支付聊天页，滚动展示支付相关问答，适合收款、付款、地址确认和链上转账场景。</p>
+            <div class="prompt-row">
+              <button type="button" data-prompt="告诉我链上支付前应该确认哪些信息">支付前检查</button>
+              <button type="button" data-prompt="我想给朋友转一笔 USDC，需要注意什么">USDC 转账</button>
+              <button type="button" data-prompt="怎样设计一个更顺畅的 Web3 支付流程">支付流程设计</button>
+            </div>
+          </article>
+          <article class="card thread-card">
+            <div class="thread" id="pay-thread"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view chat-view" data-view="asset">
+        <div class="chat-panel">
+          <article class="card chat-intro">
+            <h1 class="section-title">asset</h1>
+            <p class="section-copy">这里是资产聊天页，滚动对话可用于钱包资产、余额、持仓、收益和风险敞口的统一查看。</p>
+            <div class="prompt-row">
+              <button type="button" data-prompt="帮我总结一下一个钱包页面通常需要哪些资产模块">资产模块</button>
+              <button type="button" data-prompt="我想展示持仓分布，应该包含哪些指标">持仓指标</button>
+              <button type="button" data-prompt="给我一份资产页的交互建议">资产页建议</button>
+            </div>
+          </article>
+          <article class="card thread-card">
+            <div class="thread" id="asset-thread"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="composer-wrap" id="composer-wrap">
+      <form class="composer" id="chat-form">
+        <div class="composer-field">
+          <textarea id="chat-input" rows="1" maxlength="4000" placeholder="输入你的问题"></textarea>
+        </div>
+        <button type="submit" id="send-button">发送</button>
+      </form>
+    </div>
+
+    <nav class="tabbar">
+      <button type="button" class="active" data-tab="home">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label">home</span>
+      </button>
+      <button type="button" data-tab="market">
+        <span class="tab-icon">📈</span>
+        <span class="tab-label">market</span>
+      </button>
+      <button type="button" data-tab="trade">
+        <span class="tab-icon">🔁</span>
+        <span class="tab-label">trade</span>
+      </button>
+      <button type="button" data-tab="pay">
+        <span class="tab-icon">💸</span>
+        <span class="tab-label">pay</span>
+      </button>
+      <button type="button" data-tab="asset">
+        <span class="tab-icon">💼</span>
+        <span class="tab-label">asset</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const chatTabs = ["home", "market", "trade", "pay", "asset"];
+    const state = {
+      activeTab: "home",
+      busyTab: "",
+      sessionId: window.sessionStorage.getItem("agent-session-id") || "",
+      messagesByTab: loadMessagesByTab()
+    };
+
+    const views = Array.from(document.querySelectorAll(".view"));
+    const tabs = Array.from(document.querySelectorAll(".tabbar button"));
+    const viewsEl = document.getElementById("views");
+    const composerWrapEl = document.getElementById("composer-wrap");
+    const formEl = document.getElementById("chat-form");
+    const inputEl = document.getElementById("chat-input");
+    const sendButton = document.getElementById("send-button");
+    const pageTitleEl = document.getElementById("page-title");
+    const pageSubtitleEl = document.getElementById("page-subtitle");
+
+    const pageMeta = {
+      home: {
+        title: "home",
+        subtitle: "移动端 H5 总入口与通用问答",
+        placeholder: "在 home 里直接提问，例如：这个应用能做什么",
+        context: "首页总入口、导航、通用问答、功能说明",
+        welcome: "你好，这里是 home 页面。你可以直接在首页发起通用问答，我会帮你介绍功能入口、页面分工和整体能力。"
+      },
+      market: {
+        title: "market",
+        subtitle: "市场行情与热点问答",
+        placeholder: "问点市场相关的，例如：帮我分析一下 BTC 走势",
+        context: "市场、价格、热点代币、行情分析",
+        welcome: "你好，这里是 market 页面。你可以像和 ChatGPT 对话一样，连续问我行情、价格、市场摘要或热点代币问题。"
+      },
+      trade: {
+        title: "trade",
+        subtitle: "交易路线与执行问答",
+        placeholder: "问点交易相关的，例如：ETH 换 USDC 怎么走",
+        context: "交易、swap、quote、route、bridge、执行风险",
+        welcome: "你好，这里是 trade 页面。你可以连续问我换币、交易步骤、路由、滑点和跨链相关问题。"
+      },
+      pay: {
+        title: "pay",
+        subtitle: "支付与转账场景问答",
+        placeholder: "问点支付相关的，例如：链上转账前要检查什么",
+        context: "支付、收款、转账、确认信息、支付流程",
+        welcome: "你好，这里是 pay 页面。你可以连续问我支付、转账、收款和链上确认流程问题。"
+      },
+      asset: {
+        title: "asset",
+        subtitle: "资产与持仓统一查看",
+        placeholder: "问点资产相关的，例如：资产页要展示哪些指标",
+        context: "资产、余额、持仓、收益、钱包概览",
+        welcome: "你好，这里是 asset 页面。你可以连续问我资产页设计、持仓展示、收益指标和钱包概览问题。"
+      }
+    };
+
+    ensureDefaultMessages();
+    bindEvents();
+    switchTab("home");
+
+    function ensureDefaultMessages() {
+      chatTabs.forEach((tab) => {
+        if (!Array.isArray(state.messagesByTab[tab]) || state.messagesByTab[tab].length === 0) {
+          state.messagesByTab[tab] = [{
+            role: "assistant",
+            content: pageMeta[tab].welcome,
+            toolExecutions: []
+          }];
+        }
+      });
+      persistMessagesByTab();
+    }
+
+    function bindEvents() {
+      tabs.forEach((tabButton) => {
+        tabButton.addEventListener("click", () => switchTab(tabButton.dataset.tab));
+      });
+
+      viewsEl.addEventListener("click", (event) => {
+        const entryButton = event.target.closest("[data-open-tab]");
+        if (entryButton) {
+          switchTab(entryButton.dataset.openTab);
+          return;
+        }
+
+        const promptButton = event.target.closest("[data-prompt]");
+        if (promptButton && chatTabs.includes(state.activeTab)) {
+          inputEl.value = promptButton.dataset.prompt || "";
+          autoResize();
+          inputEl.focus();
+        }
+      });
+
+      formEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!chatTabs.includes(state.activeTab)) {
+          return;
+        }
+
+        const text = inputEl.value.trim();
+        if (!text || state.busyTab) {
+          return;
+        }
+
+        inputEl.value = "";
+        autoResize();
+        await sendMessage(state.activeTab, text);
+      });
+
+      inputEl.addEventListener("input", autoResize);
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          formEl.requestSubmit();
+        }
+      });
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+
+      views.forEach((view) => {
+        view.classList.toggle("active", view.dataset.view === tab);
+      });
+      tabs.forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tab);
+      });
+
+      const meta = pageMeta[tab];
+      pageTitleEl.textContent = meta.title;
+      pageSubtitleEl.textContent = meta.subtitle;
+
+      const isChatTab = chatTabs.includes(tab);
+      composerWrapEl.classList.toggle("hidden", !isChatTab);
+      inputEl.placeholder = meta.placeholder || "";
+      sendButton.disabled = Boolean(state.busyTab);
+
+      if (isChatTab) {
+        renderThread(tab);
+        autoResize();
+        requestAnimationFrame(() => {
+          scrollConversationToBottom(tab);
+          inputEl.focus();
+        });
+      }
+    }
+
+    function getThreadEl(tab) {
+      return document.getElementById(tab + "-thread");
+    }
+
+    function getViewEl(tab) {
+      return document.querySelector('.view[data-view="' + tab + '"]');
+    }
+
+    function renderThread(tab) {
+      const threadEl = getThreadEl(tab);
+      if (!threadEl) {
+        return;
+      }
+
+      threadEl.innerHTML = "";
+      const messages = state.messagesByTab[tab] || [];
+      messages.forEach((message) => {
+        const row = document.createElement("div");
+        row.className = "message " + message.role + (message.pending ? " pending" : "");
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar";
+        avatar.textContent = message.role === "user" ? "你" : message.role === "system" ? "!" : "AI";
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = message.content;
+
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+
+        if (Array.isArray(message.toolExecutions) && message.toolExecutions.length > 0) {
+          const toolCalls = document.createElement("div");
+          toolCalls.className = "tool-calls";
+          message.toolExecutions.forEach((toolExecution) => {
+            const item = document.createElement("div");
+            item.className = "tool-call";
+            item.textContent = toolExecution.name + ": " + toolExecution.observation;
+            toolCalls.appendChild(item);
+          });
+          bubble.appendChild(toolCalls);
+        }
+
+        threadEl.appendChild(row);
+      });
+
+      persistMessagesByTab();
+      requestAnimationFrame(() => scrollConversationToBottom(tab));
+    }
+
+    function scrollThreadToBottom(tab) {
+      const threadEl = getThreadEl(tab);
+      if (!threadEl) {
+        return;
+      }
+      threadEl.scrollTop = threadEl.scrollHeight;
+    }
+
+    function scrollConversationToBottom(tab) {
+      scrollThreadToBottom(tab);
+
+      const viewEl = getViewEl(tab);
+      if (!viewEl) {
+        return;
+      }
+
+      viewEl.scrollTop = viewEl.scrollHeight;
+    }
+
+    function autoResize() {
+      inputEl.style.height = "auto";
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 144) + "px";
+    }
+
+    async function ensureSession() {
+      if (state.sessionId) {
+        return state.sessionId;
+      }
+
+      const response = await fetch("/v1/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+      });
+      if (!response.ok) {
+        throw new Error("创建会话失败");
+      }
+
+      const payload = await response.json();
+      state.sessionId = payload.session_id || "";
+      if (!state.sessionId) {
+        throw new Error("服务端没有返回 session_id");
+      }
+
+      window.sessionStorage.setItem("agent-session-id", state.sessionId);
+      return state.sessionId;
+    }
+
+    async function sendMessage(tab, text) {
+      state.busyTab = tab;
+      sendButton.disabled = true;
+
+      const messages = state.messagesByTab[tab] || [];
+      const userMessage = { role: "user", content: text, toolExecutions: [] };
+      const pendingMessage = {
+        role: "assistant",
+        content: "正在思考中",
+        pending: true,
+        toolExecutions: []
+      };
+
+      messages.push(userMessage, pendingMessage);
+      state.messagesByTab[tab] = messages;
+      renderThread(tab);
+
+      try {
+        const sessionId = await ensureSession();
+        const response = await fetch("/v1/agent/runs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: sessionId,
+            input: buildAgentInput(tab, text)
+          })
+        });
+
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "请求失败");
+        }
+
+        pendingMessage.pending = false;
+        pendingMessage.content = payload.message || "已完成，但模型没有返回消息。";
+        pendingMessage.toolExecutions = Array.isArray(payload.tool_executions) ? payload.tool_executions : [];
+      } catch (error) {
+        pendingMessage.role = "system";
+        pendingMessage.pending = false;
+        pendingMessage.content = error instanceof Error ? error.message : "请求失败";
+      } finally {
+        state.busyTab = "";
+        if (chatTabs.includes(state.activeTab)) {
+          sendButton.disabled = false;
+        }
+        renderThread(tab);
+        if (state.activeTab === tab) {
+          inputEl.focus();
+        }
+      }
+    }
+
+    function buildAgentInput(tab, text) {
+      const meta = pageMeta[tab];
+      return "你现在在 " + tab + " 页面，请结合「" + meta.context + "」这个业务场景，用简洁中文回答用户。\n\n用户问题：" + text;
+    }
+
+    function loadMessagesByTab() {
+      try {
+        const raw = window.sessionStorage.getItem("agent-chat-history-by-tab");
+        if (!raw) {
+          return {};
+        }
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function persistMessagesByTab() {
+      const payload = {};
+      chatTabs.forEach((tab) => {
+        payload[tab] = (state.messagesByTab[tab] || []).filter((message) => !message.pending);
+      });
+      window.sessionStorage.setItem("agent-chat-history-by-tab", JSON.stringify(payload));
+    }
+  </script>
+</body>
+</html>

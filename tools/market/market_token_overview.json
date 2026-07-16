@@ -1,0 +1,26 @@
+{
+  "name": "market_token_overview",
+  "description": "Get basic market information for a token or coin, including price, market cap, supply, and liquidity when available. Use token for major assets like BTC or ETH, or use token_address plus chain for on-chain tokens.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "token": {
+        "type": "string",
+        "description": "Token symbol, name, or CoinGecko-style asset identifier for major assets. Example: BTC, ETH, Solana."
+      },
+      "token_address": {
+        "type": "string",
+        "description": "Contract or mint address for an on-chain token."
+      },
+      "chain": {
+        "type": "string",
+        "description": "Chain or network slug for token_address queries, such as ethereum, bsc, base, arbitrum, polygon, avalanche, solana, or bitcoin."
+      },
+      "vs_currency": {
+        "type": "string",
+        "description": "Quote fiat currency for price and market metrics. Defaults to usd."
+      }
+    },
+    "additionalProperties": false
+  }
+}
