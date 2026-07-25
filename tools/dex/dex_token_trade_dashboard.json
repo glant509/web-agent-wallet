@@ -1,0 +1,22 @@
+{
+  "name": "dex_token_trade_dashboard",
+  "description": "Get exchange-style token trade dashboard data including current price, 24h change, high/low, volume, market cap, and supply metrics. Use asset_id when known, or token for a symbol/name search.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "token": {
+        "type": "string",
+        "description": "Token symbol, name, or CoinGecko-style asset identifier such as BTC, ETH, SOL, or bitcoin."
+      },
+      "asset_id": {
+        "type": "string",
+        "description": "CoinGecko asset identifier when already known, such as bitcoin or ethereum."
+      },
+      "vs_currency": {
+        "type": "string",
+        "description": "Quote currency for the trade dashboard. Defaults to usd."
+      }
+    },
+    "additionalProperties": false
+  }
+}

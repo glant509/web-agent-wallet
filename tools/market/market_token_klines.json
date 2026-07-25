@@ -1,0 +1,46 @@
+{
+  "name": "market_token_klines",
+  "description": "Get recent or historical token price klines. Use token for major assets like BTC or ETH, or use token_address plus chain for on-chain tokens. Provide from_timestamp and to_timestamp for historical klines, otherwise recent klines are returned.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "token": {
+        "type": "string",
+        "description": "Token symbol, name, or CoinGecko-style asset identifier for major assets. Example: BTC, ETH, Solana."
+      },
+      "token_address": {
+        "type": "string",
+        "description": "Contract or mint address for an on-chain token."
+      },
+      "chain": {
+        "type": "string",
+        "description": "Chain or network slug for token_address queries, such as ethereum, bsc, base, arbitrum, polygon, avalanche, solana, or bitcoin."
+      },
+      "vs_currency": {
+        "type": "string",
+        "description": "Quote fiat currency for the klines. Defaults to usd."
+      },
+      "days": {
+        "type": "integer",
+        "description": "Recent range in days when querying latest klines without historical timestamps. Defaults to 1 and must be between 1 and 365."
+      },
+      "from_timestamp": {
+        "type": "integer",
+        "description": "Historical range start as a Unix timestamp in seconds. Must be provided together with to_timestamp."
+      },
+      "to_timestamp": {
+        "type": "integer",
+        "description": "Historical range end as a Unix timestamp in seconds. Must be provided together with from_timestamp."
+      },
+      "interval": {
+        "type": "string",
+        "description": "Optional candle interval. Supported values: 5m, 15m, 30m, 1h, 4h, 1d. If omitted, the tool chooses a reasonable default from the requested range."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of candles to return, showing the latest candles from the requested range. Defaults to 24 and must be 100 or less."
+      }
+    },
+    "additionalProperties": false
+  }
+}

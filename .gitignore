@@ -1,0 +1,51 @@
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Local config files
+*.local
+*.override
+etc/*.properties
+etc/*.yaml
+etc/*.yml
+etc/*.toml
+etc/*.json
+etc/*.ini
+etc/*.conf
+!etc/*.example.properties
+!etc/*.example.yaml
+!etc/*.example.yml
+!etc/*.example.toml
+!etc/*.example.json
+!etc/*.example.ini
+!etc/*.example.conf
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.kdbx
+*.asc
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+secrets.*
+secret.*
+*.secret
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# OS and editor artifacts
+.DS_Store
+.idea/
+.vscode/
