@@ -9,17 +9,23 @@
     :root {
       color-scheme: dark;
       --bg: #020617;
-      --panel: rgba(15, 23, 42, 0.92);
-      --panel-soft: rgba(30, 41, 59, 0.96);
+      --bg-soft: #081225;
+      --panel: rgba(9, 18, 37, 0.82);
+      --panel-soft: rgba(15, 23, 42, 0.9);
       --line: rgba(148, 163, 184, 0.14);
       --text: #f8fafc;
       --muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-soft: rgba(59, 130, 246, 0.14);
-      --assistant: rgba(15, 23, 42, 0.96);
-      --user: linear-gradient(135deg, #2563eb, #7c3aed);
+      --primary: #4f8cff;
+      --primary-strong: #7c3aed;
+      --primary-soft: rgba(79, 140, 255, 0.16);
+      --assistant: rgba(10, 18, 34, 0.92);
+      --user: linear-gradient(135deg, #2563eb, #7c3aed 55%, #a855f7);
       --danger: rgba(248, 113, 113, 0.14);
-      --shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+      --shadow: 0 20px 60px rgba(2, 6, 23, 0.36);
+      --glow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 16px 40px rgba(37, 99, 235, 0.16);
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.16);
+      --accent-strong: rgba(96, 165, 250, 0.5);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -32,8 +38,9 @@
       margin: 0;
       min-height: 100%;
       background:
-        radial-gradient(circle at top, rgba(37, 99, 235, 0.22), transparent 42%),
-        linear-gradient(180deg, #0f172a 0%, var(--bg) 100%);
+        radial-gradient(circle at top, rgba(96, 165, 250, 0.22), transparent 26%),
+        radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.18), transparent 22%),
+        linear-gradient(180deg, #07111f 0%, var(--bg) 55%, #01040d 100%);
       color: var(--text);
     }
 
@@ -49,7 +56,60 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      background: rgba(2, 6, 23, 0.9);
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(10, 18, 34, 0.94), rgba(2, 6, 23, 0.98)),
+        rgba(2, 6, 23, 0.9);
+    }
+
+    .app-shell::before,
+    .app-shell::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      filter: blur(54px);
+      opacity: 0.32;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app-shell::before {
+      top: -88px;
+      right: -64px;
+      background: rgba(96, 165, 250, 0.34);
+    }
+
+    .app-shell::after {
+      bottom: 96px;
+      left: -90px;
+      background: rgba(124, 58, 237, 0.24);
+    }
+
+    .app-shell[data-active-tab="market"] {
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.14);
+      --accent-strong: rgba(34, 197, 94, 0.44);
+    }
+
+    .app-shell[data-active-tab="trade"] {
+      --accent: #a78bfa;
+      --accent-soft: rgba(167, 139, 250, 0.16);
+      --accent-strong: rgba(167, 139, 250, 0.42);
+    }
+
+    .app-shell[data-active-tab="pay"] {
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.16);
+      --accent-strong: rgba(245, 158, 11, 0.42);
+    }
+
+    .app-shell[data-active-tab="asset"] {
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.16);
+      --accent-strong: rgba(56, 189, 248, 0.44);
     }
 
     .topbar {
@@ -59,8 +119,11 @@
       justify-content: space-between;
       gap: 12px;
       border-bottom: 1px solid var(--line);
-      background: rgba(2, 6, 23, 0.84);
-      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(4, 10, 24, 0.92), rgba(5, 12, 28, 0.74));
+      backdrop-filter: blur(18px);
+      box-shadow: 0 14px 40px rgba(2, 6, 23, 0.22);
+      position: relative;
+      z-index: 2;
     }
 
     .brand-block {
@@ -68,9 +131,10 @@
     }
 
     .brand {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
       margin-bottom: 4px;
+      letter-spacing: -0.02em;
     }
 
     .subtitle {
@@ -83,19 +147,37 @@
 
     .status-pill {
       border-radius: 999px;
-      padding: 8px 12px;
-      background: var(--primary-soft);
-      border: 1px solid rgba(96, 165, 250, 0.18);
-      color: #dbeafe;
+      padding: 9px 13px;
+      background: linear-gradient(180deg, var(--accent-soft), rgba(15, 23, 42, 0.86));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #eff6ff;
       font-size: 12px;
       font-weight: 600;
       white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(2, 6, 23, 0.24);
+    }
+
+    .status-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .mini-status {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      color: rgba(226, 232, 240, 0.86);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .views {
       position: relative;
       flex: 1;
       overflow: hidden;
+      z-index: 1;
     }
 
     .view {
@@ -104,10 +186,16 @@
       display: none;
       overflow-y: auto;
       padding: 16px 16px calc(92px + env(safe-area-inset-bottom));
+      scrollbar-width: none;
     }
 
     .view.active {
       display: block;
+    }
+
+    .view::-webkit-scrollbar,
+    .thread::-webkit-scrollbar {
+      display: none;
     }
 
     .home-view {
@@ -121,13 +209,17 @@
 
     .card {
       background: var(--panel);
-      border: 1px solid var(--line);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 24px;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(22px);
     }
 
     .hero-card {
-      padding: 18px;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(96, 165, 250, 0.18), transparent 28%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.86), rgba(8, 15, 30, 0.94));
     }
 
     .eyebrow {
@@ -137,9 +229,10 @@
       padding: 6px 10px;
       border-radius: 999px;
       margin-bottom: 14px;
-      background: rgba(148, 163, 184, 0.08);
-      color: #cbd5e1;
+      background: rgba(255, 255, 255, 0.06);
+      color: #dbeafe;
       font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .hero-title,
@@ -147,6 +240,7 @@
       margin: 0 0 10px;
       font-size: 24px;
       line-height: 1.2;
+      letter-spacing: -0.03em;
     }
 
     .hero-copy,
@@ -162,9 +256,10 @@
       padding: 16px;
       border-radius: 22px;
       background:
-        linear-gradient(180deg, rgba(37, 99, 235, 0.18), transparent 100%),
-        rgba(15, 23, 42, 0.96);
+        linear-gradient(180deg, rgba(96, 165, 250, 0.18), rgba(124, 58, 237, 0.06) 100%),
+        rgba(15, 23, 42, 0.88);
       border: 1px solid rgba(96, 165, 250, 0.16);
+      box-shadow: var(--glow);
     }
 
     .preview-header,
@@ -184,9 +279,10 @@
     .preview-chip {
       padding: 8px 10px;
       border-radius: 14px;
-      background: rgba(59, 130, 246, 0.18);
+      background: rgba(255, 255, 255, 0.08);
       font-size: 12px;
       color: #dbeafe;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .preview-phone {
@@ -204,7 +300,7 @@
       padding: 14px;
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .preview-card + .preview-card {
@@ -251,8 +347,10 @@
     .list-item {
       padding: 14px 16px;
       border-radius: 18px;
-      background: var(--panel-soft);
-      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.82));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     .feature-item strong,
@@ -284,11 +382,13 @@
     .entry-button {
       width: 100%;
       text-align: left;
-      padding: 14px;
+      padding: 15px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.05);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(15, 23, 42, 0.74));
       color: var(--text);
-      border: 1px solid rgba(148, 163, 184, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     .quick-button strong,
@@ -318,6 +418,9 @@
 
     .chat-intro {
       padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(9, 18, 34, 0.96)),
+        rgba(15, 23, 42, 0.88);
     }
 
     .prompt-row {
@@ -332,8 +435,445 @@
       cursor: pointer;
       padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(30, 41, 59, 0.72));
       color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .market-spotlight {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.2), transparent 32%),
+        linear-gradient(180deg, rgba(11, 30, 24, 0.94), rgba(6, 18, 18, 0.94));
+      border: 1px solid rgba(74, 222, 128, 0.14);
+      box-shadow: var(--glow);
+    }
+
+    .market-spotlight-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .market-kicker {
+      font-size: 12px;
+      color: #86efac;
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .market-spotlight h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .market-spotlight p {
+      margin: 8px 0 0;
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .market-badge {
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #dcfce7;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: right;
+      min-width: 84px;
+    }
+
+    .market-badge strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      color: #f0fdf4;
+    }
+
+    .market-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .market-stat {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .market-stat-label {
+      display: block;
+      color: #86efac;
+      font-size: 11px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .market-stat-value {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .market-ideas {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .market-idea-pill {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #d1fae5;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+    }
+
+    .market-board {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(8, 18, 14, 0.92), rgba(7, 13, 27, 0.96)),
+        rgba(7, 13, 27, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .market-board-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .market-board-copy strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .market-board-copy span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .market-board-badge {
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(34, 197, 94, 0.12);
+      color: #dcfce7;
+      border: 1px solid rgba(74, 222, 128, 0.16);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .market-board-status {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .market-top-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .market-top-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.72));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      width: 100%;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .market-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .market-token-name {
+      min-width: 0;
+    }
+
+    .market-token-name strong,
+    .market-token-name span {
+      display: block;
+    }
+
+    .market-token-name strong {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .market-token-name span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .market-token-price {
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .market-token-change {
+      min-width: 72px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .market-token-change.positive {
+      color: #4ade80;
+    }
+
+    .market-token-change.negative {
+      color: #f87171;
+    }
+
+    .market-token-change.flat {
+      color: var(--muted);
+    }
+
+    .trade-dashboard {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(167, 139, 250, 0.2), transparent 28%),
+        linear-gradient(180deg, rgba(19, 14, 31, 0.94), rgba(8, 12, 25, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--glow);
+    }
+
+    .trade-dashboard-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .trade-dashboard-kicker {
+      color: #c4b5fd;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .trade-dashboard-head h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .trade-dashboard-copy p {
+      margin: 8px 0 0;
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .trade-badge {
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ede9fe;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      text-align: right;
+      min-width: 84px;
+    }
+
+    .trade-badge strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      color: #faf5ff;
+    }
+
+    .trade-dashboard-status {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .trade-dashboard-empty {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .trade-hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .trade-token-title strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .trade-token-title span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .trade-price {
+      text-align: right;
+    }
+
+    .trade-price-value {
+      font-size: 26px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .trade-price-change {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .trade-price-change.positive {
+      color: #4ade80;
+    }
+
+    .trade-price-change.negative {
+      color: #f87171;
+    }
+
+    .trade-price-change.flat {
+      color: var(--muted);
+    }
+
+    .trade-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .trade-stat-card {
+      padding: 14px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.74));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .trade-stat-card label {
+      display: block;
+      color: #c4b5fd;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .trade-stat-card strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .trade-insight-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .trade-insight-pill {
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #ede9fe;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .trade-kline-panel {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .trade-kline-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .trade-kline-head strong {
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .trade-kline-meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .trade-kline-status {
+      color: var(--muted);
+      font-size: 12px;
     }
 
     .thread-card {
@@ -342,6 +882,9 @@
       flex-direction: column;
       min-height: 360px;
       padding: 16px;
+      background:
+        linear-gradient(180deg, rgba(7, 13, 27, 0.88), rgba(4, 9, 19, 0.94)),
+        rgba(15, 23, 42, 0.88);
     }
 
     .thread {
@@ -383,21 +926,24 @@
 
     .bubble {
       max-width: min(82%, 560px);
-      padding: 13px 14px;
-      border-radius: 20px;
+      padding: 14px 15px;
+      border-radius: 22px;
       font-size: 15px;
       line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-word;
+      box-shadow: 0 12px 30px rgba(2, 6, 23, 0.18);
     }
 
     .message.assistant .bubble {
-      background: var(--assistant);
-      border: 1px solid rgba(148, 163, 184, 0.14);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(8, 16, 30, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .message.user .bubble {
       background: var(--user);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .message.system .bubble {
@@ -420,10 +966,596 @@
     .tool-call {
       padding: 10px 12px;
       border-radius: 14px;
-      background: rgba(255, 255, 255, 0.05);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.72));
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #dbeafe;
       font-size: 12px;
+    }
+
+    .tool-call.kline-tool-call {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .message-copy,
+    .tool-copy {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .kline-card {
+      display: grid;
+      gap: 12px;
+      padding: 15px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), transparent 28%),
+        linear-gradient(180deg, rgba(13, 28, 24, 0.94), rgba(8, 14, 28, 0.98) 36%),
+        rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(74, 222, 128, 0.16);
+      color: var(--text);
+      box-shadow: 0 18px 44px rgba(1, 8, 15, 0.28);
+    }
+
+    .kline-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .kline-title {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .kline-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .kline-price-block {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .kline-last-price {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .kline-change {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .kline-change.positive {
+      color: #4ade80;
+    }
+
+    .kline-change.negative {
+      color: #f87171;
+    }
+
+    .kline-change.flat {
+      color: var(--muted);
+    }
+
+    .kline-chip-row,
+    .kline-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .kline-chip,
+    .kline-stat {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .kline-stat strong {
+      color: #e2e8f0;
+      margin-right: 4px;
+    }
+
+    .kline-chart-wrap {
+      position: relative;
+      padding: 14px 12px 10px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 55%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 26px rgba(2, 6, 23, 0.32);
+      overflow: hidden;
+    }
+
+    .kline-chart-inner {
+      position: relative;
+      width: 100%;
+    }
+
+    .kline-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      cursor: crosshair;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    .kline-tooltip {
+      position: absolute;
+      top: 4px;
+      transform: translateX(-50%);
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.94);
+      color: #e2e8f0;
+      font-size: 11px;
+      line-height: 1.4;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 10px 24px rgba(2, 6, 23, 0.5);
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 120ms ease;
+    }
+
+    .kline-tooltip.visible {
+      opacity: 1;
+    }
+
+    .kline-tooltip strong {
+      color: #fff;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+
+    .kline-detail-panel {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(9, 18, 37, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+    }
+
+    .kline-detail-empty {
+      flex: 1;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kline-detail-time {
+      flex-basis: 100%;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .kline-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 54px;
+    }
+
+    .kline-detail-item label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .kline-detail-item strong {
+      color: #e2e8f0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .kline-detail-item.positive strong {
+      color: #34d399;
+    }
+
+    .kline-detail-item.negative strong {
+      color: #f87171;
+    }
+
+    .kline-note {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .wallet-lock {
+      position: absolute;
+      inset: 0 0 calc(84px + env(safe-area-inset-bottom)) 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: calc(24px + env(safe-area-inset-top)) 20px 24px;
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(18px);
+      z-index: 4;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .wallet-lock.visible {
+      display: flex;
+    }
+
+    .wallet-lock-card {
+      width: min(440px, 100%);
+      margin: auto;
+      max-height: calc(100dvh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      overflow-y: auto;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 24px 70px rgba(2, 6, 23, 0.6);
+      padding: 20px;
+    }
+
+    .wallet-lock-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .wallet-lock-title {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .wallet-lock-copy {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .wallet-lock-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .wallet-create-step,
+    .wallet-choice-step {
+      display: grid;
+      gap: 12px;
+    }
+
+    .wallet-create-step[hidden],
+    .wallet-choice-step[hidden],
+    .wallet-recovery[hidden],
+    .wallet-import-paste[hidden] {
+      display: none !important;
+    }
+
+    .wallet-lock-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .wallet-lock-field label {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .wallet-lock-field input {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 16px;
+      padding: 14px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      outline: none;
+      letter-spacing: 0.04em;
+    }
+
+    .wallet-lock-field input:focus {
+      border-color: rgba(96, 165, 250, 0.5);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+    }
+
+    .wallet-lock-hint {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .wallet-lock-error {
+      color: #fda4af;
+      font-size: 12px;
+      min-height: 18px;
+    }
+
+    .wallet-lock-actions {
+      display: flex;
+      gap: 10px;
+      position: sticky;
+      bottom: 0;
+      margin-top: 4px;
+      padding: 12px 0 calc(4px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0), rgba(2, 6, 23, 0.96) 20%, rgba(2, 6, 23, 0.99));
+    }
+
+    .wallet-lock-actions button {
+      flex: 1;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 700;
+    }
+
+    .wallet-lock-actions .secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .wallet-choice-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .wallet-choice-actions button,
+    .wallet-import-paste button {
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      border-radius: 16px;
+      padding: 13px 14px;
+      color: #e2e8f0;
+      background: linear-gradient(180deg, rgba(14, 165, 233, 0.12), rgba(15, 23, 42, 0.88));
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .wallet-choice-actions button span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .wallet-vault-card {
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 42%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.96));
+    }
+
+    .wallet-vault-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .wallet-vault-head h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+    }
+
+    .wallet-vault-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .wallet-vault-state {
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #bae6fd;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .wallet-vault-state.locked {
+      color: #cbd5e1;
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .wallet-vault-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .wallet-reset-button {
+      border: 1px solid rgba(248, 113, 113, 0.22);
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.2);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .wallet-address {
+      margin: 16px 0;
+      padding: 12px;
+      border-radius: 14px;
+      color: #e2e8f0;
+      background: rgba(2, 6, 23, 0.56);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .wallet-keyrings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+
+    .wallet-keyring {
+      padding: 7px 9px;
+      border-radius: 10px;
+      color: #bae6fd;
+      background: rgba(14, 116, 144, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+    }
+
+    .wallet-vault-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .wallet-vault-actions button {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      font-weight: 700;
+    }
+
+    .wallet-vault-actions button.primary {
+      border: 0;
+      color: #fff;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
+    .wallet-recovery {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(127, 29, 29, 0.16);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .wallet-recovery strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #fecaca;
+      font-size: 13px;
+    }
+
+    .wallet-recovery-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .wallet-recovery-head strong {
+      margin-bottom: 0;
+    }
+
+    .wallet-recovery-copy {
+      border: 1px solid rgba(254, 202, 202, 0.22);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #fff1f2;
+      background: rgba(127, 29, 29, 0.28);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .wallet-recovery p {
+      margin: 0;
+      color: #fecdd3;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .wallet-mnemonic {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin: 14px 0;
+    }
+
+    .wallet-mnemonic span {
+      padding: 8px;
+      border-radius: 9px;
+      color: #e2e8f0;
+      background: rgba(2, 6, 23, 0.58);
+      border: 1px solid rgba(248, 113, 113, 0.12);
+      font-size: 11px;
+    }
+
+    .wallet-mnemonic input {
+      width: 100%;
+      border: 1px solid rgba(248, 113, 113, 0.18);
+      border-radius: 9px;
+      padding: 10px 8px;
+      color: #fff1f2;
+      background: rgba(2, 6, 23, 0.64);
+      font-size: 11px;
+      outline: none;
+    }
+
+    .wallet-mnemonic input:focus {
+      border-color: rgba(248, 113, 113, 0.42);
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
+    }
+
+    .wallet-recovery-confirm {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #e2e8f0;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .wallet-import-paste {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 0;
+    }
+
+    .wallet-import-paste textarea {
+      width: 100%;
+      min-height: 82px;
+      border: 1px solid rgba(248, 113, 113, 0.16);
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff1f2;
+      background: rgba(2, 6, 23, 0.62);
+      resize: vertical;
+      outline: none;
+    }
+
+    .wallet-import-paste textarea:focus {
+      border-color: rgba(248, 113, 113, 0.42);
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
     }
 
     .composer-wrap {
@@ -431,9 +1563,10 @@
       left: 50%;
       transform: translateX(-50%);
       width: min(430px, 100vw);
-      bottom: calc(72px + env(safe-area-inset-bottom));
+      bottom: calc(84px + env(safe-area-inset-bottom));
       padding: 0 16px;
       pointer-events: none;
+      z-index: 3;
     }
 
     .composer-wrap.hidden {
@@ -445,11 +1578,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
-      border-radius: 24px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
+      padding: 11px 12px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(12, 20, 36, 0.96), rgba(8, 15, 30, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
     }
 
     .composer-field {
@@ -458,7 +1592,7 @@
       padding: 0 12px;
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .composer textarea {
@@ -478,9 +1612,10 @@
       min-width: 68px;
       padding: 12px 16px;
       border-radius: 18px;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--accent), var(--primary-strong));
       color: #fff;
       font-weight: 700;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
     }
 
     .composer button:disabled {
@@ -491,15 +1626,18 @@
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 8px;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(2, 6, 23, 0.94);
-      border-top: 1px solid var(--line);
+      padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(3, 8, 18, 0.8), rgba(2, 6, 23, 0.98));
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(16px);
+      box-shadow: 0 -18px 36px rgba(2, 6, 23, 0.2);
+      position: relative;
+      z-index: 2;
     }
 
     .tabbar button {
       border: 0;
-      border-radius: 18px;
+      border-radius: 20px;
       background: transparent;
       color: var(--muted);
       display: flex;
@@ -507,13 +1645,17 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 8px 4px;
+      padding: 9px 4px;
       cursor: pointer;
+      border: 1px solid transparent;
     }
 
     .tabbar button.active {
       color: var(--text);
-      background: var(--primary-soft);
+      background:
+        linear-gradient(180deg, var(--accent-soft), rgba(15, 23, 42, 0.72));
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 24px rgba(2, 6, 23, 0.18);
     }
 
     .tab-icon {
@@ -543,20 +1685,23 @@
         height: calc(100dvh - 40px);
         border-radius: 34px;
         overflow: hidden;
-        border: 1px solid rgba(148, 163, 184, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.06), var(--shadow);
       }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="app-shell" data-active-tab="home">
     <header class="topbar">
       <div class="brand-block">
         <div class="brand">web3-service-agent</div>
         <div class="subtitle" id="page-subtitle">移动端 H5 入口</div>
       </div>
-      <div class="status-pill" id="page-title">home</div>
+      <div class="status-stack">
+        <div class="status-pill" id="page-title">home</div>
+        <div class="mini-status" id="page-status">AI copilot online</div>
+      </div>
     </header>
 
     <main class="views" id="views">
@@ -679,11 +1824,55 @@
 
       <section class="view chat-view" data-view="market">
         <div class="chat-panel">
+          <article class="card market-spotlight">
+            <div class="market-spotlight-head">
+              <div>
+                <div class="market-kicker">market deck</div>
+                <h2>更像主流 DEX / Wallet 的行情视图</h2>
+                <p>在市场页直接查看行情摘要、热点方向和 K 线可视化卡片，适合连续追踪价格与节奏。</p>
+              </div>
+              <div class="market-badge">
+                <strong>Live</strong>
+                charts ready
+              </div>
+            </div>
+            <div class="market-strip">
+              <div class="market-stat">
+                <span class="market-stat-label">Focus</span>
+                <span class="market-stat-value">BTC · ETH · SOL</span>
+              </div>
+              <div class="market-stat">
+                <span class="market-stat-label">Views</span>
+                <span class="market-stat-value">Klines · Summary</span>
+              </div>
+              <div class="market-stat">
+                <span class="market-stat-label">Style</span>
+                <span class="market-stat-value">DEX-first</span>
+              </div>
+            </div>
+            <div class="market-ideas">
+              <span class="market-idea-pill">24h momentum</span>
+              <span class="market-idea-pill">smart watchlist</span>
+              <span class="market-idea-pill">multi-turn analysis</span>
+            </div>
+          </article>
+          <article class="card market-board">
+            <div class="market-board-head">
+              <div class="market-board-copy">
+                <strong>市值前十</strong>
+                <span>切换到行情页后自动拉取，展示名称、当前价格和今日涨跌幅。</span>
+              </div>
+              <div class="market-board-badge">Top 10</div>
+            </div>
+            <div class="market-board-status" id="market-board-status">切换到 market 后加载中</div>
+            <div class="market-top-list" id="market-top-list"></div>
+          </article>
           <article class="card chat-intro">
             <h1 class="section-title">market</h1>
             <p class="section-copy">这里是市场聊天页，聊天记录可滚动查看，适合承接行情、价格、热点和市场摘要能力。</p>
             <div class="prompt-row">
               <button type="button" data-prompt="帮我看一下 BTC 和 ETH 的最新行情">BTC / ETH 行情</button>
+              <button type="button" data-prompt="帮我展示 BTC 最近 7 天的 K 线图">BTC 7 天 K 线</button>
               <button type="button" data-prompt="给我一份今天的市场摘要">今日市场摘要</button>
               <button type="button" data-prompt="最近哪些代币值得关注">关注代币</button>
             </div>
@@ -696,6 +1885,21 @@
 
       <section class="view chat-view" data-view="trade">
         <div class="chat-panel">
+          <article class="card trade-dashboard">
+            <div class="trade-dashboard-head">
+              <div class="trade-dashboard-copy">
+                <div class="trade-dashboard-kicker">trade board</div>
+                <h2>交易看板</h2>
+                <p>从行情页点进具体代币后，这里会展示更像交易所 / DEX 的价格与流动性看板。</p>
+              </div>
+              <div class="trade-badge">
+                <strong>DEX</strong>
+                live stats
+              </div>
+            </div>
+            <div class="trade-dashboard-status" id="trade-dashboard-status">从 market 榜单点击代币后查看</div>
+            <div id="trade-dashboard-content" class="trade-dashboard-empty">选择一个代币后，这里会展示当前价格、24h 涨跌、24h 高低点、成交量、市值和供应量等交易数据。</div>
+          </article>
           <article class="card chat-intro">
             <h1 class="section-title">trade</h1>
             <p class="section-copy">这里是交易聊天页，支持滚动对话，适合后续接 swap、quote、route、approve、bridge 等能力。</p>
@@ -730,9 +1934,27 @@
 
       <section class="view chat-view" data-view="asset">
         <div class="chat-panel">
+          <article class="card wallet-vault-card" id="wallet-vault-card">
+            <div class="wallet-vault-head">
+              <div>
+                <h2>本地钱包</h2>
+                <p id="wallet-vault-copy">正在检查本地加密保险库...</p>
+              </div>
+              <div class="wallet-vault-meta">
+                <span class="wallet-vault-state locked" id="wallet-vault-state">LOCKED</span>
+                <button type="button" class="wallet-reset-button" id="wallet-reset-button" hidden>reset</button>
+              </div>
+            </div>
+            <div class="wallet-address" id="wallet-address">未解锁：助记词和私钥不会保存在页面或服务器。</div>
+            <div class="wallet-keyrings" id="wallet-keyrings" hidden></div>
+            <div class="wallet-vault-actions">
+              <button type="button" class="primary" id="wallet-access-button">创建或解锁</button>
+              <button type="button" id="wallet-lock-button" hidden>锁定</button>
+            </div>
+          </article>
           <article class="card chat-intro">
             <h1 class="section-title">asset</h1>
-            <p class="section-copy">这里是资产聊天页，滚动对话可用于钱包资产、余额、持仓、收益和风险敞口的统一查看。</p>
+            <p class="section-copy">钱包保险库只保存 AES-GCM 加密后的助记词到本设备 IndexedDB。密码、助记词、私钥永远不会发送到服务端。</p>
             <div class="prompt-row">
               <button type="button" data-prompt="帮我总结一下一个钱包页面通常需要哪些资产模块">资产模块</button>
               <button type="button" data-prompt="我想展示持仓分布，应该包含哪些指标">持仓指标</button>
@@ -744,6 +1966,7 @@
           </article>
         </div>
       </section>
+
     </main>
 
     <div class="composer-wrap" id="composer-wrap">
@@ -753,6 +1976,97 @@
         </div>
         <button type="submit" id="send-button">发送</button>
       </form>
+    </div>
+
+    <div class="wallet-lock" id="wallet-lock" aria-hidden="true">
+      <div class="wallet-lock-card" role="dialog" aria-modal="true" aria-labelledby="wallet-lock-title">
+        <div class="wallet-lock-head">
+          <h2 class="wallet-lock-title" id="wallet-lock-title">钱包保险库</h2>
+          <div class="market-badge">secure</div>
+        </div>
+        <p class="wallet-lock-copy" id="wallet-lock-copy">正在准备本地钱包...</p>
+        <form class="wallet-lock-form" id="wallet-lock-form">
+          <div class="wallet-create-step" id="wallet-create-step">
+            <div class="wallet-lock-field">
+              <label for="wallet-password" id="wallet-password-label">钱包密码</label>
+              <input
+                id="wallet-password"
+                name="wallet-password"
+                type="password"
+                minlength="8"
+                maxlength="16"
+                autocomplete="current-password"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="text"
+                placeholder="请输入钱包密码"
+              />
+            </div>
+            <div class="wallet-lock-field" id="wallet-password-confirm-field" hidden>
+              <label for="wallet-password-confirm">确认钱包密码</label>
+              <input
+                id="wallet-password-confirm"
+                name="wallet-password-confirm"
+                type="password"
+                minlength="8"
+                maxlength="16"
+                autocomplete="new-password"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="text"
+                placeholder="再次输入钱包密码"
+              />
+            </div>
+            <div class="wallet-lock-hint">支持大小写字母、数字以及 !@#$%^&*. 等常见符号；长度必须在 8-16 位之间。</div>
+          </div>
+          <div class="wallet-choice-step" id="wallet-choice-step" hidden>
+            <div class="wallet-choice-actions">
+              <button type="button" id="wallet-generate-choice">
+                生成新的助记词
+                <span>继续使用当前流程，由系统自动生成 12 个新的恢复短语。</span>
+              </button>
+              <button type="button" id="wallet-import-choice">
+                导入已有助记词
+                <span>复用同一页面，支持粘贴或逐个填写已有的 12 个助记词。</span>
+              </button>
+            </div>
+          </div>
+          <div class="wallet-recovery" id="wallet-recovery" hidden>
+            <div class="wallet-recovery-head">
+              <strong>备份恢复短语</strong>
+              <button type="button" class="wallet-recovery-copy" id="wallet-recovery-copy">copy</button>
+            </div>
+            <p>请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。</p>
+            <div class="wallet-mnemonic" id="wallet-mnemonic"></div>
+            <label class="wallet-recovery-confirm">
+              <input type="checkbox" id="wallet-recovery-confirm" />
+              <span>我已离线备份恢复短语，并理解任何获得它的人都能控制钱包。</span>
+            </label>
+          </div>
+          <div class="wallet-recovery" id="wallet-import-step" hidden>
+            <div class="wallet-recovery-head">
+              <strong>导入已有助记词</strong>
+            </div>
+            <p>将已有的 12 个助记词粘贴到下面，系统会去掉首尾换行和多余空格，再自动填充到下方 12 个输入框。</p>
+            <div class="wallet-import-paste">
+              <textarea id="wallet-import-text" placeholder="将已有的 12 个助记词粘贴到这里，支持换行、多个空格和前后空白。"></textarea>
+              <button type="button" id="wallet-import-fill">导入到下方 12 个助记词格子</button>
+            </div>
+            <div class="wallet-mnemonic" id="wallet-import-mnemonic"></div>
+            <label class="wallet-recovery-confirm">
+              <input type="checkbox" id="wallet-import-confirm" />
+              <span>我确认这些助记词由我本人持有，并理解导入后将由本地保险库存储加密结果。</span>
+            </label>
+          </div>
+          <div class="wallet-lock-error" id="wallet-lock-error"></div>
+          <div class="wallet-lock-actions">
+            <button type="button" class="secondary" id="wallet-lock-cancel">取消</button>
+            <button type="submit" id="wallet-lock-submit">解锁</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <nav class="tabbar">
@@ -785,11 +2099,45 @@
       activeTab: "home",
       busyTab: "",
       sessionId: window.sessionStorage.getItem("agent-session-id") || "",
-      messagesByTab: loadMessagesByTab()
+      wallet: {
+        vault: null,
+        masterKey: null,
+        mnemonic: null,
+        seed: null,
+        keyring: null,
+        mode: "",
+        pendingAction: "",
+        pendingPassword: "",
+        pendingMnemonic: null,
+        idleTimer: 0,
+        lastActivity: 0
+      },
+      messagesByTab: loadMessagesByTab(),
+      marketTop: {
+        items: [],
+        loading: false,
+        error: "",
+        loadedAt: 0
+      },
+      tradeDashboard: {
+        item: null,
+        selectedAssetId: "",
+        selectedTokenName: "",
+        loading: false,
+        error: ""
+      },
+      tradeKlines: {
+        item: null,
+        loading: false,
+        error: "",
+        updatedAt: "",
+        refreshTimer: 0
+      }
     };
 
     const views = Array.from(document.querySelectorAll(".view"));
     const tabs = Array.from(document.querySelectorAll(".tabbar button"));
+    const appShellEl = document.getElementById("app-shell");
     const viewsEl = document.getElementById("views");
     const composerWrapEl = document.getElementById("composer-wrap");
     const formEl = document.getElementById("chat-form");
@@ -797,11 +2145,51 @@
     const sendButton = document.getElementById("send-button");
     const pageTitleEl = document.getElementById("page-title");
     const pageSubtitleEl = document.getElementById("page-subtitle");
+    const pageStatusEl = document.getElementById("page-status");
+    const marketTopListEl = document.getElementById("market-top-list");
+    const marketBoardStatusEl = document.getElementById("market-board-status");
+    const tradeDashboardStatusEl = document.getElementById("trade-dashboard-status");
+    const tradeDashboardContentEl = document.getElementById("trade-dashboard-content");
+    const walletLockEl = document.getElementById("wallet-lock");
+    const walletLockFormEl = document.getElementById("wallet-lock-form");
+    const walletPasswordEl = document.getElementById("wallet-password");
+    const walletLockErrorEl = document.getElementById("wallet-lock-error");
+    const walletLockCancelEl = document.getElementById("wallet-lock-cancel");
+    const walletLockSubmitEl = document.getElementById("wallet-lock-submit");
+    const walletPasswordConfirmFieldEl = document.getElementById("wallet-password-confirm-field");
+    const walletPasswordConfirmEl = document.getElementById("wallet-password-confirm");
+    const walletLockCopyEl = document.getElementById("wallet-lock-copy");
+    const walletPasswordLabelEl = document.getElementById("wallet-password-label");
+    const walletCreateStepEl = document.getElementById("wallet-create-step");
+    const walletChoiceStepEl = document.getElementById("wallet-choice-step");
+    const walletGenerateChoiceEl = document.getElementById("wallet-generate-choice");
+    const walletImportChoiceEl = document.getElementById("wallet-import-choice");
+    const walletRecoveryEl = document.getElementById("wallet-recovery");
+    const walletMnemonicEl = document.getElementById("wallet-mnemonic");
+    const walletRecoveryConfirmEl = document.getElementById("wallet-recovery-confirm");
+    const walletImportStepEl = document.getElementById("wallet-import-step");
+    const walletImportTextEl = document.getElementById("wallet-import-text");
+    const walletImportFillEl = document.getElementById("wallet-import-fill");
+    const walletImportMnemonicEl = document.getElementById("wallet-import-mnemonic");
+    const walletImportConfirmEl = document.getElementById("wallet-import-confirm");
+    const walletVaultCopyEl = document.getElementById("wallet-vault-copy");
+    const walletVaultStateEl = document.getElementById("wallet-vault-state");
+    const walletAddressEl = document.getElementById("wallet-address");
+    const walletKeyringsEl = document.getElementById("wallet-keyrings");
+    const walletAccessButtonEl = document.getElementById("wallet-access-button");
+    const walletLockButtonEl = document.getElementById("wallet-lock-button");
+    const walletResetButtonEl = document.getElementById("wallet-reset-button");
+    const walletRecoveryCopyButtonEl = document.getElementById("wallet-recovery-copy");
+    const walletSessionTimeoutMs = 5 * 60 * 1000;
+    const walletKDFIterations = 600000;
+    let bip39EnglishWords = null;
+    let walletRecoveryCopyTimer = 0;
 
     const pageMeta = {
       home: {
         title: "home",
         subtitle: "移动端 H5 总入口与通用问答",
+        status: "AI copilot online",
         placeholder: "在 home 里直接提问，例如：这个应用能做什么",
         context: "首页总入口、导航、通用问答、功能说明",
         welcome: "你好，这里是 home 页面。你可以直接在首页发起通用问答，我会帮你介绍功能入口、页面分工和整体能力。"
@@ -809,13 +2197,15 @@
       market: {
         title: "market",
         subtitle: "市场行情与热点问答",
-        placeholder: "问点市场相关的，例如：帮我分析一下 BTC 走势",
+        status: "Charts and signals",
+        placeholder: "问点市场相关的，例如：帮我展示 BTC 最近 7 天的 K 线图",
         context: "市场、价格、热点代币、行情分析",
-        welcome: "你好，这里是 market 页面。你可以像和 ChatGPT 对话一样，连续问我行情、价格、市场摘要或热点代币问题。"
+        welcome: "你好，这里是 market 页面。你可以像和 ChatGPT 对话一样，连续问我行情、价格、市场摘要、热点代币，或者直接让我展示 K 线图。"
       },
       trade: {
         title: "trade",
         subtitle: "交易路线与执行问答",
+        status: "Route planning ready",
         placeholder: "问点交易相关的，例如：ETH 换 USDC 怎么走",
         context: "交易、swap、quote、route、bridge、执行风险",
         welcome: "你好，这里是 trade 页面。你可以连续问我换币、交易步骤、路由、滑点和跨链相关问题。"
@@ -823,6 +2213,7 @@
       pay: {
         title: "pay",
         subtitle: "支付与转账场景问答",
+        status: "Fast transfer flow",
         placeholder: "问点支付相关的，例如：链上转账前要检查什么",
         context: "支付、收款、转账、确认信息、支付流程",
         welcome: "你好，这里是 pay 页面。你可以连续问我支付、转账、收款和链上确认流程问题。"
@@ -830,6 +2221,7 @@
       asset: {
         title: "asset",
         subtitle: "资产与持仓统一查看",
+        status: "Portfolio overview",
         placeholder: "问点资产相关的，例如：资产页要展示哪些指标",
         context: "资产、余额、持仓、收益、钱包概览",
         welcome: "你好，这里是 asset 页面。你可以连续问我资产页设计、持仓展示、收益指标和钱包概览问题。"
@@ -839,6 +2231,7 @@
     ensureDefaultMessages();
     bindEvents();
     switchTab("home");
+    queueMicrotask(() => void initializeWallet());
 
     function ensureDefaultMessages() {
       chatTabs.forEach((tab) => {
@@ -862,6 +2255,16 @@
         const entryButton = event.target.closest("[data-open-tab]");
         if (entryButton) {
           switchTab(entryButton.dataset.openTab);
+          return;
+        }
+
+        const marketTokenButton = event.target.closest("[data-market-asset-id]");
+        if (marketTokenButton) {
+          const assetId = marketTokenButton.dataset.marketAssetId || "";
+          const tokenName = marketTokenButton.dataset.marketName || "";
+          if (assetId) {
+            openTradeDashboard(assetId, tokenName);
+          }
           return;
         }
 
@@ -896,10 +2299,64 @@
           formEl.requestSubmit();
         }
       });
+
+      walletLockFormEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void handleWalletSubmit();
+      });
+
+      walletLockCancelEl.addEventListener("click", () => {
+        closeWalletUnlock();
+      });
+
+      walletPasswordEl.addEventListener("input", () => {
+        walletLockErrorEl.textContent = "";
+      });
+
+      walletPasswordEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          void handleWalletSubmit();
+        }
+        if (event.key === "Escape") {
+          closeWalletUnlock();
+        }
+      });
+
+      walletAccessButtonEl.addEventListener("click", () => {
+        void prepareWalletAccess();
+      });
+      walletLockButtonEl.addEventListener("click", () => lockWallet());
+      walletResetButtonEl.addEventListener("click", () => {
+        void requestWalletReset();
+      });
+      walletRecoveryCopyButtonEl.addEventListener("click", () => {
+        void copyWalletRecoveryPhrase();
+      });
+      walletGenerateChoiceEl.addEventListener("click", () => {
+        void startGeneratedMnemonicFlow();
+      });
+      walletImportChoiceEl.addEventListener("click", () => {
+        startImportMnemonicFlow();
+      });
+      walletImportFillEl.addEventListener("click", () => {
+        void hydrateImportedMnemonicInputs();
+      });
+      ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+        document.addEventListener(eventName, refreshWalletSession, { passive: true });
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          lockWallet();
+        }
+      });
     }
 
     function switchTab(tab) {
       state.activeTab = tab;
+      if (appShellEl) {
+        appShellEl.dataset.activeTab = tab;
+      }
 
       views.forEach((view) => {
         view.classList.toggle("active", view.dataset.view === tab);
@@ -911,11 +2368,23 @@
       const meta = pageMeta[tab];
       pageTitleEl.textContent = meta.title;
       pageSubtitleEl.textContent = meta.subtitle;
-
       const isChatTab = chatTabs.includes(tab);
-      composerWrapEl.classList.toggle("hidden", !isChatTab);
+      const showComposer = tab === "home";
+      composerWrapEl.classList.toggle("hidden", !showComposer);
       inputEl.placeholder = meta.placeholder || "";
-      sendButton.disabled = Boolean(state.busyTab);
+      sendButton.disabled = !showComposer || Boolean(state.busyTab);
+      pageStatusEl.textContent = tab === "asset" && !isWalletUnlocked() ? "Wallet locked" : meta.status || "";
+
+      if (tab === "market") {
+        renderMarketTopList();
+        void ensureMarketTopList();
+      }
+      if (tab === "trade") {
+        renderTradeDashboard();
+        syncTradeKlinePolling();
+      } else {
+        stopTradeKlinePolling();
+      }
 
       if (isChatTab) {
         renderThread(tab);
@@ -925,7 +2394,680 @@
           inputEl.focus();
         });
       }
+
+      if (tab === "asset") {
+        void prepareWalletAccess();
+      }
     }
+
+    async function initializeWallet() {
+      try {
+        state.wallet.vault = await WalletVaultStore.load();
+        renderWalletVault();
+      } catch (error) {
+        renderWalletVault(error instanceof Error ? error.message : "钱包保险库初始化失败");
+      }
+    }
+
+    async function prepareWalletAccess() {
+      state.wallet.pendingAction = "";
+      if (isWalletUnlocked()) {
+        renderWalletVault();
+        return;
+      }
+
+      try {
+        state.wallet.vault = await WalletVaultStore.load();
+      } catch (error) {
+        renderWalletVault(error instanceof Error ? error.message : "无法读取本地钱包保险库");
+        return;
+      }
+
+      openWalletUnlock(state.wallet.vault ? "unlock" : "create");
+    }
+
+    function openWalletUnlock(mode) {
+      if (!walletLockEl) {
+        return;
+      }
+      state.wallet.mode = mode;
+      walletLockEl.classList.add("visible");
+      walletLockEl.setAttribute("aria-hidden", "false");
+      walletLockErrorEl.textContent = "";
+      walletPasswordEl.value = "";
+      walletPasswordConfirmEl.value = "";
+      walletRecoveryConfirmEl.checked = false;
+      walletRecoveryEl.hidden = true;
+      walletImportStepEl.hidden = true;
+      walletCreateStepEl.hidden = false;
+      walletChoiceStepEl.hidden = true;
+      walletImportConfirmEl.checked = false;
+      walletImportTextEl.value = "";
+      walletRecoveryCopyButtonEl.textContent = "copy";
+      walletRecoveryCopyButtonEl.hidden = true;
+      walletLockSubmitEl.hidden = false;
+      walletMnemonicEl.replaceChildren();
+      walletImportMnemonicEl.replaceChildren();
+      walletPasswordEl.disabled = false;
+      walletPasswordConfirmEl.disabled = false;
+
+      const creating = mode === "create" || mode === "backup";
+      walletPasswordConfirmFieldEl.hidden = !creating;
+      walletPasswordLabelEl.textContent = creating ? "设置钱包密码" : "钱包密码";
+      walletLockCopyEl.textContent = creating
+        ? "创建后，恢复短语只会在此设备显示一次。保险库仅保存 AES-GCM 加密数据到 IndexedDB。"
+        : "输入本地钱包密码以派生密钥并解密保险库。密码和恢复短语不会发送到服务器。";
+      walletLockSubmitEl.textContent = creating ? "下一步" : "解锁";
+      walletPasswordEl.focus();
+    }
+
+    function closeWalletUnlock(clearPendingAction = true) {
+      if (!walletLockEl) {
+        return;
+      }
+      window.clearTimeout(walletRecoveryCopyTimer);
+      walletRecoveryCopyTimer = 0;
+      walletLockEl.classList.remove("visible");
+      walletLockEl.setAttribute("aria-hidden", "true");
+      walletLockErrorEl.textContent = "";
+      walletPasswordEl.value = "";
+      walletPasswordConfirmEl.value = "";
+      walletPasswordEl.disabled = false;
+      walletPasswordConfirmEl.disabled = false;
+      walletRecoveryCopyButtonEl.textContent = "copy";
+      walletRecoveryCopyButtonEl.hidden = true;
+      walletLockSubmitEl.hidden = false;
+      walletCreateStepEl.hidden = false;
+      walletChoiceStepEl.hidden = true;
+      walletImportStepEl.hidden = true;
+      walletImportConfirmEl.checked = false;
+      walletImportTextEl.value = "";
+      walletMnemonicEl.replaceChildren();
+      walletRecoveryEl.hidden = true;
+      walletImportMnemonicEl.replaceChildren();
+      state.wallet.pendingPassword = "";
+      state.wallet.pendingMnemonic = null;
+      if (clearPendingAction) {
+        state.wallet.pendingAction = "";
+      }
+    }
+
+    async function handleWalletSubmit() {
+      const password = walletPasswordEl.value;
+      if (state.wallet.mode === "unlock") {
+        if (!isValidWalletPassword(password)) {
+          walletLockErrorEl.textContent = "密码必须是 8-16 位，并且仅包含字母、数字和 !@#$%^&*.";
+          return;
+        }
+        await unlockWallet(password);
+        return;
+      }
+
+      if (state.wallet.mode === "create") {
+        if (!isValidWalletPassword(password)) {
+          walletLockErrorEl.textContent = "密码必须是 8-16 位，并且仅包含字母、数字和 !@#$%^&*.";
+          return;
+        }
+        if (walletPasswordConfirmEl.value !== password) {
+          walletLockErrorEl.textContent = "两次输入的钱包密码不一致。";
+          return;
+        }
+        state.wallet.pendingPassword = password;
+        state.wallet.mode = "choice";
+        walletPasswordEl.value = "";
+        walletPasswordConfirmEl.value = "";
+        walletLockErrorEl.textContent = "";
+        walletCreateStepEl.hidden = true;
+        walletChoiceStepEl.hidden = false;
+        walletLockSubmitEl.hidden = true;
+        walletLockCopyEl.textContent = "请选择生成新的助记词，或者导入已有的 12 个助记词。";
+        return;
+      }
+
+      if (state.wallet.mode === "backup") {
+        if (!walletRecoveryConfirmEl.checked || !state.wallet.pendingMnemonic) {
+          walletLockErrorEl.textContent = "请确认已离线备份恢复短语。";
+          return;
+        }
+        try {
+          await finalizeWalletCreation(state.wallet.pendingMnemonic);
+        } catch (error) {
+          walletLockErrorEl.textContent = error instanceof Error ? error.message : "钱包保险库创建失败";
+        }
+        return;
+      }
+
+      if (state.wallet.mode === "import") {
+        if (!walletImportConfirmEl.checked) {
+          walletLockErrorEl.textContent = "请确认你理解恢复短语的保管风险。";
+          return;
+        }
+        try {
+          const importedMnemonic = await readImportedMnemonic();
+          await finalizeWalletCreation(importedMnemonic);
+        } catch (error) {
+          walletLockErrorEl.textContent = error instanceof Error ? error.message : "导入助记词失败";
+        }
+      }
+    }
+
+    async function unlockWallet(password) {
+      if (!state.wallet.vault) {
+        walletLockErrorEl.textContent = "未找到本地钱包保险库。";
+        return;
+      }
+
+      try {
+        walletLockSubmitEl.disabled = true;
+        const salt = base64ToBytes(state.wallet.vault.salt);
+        const masterKey = await deriveVaultKey(password, salt, state.wallet.vault.kdfParams.iterations);
+        const plaintext = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: base64ToBytes(state.wallet.vault.iv) },
+          masterKey,
+          base64ToBytes(state.wallet.vault.ciphertext)
+        );
+        const payload = JSON.parse(new TextDecoder().decode(plaintext));
+        if (!payload || typeof payload.mnemonic !== "string") {
+          throw new Error("钱包保险库内容无效。");
+        }
+
+        state.wallet.masterKey = masterKey;
+        state.wallet.mnemonic = payload.mnemonic;
+        state.wallet.seed = await deriveBIP39Seed(payload.mnemonic);
+        state.wallet.keyring = normalizeBIP44Keyring(payload.keyring);
+        const shouldResetWallet = state.wallet.pendingAction === "reset";
+        closeWalletUnlock(false);
+        startWalletSession();
+        renderWalletVault();
+        if (shouldResetWallet) {
+          state.wallet.pendingAction = "";
+          await confirmWalletReset();
+        }
+      } catch (_) {
+        walletLockErrorEl.textContent = "无法解锁钱包，请检查密码。";
+      } finally {
+        walletLockSubmitEl.disabled = false;
+        walletPasswordEl.value = "";
+      }
+    }
+
+    function isValidWalletPassword(password) {
+      return /^[A-Za-z0-9!@#$%^&*.]{8,16}$/.test(password);
+    }
+
+    function isWalletUnlocked() {
+      return Boolean(state.wallet.masterKey && typeof state.wallet.mnemonic === "string");
+    }
+
+    function startWalletSession() {
+      refreshWalletSession();
+    }
+
+    function refreshWalletSession() {
+      if (!isWalletUnlocked()) {
+        return;
+      }
+      state.wallet.lastActivity = Date.now();
+      window.clearTimeout(state.wallet.idleTimer);
+      state.wallet.idleTimer = window.setTimeout(lockWallet, walletSessionTimeoutMs);
+    }
+
+    function lockWallet() {
+      window.clearTimeout(state.wallet.idleTimer);
+      state.wallet.idleTimer = 0;
+      state.wallet.lastActivity = 0;
+      state.wallet.pendingAction = "";
+      state.wallet.pendingPassword = "";
+      state.wallet.masterKey = null;
+      state.wallet.mnemonic = null;
+      if (state.wallet.seed instanceof Uint8Array) {
+        state.wallet.seed.fill(0);
+      }
+      state.wallet.seed = null;
+      state.wallet.keyring = null;
+      state.wallet.pendingMnemonic = null;
+      renderWalletVault();
+      if (state.activeTab === "asset") {
+        pageStatusEl.textContent = "Wallet locked";
+      }
+    }
+
+    function renderWalletVault(errorMessage) {
+      if (!walletVaultCopyEl) {
+        return;
+      }
+
+      if (errorMessage) {
+        walletVaultCopyEl.textContent = errorMessage;
+        walletVaultStateEl.textContent = "UNAVAILABLE";
+        walletVaultStateEl.classList.add("locked");
+        walletAddressEl.textContent = "请使用受支持的现代浏览器并启用 IndexedDB。";
+        walletAccessButtonEl.disabled = true;
+        walletLockButtonEl.hidden = true;
+        walletResetButtonEl.hidden = true;
+        return;
+      }
+
+      walletAccessButtonEl.disabled = false;
+      if (isWalletUnlocked()) {
+        walletVaultCopyEl.textContent = "钱包已解锁。助记词仅存在于当前页面内存，会在 5 分钟无操作、关闭页面或手动锁定时清除。";
+        walletVaultStateEl.textContent = "UNLOCKED";
+        walletVaultStateEl.classList.remove("locked");
+        walletAddressEl.textContent = "已解锁 · BIP39 助记词已恢复为 seed，BIP44 keyring 将按不同链的标准路径进行派生。";
+        renderBIP44Keyrings(state.wallet.keyring);
+        walletAccessButtonEl.textContent = "已解锁";
+        walletAccessButtonEl.disabled = true;
+        walletLockButtonEl.hidden = false;
+        walletResetButtonEl.hidden = false;
+        return;
+      }
+
+      const hasVault = Boolean(state.wallet.vault);
+      walletKeyringsEl.hidden = true;
+      walletKeyringsEl.replaceChildren();
+      walletVaultCopyEl.textContent = hasVault
+        ? "检测到本设备的加密钱包保险库。输入密码即可在浏览器本地解锁。"
+        : "本设备尚未创建钱包。创建会生成 BIP39 12 词恢复短语，并配置 BIP44 多链 keyring。";
+      walletVaultStateEl.textContent = hasVault ? "LOCKED" : "NEW";
+      walletVaultStateEl.classList.toggle("locked", hasVault);
+      walletAddressEl.textContent = hasVault
+        ? "已锁定：加密恢复短语保存在浏览器 IndexedDB，服务器无法读取。"
+        : "创建钱包后，保险库只保存经过 AES-256-GCM 加密的恢复短语。";
+      walletAccessButtonEl.textContent = hasVault ? "解锁钱包" : "创建钱包";
+      walletLockButtonEl.hidden = true;
+      walletResetButtonEl.hidden = !hasVault;
+    }
+
+    function renderWalletRecoveryPhrase(mnemonic) {
+      walletMnemonicEl.replaceChildren();
+      mnemonic.split(" ").forEach((word, index) => {
+        const item = document.createElement("span");
+        item.textContent = String(index + 1).padStart(2, "0") + ". " + word;
+        walletMnemonicEl.appendChild(item);
+      });
+    }
+
+    function renderWalletImportInputs(words) {
+      walletImportMnemonicEl.replaceChildren();
+      for (let index = 0; index < 12; index += 1) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.autocomplete = "off";
+        input.autocapitalize = "off";
+        input.spellcheck = false;
+        input.placeholder = String(index + 1).padStart(2, "0");
+        input.value = words[index] || "";
+        walletImportMnemonicEl.appendChild(input);
+      }
+    }
+
+    async function startGeneratedMnemonicFlow() {
+      try {
+        state.wallet.pendingMnemonic = await generateBIP39Mnemonic();
+        renderWalletRecoveryPhrase(state.wallet.pendingMnemonic);
+        state.wallet.mode = "backup";
+        walletChoiceStepEl.hidden = true;
+        walletRecoveryEl.hidden = false;
+        walletImportStepEl.hidden = true;
+        walletRecoveryCopyButtonEl.hidden = false;
+        walletLockSubmitEl.hidden = false;
+        walletLockSubmitEl.textContent = "确认备份并创建";
+        walletLockErrorEl.textContent = "";
+        walletLockCopyEl.textContent = "请立即离线备份这 12 个助记词。密码框已隐藏，接下来只需确认备份并创建钱包。";
+      } catch (error) {
+        walletLockErrorEl.textContent = error instanceof Error ? error.message : "无法生成恢复短语";
+      }
+    }
+
+    function startImportMnemonicFlow() {
+      state.wallet.mode = "import";
+      state.wallet.pendingMnemonic = null;
+      walletChoiceStepEl.hidden = true;
+      walletRecoveryEl.hidden = true;
+      walletImportStepEl.hidden = false;
+      walletLockSubmitEl.hidden = false;
+      walletLockSubmitEl.textContent = "确认导入并创建";
+      walletLockErrorEl.textContent = "";
+      walletLockCopyEl.textContent = "粘贴或逐个填写已有的 12 个助记词。去掉首尾换行后会按空格切分并自动填充到下方输入框。";
+      renderWalletImportInputs(Array(12).fill(""));
+      walletImportTextEl.focus();
+    }
+
+    async function copyWalletRecoveryPhrase() {
+      if (!state.wallet.pendingMnemonic) {
+        walletLockErrorEl.textContent = "请先生成恢复短语。";
+        return;
+      }
+
+      const orderedMnemonic = state.wallet.pendingMnemonic.split(" ").join(" ");
+
+      try {
+        await copyTextToClipboard(orderedMnemonic);
+        walletLockErrorEl.textContent = "";
+        walletRecoveryCopyButtonEl.textContent = "copied";
+        window.clearTimeout(walletRecoveryCopyTimer);
+        walletRecoveryCopyTimer = window.setTimeout(() => {
+          walletRecoveryCopyButtonEl.textContent = "copy";
+        }, 1600);
+      } catch (error) {
+        walletLockErrorEl.textContent = error instanceof Error ? error.message : "复制恢复短语失败。";
+      }
+    }
+
+    async function hydrateImportedMnemonicInputs() {
+      try {
+        const words = await parseMnemonicWords(walletImportTextEl.value);
+        renderWalletImportInputs(words);
+        walletLockErrorEl.textContent = "";
+      } catch (error) {
+        walletLockErrorEl.textContent = error instanceof Error ? error.message : "导入助记词失败";
+      }
+    }
+
+    async function requestWalletReset() {
+      if (!state.wallet.vault && !isWalletUnlocked()) {
+        return;
+      }
+      if (!isWalletUnlocked()) {
+        state.wallet.pendingAction = "reset";
+        openWalletUnlock("unlock");
+        walletLockErrorEl.textContent = "请先解锁钱包，再执行重置。";
+        return;
+      }
+      await confirmWalletReset();
+    }
+
+    async function confirmWalletReset() {
+      if (!window.confirm("您正在重置钱包，确认继续吗？")) {
+        return;
+      }
+      try {
+        await WalletVaultStore.remove();
+        closeWalletUnlock();
+        lockWallet();
+        state.wallet.vault = null;
+        renderWalletVault();
+        openWalletUnlock("create");
+      } catch (error) {
+        renderWalletVault(error instanceof Error ? error.message : "重置钱包失败。");
+      }
+    }
+
+    async function finalizeWalletCreation(mnemonic) {
+      const password = state.wallet.pendingPassword;
+      if (!password) {
+        throw new Error("钱包密码状态已失效，请重新开始创建。");
+      }
+
+      walletLockSubmitEl.disabled = true;
+      try {
+        const keyring = createDefaultBIP44Keyring();
+        const createdWallet = await createWalletVault(password, mnemonic, keyring);
+        state.wallet.vault = createdWallet.vault;
+        state.wallet.masterKey = createdWallet.masterKey;
+        state.wallet.mnemonic = mnemonic;
+        state.wallet.seed = await deriveBIP39Seed(mnemonic);
+        state.wallet.keyring = keyring;
+        state.wallet.pendingMnemonic = null;
+        state.wallet.pendingPassword = "";
+        closeWalletUnlock();
+        startWalletSession();
+        renderWalletVault();
+      } finally {
+        walletLockSubmitEl.disabled = false;
+      }
+    }
+
+    async function readImportedMnemonic() {
+      const words = Array.from(walletImportMnemonicEl.querySelectorAll("input"))
+        .map((input) => input.value.trim().toLowerCase())
+        .filter(Boolean);
+      if (words.length !== 12) {
+        throw new Error("请完整填写 12 个助记词。");
+      }
+      const normalizedWords = await parseMnemonicWords(words.join(" "));
+      state.wallet.pendingMnemonic = normalizedWords.join(" ");
+      return state.wallet.pendingMnemonic;
+    }
+
+    function createDefaultBIP44Keyring() {
+      return {
+        standard: "BIP44",
+        account: 0,
+        index: 0,
+        networks: [
+          { id: "bitcoin", label: "Bitcoin", coinType: 0, path: "m/44'/0'/0'/0/0", curve: "secp256k1" },
+          { id: "ethereum", label: "Ethereum", coinType: 60, path: "m/44'/60'/0'/0/0", curve: "secp256k1" },
+          { id: "base", label: "Base", coinType: 60, path: "m/44'/60'/0'/0/0", curve: "secp256k1" },
+          { id: "solana", label: "Solana", coinType: 501, path: "m/44'/501'/0'/0'", curve: "ed25519" },
+          { id: "sui", label: "Sui", coinType: 784, path: "m/44'/784'/0'/0'/0'", curve: "ed25519" }
+        ]
+      };
+    }
+
+    function normalizeBIP44Keyring(keyring) {
+      if (
+        keyring &&
+        keyring.standard === "BIP44" &&
+        Array.isArray(keyring.networks) &&
+        keyring.networks.length > 0
+      ) {
+        return keyring;
+      }
+      return createDefaultBIP44Keyring();
+    }
+
+    function renderBIP44Keyrings(keyring) {
+      walletKeyringsEl.replaceChildren();
+      const normalized = normalizeBIP44Keyring(keyring);
+      normalized.networks.forEach((network) => {
+        const item = document.createElement("span");
+        item.className = "wallet-keyring";
+        item.textContent = network.label + " · " + network.path;
+        walletKeyringsEl.appendChild(item);
+      });
+      walletKeyringsEl.hidden = false;
+    }
+
+    async function createWalletVault(password, mnemonic, keyring) {
+      const salt = randomBytes(16);
+      const iv = randomBytes(12);
+      const masterKey = await deriveVaultKey(password, salt, walletKDFIterations);
+      const plaintext = new TextEncoder().encode(JSON.stringify({
+        mnemonic,
+        keyring: normalizeBIP44Keyring(keyring),
+        createdAt: new Date().toISOString()
+      }));
+      const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, masterKey, plaintext);
+      const vault = {
+        id: "primary",
+        version: 1,
+        cipher: "AES-256-GCM",
+        kdf: "PBKDF2-SHA-256",
+        kdfParams: { iterations: walletKDFIterations, hash: "SHA-256" },
+        salt: bytesToBase64(salt),
+        iv: bytesToBase64(iv),
+        ciphertext: bytesToBase64(new Uint8Array(ciphertext)),
+        createdAt: new Date().toISOString()
+      };
+      await WalletVaultStore.save(vault);
+      return { vault, masterKey };
+    }
+
+    async function deriveBIP39Seed(mnemonic, passphrase) {
+      const mnemonicBytes = new TextEncoder().encode(mnemonic.normalize("NFKD"));
+      const salt = new TextEncoder().encode(("mnemonic" + (passphrase || "")).normalize("NFKD"));
+      const keyMaterial = await crypto.subtle.importKey("raw", mnemonicBytes, "PBKDF2", false, ["deriveBits"]);
+      const seed = await crypto.subtle.deriveBits(
+        { name: "PBKDF2", hash: "SHA-512", salt, iterations: 2048 },
+        keyMaterial,
+        512
+      );
+      return new Uint8Array(seed);
+    }
+
+    async function deriveVaultKey(password, salt, iterations) {
+      const passwordBytes = new TextEncoder().encode(password);
+      const keyMaterial = await crypto.subtle.importKey("raw", passwordBytes, "PBKDF2", false, ["deriveKey"]);
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", hash: "SHA-256", salt, iterations },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function generateBIP39Mnemonic() {
+      const wordlist = await loadBIP39EnglishWordlist();
+      const entropy = randomBytes(16);
+      const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", entropy));
+      let bits = bytesToBits(entropy) + bytesToBits(digest).slice(0, 4);
+      const words = [];
+      for (let index = 0; index < 12; index += 1) {
+        const wordIndex = parseInt(bits.slice(index * 11, (index + 1) * 11), 2);
+        words.push(wordlist[wordIndex]);
+      }
+      bits = "";
+      entropy.fill(0);
+      digest.fill(0);
+      return words.join(" ");
+    }
+
+    async function loadBIP39EnglishWordlist() {
+      if (Array.isArray(bip39EnglishWords)) {
+        return bip39EnglishWords;
+      }
+      const response = await fetch("/wallet/bip39-english", { cache: "force-cache" });
+      if (!response.ok) {
+        throw new Error("无法加载 BIP39 词表。");
+      }
+      const words = (await response.text()).trim().split("\n").map((word) => word.trim()).filter(Boolean);
+      if (words.length !== 2048) {
+        throw new Error("BIP39 词表无效。");
+      }
+      bip39EnglishWords = words;
+      return words;
+    }
+
+    function randomBytes(length) {
+      const bytes = new Uint8Array(length);
+      crypto.getRandomValues(bytes);
+      return bytes;
+    }
+
+    function bytesToBits(bytes) {
+      return Array.from(bytes).map((byte) => byte.toString(2).padStart(8, "0")).join("");
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = "";
+      bytes.forEach((byte) => {
+        binary += String.fromCharCode(byte);
+      });
+      return btoa(binary);
+    }
+
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const helper = document.createElement("textarea");
+      helper.value = text;
+      helper.setAttribute("readonly", "readonly");
+      helper.style.position = "absolute";
+      helper.style.left = "-9999px";
+      document.body.appendChild(helper);
+      helper.select();
+      helper.setSelectionRange(0, helper.value.length);
+      const copied = document.execCommand("copy");
+      helper.remove();
+      if (!copied) {
+        throw new Error("当前浏览器无法复制恢复短语。");
+      }
+    }
+
+    async function parseMnemonicWords(text) {
+      const words = text
+        .trim()
+        .replace(/\s+/g, " ")
+        .split(" ")
+        .map((word) => word.trim().toLowerCase())
+        .filter(Boolean);
+      if (words.length !== 12) {
+        throw new Error("助记词必须正好包含 12 个单词。");
+      }
+      const wordlist = await loadBIP39EnglishWordlist();
+      if (words.some((word) => !wordlist.includes(word))) {
+        throw new Error("存在不在 BIP39 词表中的助记词，请检查拼写。");
+      }
+      return words;
+    }
+
+    function base64ToBytes(value) {
+      const binary = atob(value);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      return bytes;
+    }
+
+    const WalletVaultStore = {
+      databaseName: "web3_wallet",
+      storeName: "vault",
+
+      async load() {
+        const database = await this.open();
+        return new Promise((resolve, reject) => {
+          const transaction = database.transaction(this.storeName, "readonly");
+          const request = transaction.objectStore(this.storeName).get("primary");
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error || new Error("读取钱包保险库失败。"));
+        });
+      },
+
+      async save(vault) {
+        const database = await this.open();
+        return new Promise((resolve, reject) => {
+          const transaction = database.transaction(this.storeName, "readwrite");
+          transaction.objectStore(this.storeName).put(vault);
+          transaction.oncomplete = () => resolve();
+          transaction.onerror = () => reject(transaction.error || new Error("保存钱包保险库失败。"));
+          transaction.onabort = () => reject(transaction.error || new Error("保存钱包保险库失败。"));
+        });
+      },
+
+      async remove() {
+        const database = await this.open();
+        return new Promise((resolve, reject) => {
+          const transaction = database.transaction(this.storeName, "readwrite");
+          transaction.objectStore(this.storeName).delete("primary");
+          transaction.oncomplete = () => resolve();
+          transaction.onerror = () => reject(transaction.error || new Error("删除钱包保险库失败。"));
+          transaction.onabort = () => reject(transaction.error || new Error("删除钱包保险库失败。"));
+        });
+      },
+
+      async open() {
+        if (!("indexedDB" in window) || !window.crypto || !window.crypto.subtle) {
+          throw new Error("当前浏览器不支持本地加密钱包。");
+        }
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(this.databaseName, 1);
+          request.onupgradeneeded = () => {
+            const database = request.result;
+            if (!database.objectStoreNames.contains(this.storeName)) {
+              database.createObjectStore(this.storeName, { keyPath: "id" });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error("无法打开本地钱包保险库。"));
+        });
+      }
+    };
 
     function getThreadEl(tab) {
       return document.getElementById(tab + "-thread");
@@ -953,7 +3095,7 @@
 
         const bubble = document.createElement("div");
         bubble.className = "bubble";
-        bubble.textContent = message.content;
+        renderRichContent(bubble, message.content, { compact: false });
 
         row.appendChild(avatar);
         row.appendChild(bubble);
@@ -964,7 +3106,7 @@
           message.toolExecutions.forEach((toolExecution) => {
             const item = document.createElement("div");
             item.className = "tool-call";
-            item.textContent = toolExecution.name + ": " + toolExecution.observation;
+            renderToolExecution(item, toolExecution);
             toolCalls.appendChild(item);
           });
           bubble.appendChild(toolCalls);
@@ -975,6 +3117,981 @@
 
       persistMessagesByTab();
       requestAnimationFrame(() => scrollConversationToBottom(tab));
+    }
+
+    async function ensureMarketTopList() {
+      const now = Date.now();
+      if (state.marketTop.loading) {
+        return;
+      }
+      if (state.marketTop.items.length > 0 && now - state.marketTop.loadedAt < 60000) {
+        return;
+      }
+
+      state.marketTop.loading = true;
+      state.marketTop.error = "";
+      renderMarketTopList();
+
+      try {
+        const response = await fetch("/v1/market/top");
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "行情加载失败");
+        }
+
+        state.marketTop.items = Array.isArray(payload.items) ? payload.items : [];
+        state.marketTop.loadedAt = Date.now();
+      } catch (error) {
+        state.marketTop.error = error instanceof Error ? error.message : "行情加载失败";
+      } finally {
+        state.marketTop.loading = false;
+        renderMarketTopList();
+      }
+    }
+
+    function renderMarketTopList() {
+      if (!marketTopListEl || !marketBoardStatusEl) {
+        return;
+      }
+
+      marketTopListEl.innerHTML = "";
+
+      if (state.marketTop.loading) {
+        marketBoardStatusEl.textContent = "正在加载市值前十行情...";
+        return;
+      }
+
+      if (state.marketTop.error) {
+        marketBoardStatusEl.textContent = state.marketTop.error;
+        return;
+      }
+
+      if (!Array.isArray(state.marketTop.items) || state.marketTop.items.length === 0) {
+        marketBoardStatusEl.textContent = "暂无行情数据";
+        return;
+      }
+
+      marketBoardStatusEl.textContent = "按市值排序 · 实时拉取";
+      state.marketTop.items.forEach((item, index) => {
+        marketTopListEl.appendChild(createMarketTopRow(item, index));
+      });
+    }
+
+    function createMarketTopRow(item, index) {
+      const row = document.createElement("button");
+      row.className = "market-top-item";
+      row.type = "button";
+      row.dataset.marketAssetId = item.id || "";
+      row.dataset.marketName = item.name || "";
+
+      const rank = document.createElement("div");
+      rank.className = "market-rank";
+      rank.textContent = String(item.market_cap_rank || index + 1);
+      row.appendChild(rank);
+
+      const name = document.createElement("div");
+      name.className = "market-token-name";
+      const title = document.createElement("strong");
+      title.textContent = item.name || "Unknown";
+      const symbol = document.createElement("span");
+      symbol.textContent = item.symbol || "";
+      name.appendChild(title);
+      name.appendChild(symbol);
+      row.appendChild(name);
+
+      const price = document.createElement("div");
+      price.className = "market-token-price";
+      price.textContent = formatUSDPrice(item.current_price);
+      row.appendChild(price);
+
+      const change = document.createElement("div");
+      const delta = Number(item.price_change_percentage_24h || 0);
+      change.className = "market-token-change " + (delta > 0 ? "positive" : delta < 0 ? "negative" : "flat");
+      change.textContent = formatPercent(delta);
+      row.appendChild(change);
+
+      return row;
+    }
+
+    async function openTradeDashboard(assetId, tokenName) {
+      state.tradeDashboard.selectedAssetId = assetId;
+      state.tradeDashboard.selectedTokenName = tokenName || "";
+      switchTab("trade");
+      state.tradeDashboard.loading = true;
+      state.tradeDashboard.error = "";
+      state.tradeDashboard.item = null;
+      state.tradeKlines.item = null;
+      state.tradeKlines.error = "";
+      renderTradeDashboard();
+
+      try {
+        const response = await fetch("/v1/trade/token?id=" + encodeURIComponent(assetId));
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "交易数据加载失败");
+        }
+
+        state.tradeDashboard.item = payload.item || null;
+        if (!state.tradeDashboard.item && tokenName) {
+          throw new Error("没有拿到 " + tokenName + " 的交易数据");
+        }
+      } catch (error) {
+        state.tradeDashboard.error = error instanceof Error ? error.message : "交易数据加载失败";
+      } finally {
+        state.tradeDashboard.loading = false;
+        renderTradeDashboard();
+        syncTradeKlinePolling();
+      }
+    }
+
+    function renderTradeDashboard() {
+      if (!tradeDashboardStatusEl || !tradeDashboardContentEl) {
+        return;
+      }
+
+      tradeDashboardContentEl.innerHTML = "";
+
+      if (state.tradeDashboard.loading) {
+        tradeDashboardStatusEl.textContent = "正在加载交易面板...";
+        tradeDashboardContentEl.className = "trade-dashboard-empty";
+        tradeDashboardContentEl.textContent = "正在同步价格、24h 波动、交易量和供应量数据...";
+        return;
+      }
+
+      if (state.tradeDashboard.error) {
+        tradeDashboardStatusEl.textContent = state.tradeDashboard.error;
+        tradeDashboardContentEl.className = "trade-dashboard-empty";
+        tradeDashboardContentEl.textContent = "请从 market 榜单重新选择一个代币，或稍后再试。";
+        return;
+      }
+
+      if (!state.tradeDashboard.item) {
+        tradeDashboardStatusEl.textContent = "从 market 榜单点击代币后查看";
+        tradeDashboardContentEl.className = "trade-dashboard-empty";
+        tradeDashboardContentEl.textContent = "选择一个代币后，这里会展示当前价格、24h 涨跌、24h 高低点、成交量、市值和供应量等交易数据。";
+        return;
+      }
+
+      tradeDashboardStatusEl.textContent = "交易数据已更新 · CoinGecko";
+      tradeDashboardContentEl.className = "";
+      tradeDashboardContentEl.appendChild(createTradeDashboardCard(state.tradeDashboard.item));
+    }
+
+    function syncTradeKlinePolling() {
+      if (state.activeTab !== "trade" || !state.tradeDashboard.selectedAssetId) {
+        stopTradeKlinePolling();
+        return;
+      }
+
+      if (!state.tradeKlines.refreshTimer) {
+        state.tradeKlines.refreshTimer = window.setInterval(() => {
+          void refreshTradeKlines();
+        }, 60000);
+      }
+
+      void refreshTradeKlines();
+    }
+
+    function stopTradeKlinePolling() {
+      if (state.tradeKlines.refreshTimer) {
+        window.clearInterval(state.tradeKlines.refreshTimer);
+        state.tradeKlines.refreshTimer = 0;
+      }
+    }
+
+    async function refreshTradeKlines() {
+      if (!state.tradeDashboard.selectedAssetId || state.tradeKlines.loading) {
+        return;
+      }
+
+      state.tradeKlines.loading = true;
+      state.tradeKlines.error = "";
+      renderTradeDashboard();
+
+      try {
+        const response = await fetch("/v1/trade/klines?id=" + encodeURIComponent(state.tradeDashboard.selectedAssetId) + "&interval=15m&limit=32");
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "K 线加载失败");
+        }
+
+        state.tradeKlines.item = payload.item || null;
+        state.tradeKlines.updatedAt = payload.updated_at || "";
+      } catch (error) {
+        state.tradeKlines.error = error instanceof Error ? error.message : "K 线加载失败";
+      } finally {
+        state.tradeKlines.loading = false;
+        if (state.activeTab === "trade") {
+          renderTradeDashboard();
+        }
+      }
+    }
+
+    function createTradeDashboardCard(item) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "trade-dashboard-card";
+
+      const hero = document.createElement("div");
+      hero.className = "trade-hero";
+
+      const title = document.createElement("div");
+      title.className = "trade-token-title";
+      const tokenName = document.createElement("strong");
+      tokenName.textContent = item.name || "Unknown";
+      const tokenMeta = document.createElement("span");
+      tokenMeta.textContent = (item.symbol || "").toUpperCase() + (item.id ? " · " + item.id : "");
+      title.appendChild(tokenName);
+      title.appendChild(tokenMeta);
+      hero.appendChild(title);
+
+      const price = document.createElement("div");
+      price.className = "trade-price";
+      const priceValue = document.createElement("div");
+      priceValue.className = "trade-price-value";
+      priceValue.textContent = formatUSDPrice(item.current_price);
+      const priceChange = document.createElement("div");
+      const delta = Number(item.price_change_percentage_24h || 0);
+      priceChange.className = "trade-price-change " + (delta > 0 ? "positive" : delta < 0 ? "negative" : "flat");
+      priceChange.textContent = formatPercent(delta) + " today";
+      price.appendChild(priceValue);
+      price.appendChild(priceChange);
+      hero.appendChild(price);
+      wrapper.appendChild(hero);
+
+      const statsGrid = document.createElement("div");
+      statsGrid.className = "trade-stats-grid";
+      [
+        ["24h High", formatUSDPrice(item.high_24h)],
+        ["24h Low", formatUSDPrice(item.low_24h)],
+        ["24h Volume", formatCompactCurrency(item.total_volume)],
+        ["Market Cap", formatCompactCurrency(item.market_cap)],
+        ["FDV", formatCompactCurrency(item.fully_diluted_valuation)],
+        ["Circulating", formatCompactAmount(item.circulating_supply)],
+        ["Total Supply", item.total_supply ? formatCompactAmount(item.total_supply) : "unavailable"],
+        ["Rank", item.market_cap_rank ? "#" + item.market_cap_rank : "n/a"]
+      ].forEach((entry) => {
+        const stat = document.createElement("div");
+        stat.className = "trade-stat-card";
+        const label = document.createElement("label");
+        label.textContent = entry[0];
+        const value = document.createElement("strong");
+        value.textContent = entry[1];
+        stat.appendChild(label);
+        stat.appendChild(value);
+        statsGrid.appendChild(stat);
+      });
+      wrapper.appendChild(statsGrid);
+
+      const insights = document.createElement("div");
+      insights.className = "trade-insight-row";
+      [
+        "spot-ready",
+        delta >= 0 ? "positive momentum" : "pullback watch",
+        "liquidity overview",
+        "trade context"
+      ].forEach((text) => {
+        const pill = document.createElement("span");
+        pill.className = "trade-insight-pill";
+        pill.textContent = text;
+        insights.appendChild(pill);
+      });
+      wrapper.appendChild(insights);
+
+      wrapper.appendChild(createTradeKlinePanel());
+
+      return wrapper;
+    }
+
+    function createTradeKlinePanel() {
+      const panel = document.createElement("div");
+      panel.className = "trade-kline-panel";
+
+      const head = document.createElement("div");
+      head.className = "trade-kline-head";
+      const title = document.createElement("strong");
+      title.textContent = "实时 K 线";
+      head.appendChild(title);
+      const meta = document.createElement("div");
+      meta.className = "trade-kline-meta";
+      meta.textContent = "15m candles · refresh 60s";
+      head.appendChild(meta);
+      panel.appendChild(head);
+
+      const status = document.createElement("div");
+      status.className = "trade-kline-status";
+      if (state.tradeKlines.loading && !state.tradeKlines.item) {
+        status.textContent = "正在加载 15m K 线...";
+      } else if (state.tradeKlines.error) {
+        status.textContent = state.tradeKlines.error;
+      } else if (state.tradeKlines.updatedAt) {
+        status.textContent = "最近更新 " + formatUpdatedTime(state.tradeKlines.updatedAt);
+      } else {
+        status.textContent = "等待 K 线数据...";
+      }
+      panel.appendChild(status);
+
+      if (state.tradeKlines.item && Array.isArray(state.tradeKlines.item.candles) && state.tradeKlines.item.candles.length > 0) {
+        const chartWrap = document.createElement("div");
+        chartWrap.className = "kline-chart-wrap";
+        chartWrap.appendChild(createKlineChart(state.tradeKlines.item.candles));
+        panel.appendChild(chartWrap);
+      }
+
+      return panel;
+    }
+
+    function renderRichContent(container, text, options) {
+      const chart = parseKlineObservation(text);
+      if (!chart) {
+        const copy = document.createElement("div");
+        copy.className = options && options.compact ? "tool-copy" : "message-copy";
+        copy.textContent = text;
+        container.appendChild(copy);
+        return;
+      }
+
+      container.appendChild(createKlineCard(chart, options || {}));
+    }
+
+    function renderToolExecution(container, toolExecution) {
+      const chart = parseKlineObservation(toolExecution.observation);
+      if (!chart) {
+        const copy = document.createElement("div");
+        copy.className = "tool-copy";
+        copy.textContent = toolExecution.name + ": " + toolExecution.observation;
+        container.appendChild(copy);
+        return;
+      }
+
+      container.classList.add("kline-tool-call");
+      container.appendChild(createKlineCard(chart, {
+        compact: true,
+        toolName: toolExecution.name
+      }));
+    }
+
+    function parseKlineObservation(text) {
+      if (typeof text !== "string" || !text.includes("Candles:")) {
+        return null;
+      }
+
+      const lines = text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+      const candlesIndex = lines.indexOf("Candles:");
+      if (candlesIndex <= 0) {
+        return null;
+      }
+
+      const title = lines[0];
+      const meta = {};
+      lines.slice(1, candlesIndex).forEach((line) => {
+        if (!line.startsWith("- ")) {
+          return;
+        }
+        const separator = line.indexOf(":");
+        if (separator <= 0) {
+          return;
+        }
+        const key = line.slice(2, separator).trim();
+        const value = line.slice(separator + 1).trim();
+        meta[key] = value;
+      });
+
+      const candles = lines.slice(candlesIndex + 1).map(parseKlineCandleLine).filter(Boolean);
+      if (candles.length === 0) {
+        return null;
+      }
+
+      return {
+        title: title.replace(/:$/, ""),
+        mode: meta.mode || "",
+        vsCurrency: (meta.vs_currency || "usd").toUpperCase(),
+        interval: meta.interval || "",
+        totalCandles: Number(meta.total_candles || candles.length),
+        candlesReturned: Number(meta.candles_returned || candles.length),
+        assetID: meta.asset_id || "",
+        tokenAddress: meta.token_address || "",
+        chain: meta.chain || "",
+        note: meta.note || "",
+        source: meta.source || "",
+        candles
+      };
+    }
+
+    function parseKlineCandleLine(line) {
+      const match = line.match(/^- ([^ ]+) open=([0-9.]+) high=([0-9.]+) low=([0-9.]+) close=([0-9.]+)/);
+      if (!match) {
+        return null;
+      }
+
+      return {
+        timestamp: match[1],
+        open: Number(match[2]),
+        high: Number(match[3]),
+        low: Number(match[4]),
+        close: Number(match[5])
+      };
+    }
+
+    function createKlineCard(chart, options) {
+      const card = document.createElement("div");
+      card.className = "kline-card";
+
+      const header = document.createElement("div");
+      header.className = "kline-card-header";
+
+      const titleBlock = document.createElement("div");
+      const titleEl = document.createElement("div");
+      titleEl.className = "kline-title";
+      titleEl.textContent = chart.title;
+      titleBlock.appendChild(titleEl);
+
+      const subtitleEl = document.createElement("div");
+      subtitleEl.className = "kline-subtitle";
+      subtitleEl.textContent = buildKlineSubtitle(chart, options || {});
+      titleBlock.appendChild(subtitleEl);
+      header.appendChild(titleBlock);
+
+      const priceBlock = document.createElement("div");
+      priceBlock.className = "kline-price-block";
+      const lastPriceEl = document.createElement("div");
+      lastPriceEl.className = "kline-last-price";
+      lastPriceEl.textContent = formatChartPrice(chart.candles[chart.candles.length - 1].close);
+      priceBlock.appendChild(lastPriceEl);
+
+      const change = calculateKlineChange(chart.candles);
+      const changeEl = document.createElement("div");
+      changeEl.className = "kline-change " + change.className;
+      changeEl.textContent = change.label;
+      priceBlock.appendChild(changeEl);
+      header.appendChild(priceBlock);
+      card.appendChild(header);
+
+      const chipRow = document.createElement("div");
+      chipRow.className = "kline-chip-row";
+      buildKlineChips(chart, options || {}).forEach((chipText) => {
+        const chip = document.createElement("span");
+        chip.className = "kline-chip";
+        chip.textContent = chipText;
+        chipRow.appendChild(chip);
+      });
+      if (chipRow.childNodes.length > 0) {
+        card.appendChild(chipRow);
+      }
+
+      const statsRow = document.createElement("div");
+      statsRow.className = "kline-stats";
+      buildKlineStats(chart.candles).forEach((item) => {
+        const stat = document.createElement("span");
+        stat.className = "kline-stat";
+        const label = document.createElement("strong");
+        label.textContent = item.label;
+        stat.appendChild(label);
+        stat.appendChild(document.createTextNode(item.value));
+        statsRow.appendChild(stat);
+      });
+      card.appendChild(statsRow);
+
+      const chartWrap = document.createElement("div");
+      chartWrap.className = "kline-chart-wrap";
+      chartWrap.appendChild(createKlineChart(chart.candles));
+      card.appendChild(chartWrap);
+
+      if (chart.note) {
+        const note = document.createElement("div");
+        note.className = "kline-note";
+        note.textContent = chart.note;
+        card.appendChild(note);
+      }
+
+      return card;
+    }
+
+    function buildKlineSubtitle(chart, options) {
+      const parts = [];
+      if (options.toolName) {
+        parts.push(options.toolName);
+      }
+      if (chart.interval) {
+        parts.push(chart.interval);
+      }
+      if (chart.vsCurrency) {
+        parts.push(chart.vsCurrency);
+      }
+      if (chart.candlesReturned) {
+        parts.push(chart.candlesReturned + " candles");
+      }
+      return parts.join(" · ");
+    }
+
+    function buildKlineChips(chart, options) {
+      const chips = [];
+      if (chart.mode) {
+        chips.push(chart.mode);
+      }
+      if (chart.chain) {
+        chips.push(chart.chain);
+      }
+      if (chart.source) {
+        chips.push(chart.source);
+      }
+      if (!options.compact && chart.assetID) {
+        chips.push(chart.assetID);
+      }
+      return chips;
+    }
+
+    function buildKlineStats(candles) {
+      const highs = candles.map((candle) => candle.high);
+      const lows = candles.map((candle) => candle.low);
+      const first = candles[0];
+      const last = candles[candles.length - 1];
+
+      return [
+        { label: "H", value: formatChartPrice(Math.max.apply(null, highs)) },
+        { label: "L", value: formatChartPrice(Math.min.apply(null, lows)) },
+        { label: "O", value: formatChartPrice(first.open) },
+        { label: "C", value: formatChartPrice(last.close) }
+      ];
+    }
+
+    function calculateKlineChange(candles) {
+      const first = candles[0];
+      const last = candles[candles.length - 1];
+      if (!first || !last || first.open === 0) {
+        return { className: "flat", label: "0.00%" };
+      }
+
+      const delta = ((last.close - first.open) / first.open) * 100;
+      const sign = delta > 0 ? "+" : "";
+      const className = delta > 0 ? "positive" : delta < 0 ? "negative" : "flat";
+      return {
+        className,
+        label: sign + delta.toFixed(2) + "%"
+      };
+    }
+
+    let klineChartCounter = 0;
+
+    function createKlineChart(candles) {
+      const fragment = document.createDocumentFragment();
+
+      const inner = document.createElement("div");
+      inner.className = "kline-chart-inner";
+
+      const svg = createKlineChartSVG(candles);
+      inner.appendChild(svg);
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "kline-tooltip";
+      inner.appendChild(tooltip);
+
+      fragment.appendChild(inner);
+
+      const detail = document.createElement("div");
+      detail.className = "kline-detail-panel";
+      renderKlineDetail(detail, null, candles);
+      fragment.appendChild(detail);
+
+      bindKlineInteractions(svg, tooltip, detail, candles);
+
+      return fragment;
+    }
+
+    function bindKlineInteractions(svg, tooltip, detail, candles) {
+      const layout = svg.__klineLayout;
+      if (!layout) {
+        return;
+      }
+
+      const findIndex = (event) => {
+        const rect = svg.getBoundingClientRect();
+        if (!rect.width) {
+          return -1;
+        }
+        const source = event.touches && event.touches[0] ? event.touches[0] : event;
+        const localX = ((source.clientX - rect.left) / rect.width) * 360;
+        let bestIndex = 0;
+        let bestDelta = Infinity;
+        layout.xPositions.forEach((x, index) => {
+          const delta = Math.abs(x - localX);
+          if (delta < bestDelta) {
+            bestDelta = delta;
+            bestIndex = index;
+          }
+        });
+        return bestIndex;
+      };
+
+      const showCrosshair = (index) => {
+        if (index < 0 || index >= candles.length) {
+          return;
+        }
+        const candle = candles[index];
+        const x = layout.xPositions[index];
+        const y = layout.closeYs[index];
+        layout.crosshairV.setAttribute("x1", String(x));
+        layout.crosshairV.setAttribute("x2", String(x));
+        layout.crosshairV.setAttribute("y1", String(layout.padding.top));
+        layout.crosshairV.setAttribute("y2", String(layout.padding.top + layout.plotHeight));
+        layout.crosshairV.setAttribute("visibility", "visible");
+        layout.crosshairDot.setAttribute("cx", String(x));
+        layout.crosshairDot.setAttribute("cy", String(y));
+        layout.crosshairDot.setAttribute("visibility", "visible");
+
+        tooltip.classList.add("visible");
+        tooltip.style.left = ((x / 360) * 100).toFixed(2) + "%";
+        tooltip.textContent = formatChartPrice(candle.close);
+      };
+
+      const hideCrosshair = () => {
+        layout.crosshairV.setAttribute("visibility", "hidden");
+        layout.crosshairDot.setAttribute("visibility", "hidden");
+        tooltip.classList.remove("visible");
+      };
+
+      svg.addEventListener("mousemove", (event) => {
+        const index = findIndex(event);
+        showCrosshair(index);
+      });
+      svg.addEventListener("mouseleave", hideCrosshair);
+      svg.addEventListener("click", (event) => {
+        const index = findIndex(event);
+        renderKlineDetail(detail, index, candles);
+        showCrosshair(index);
+      });
+      svg.addEventListener("touchstart", (event) => {
+        const index = findIndex(event);
+        showCrosshair(index);
+        renderKlineDetail(detail, index, candles);
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+      svg.addEventListener("touchmove", (event) => {
+        const index = findIndex(event);
+        showCrosshair(index);
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+      svg.addEventListener("touchend", hideCrosshair);
+    }
+
+    function renderKlineDetail(container, index, candles) {
+      container.innerHTML = "";
+      if (index === null || index === undefined || index < 0 || index >= candles.length) {
+        const empty = document.createElement("div");
+        empty.className = "kline-detail-empty";
+        empty.textContent = "点击 K 线查看四价与涨跌幅";
+        container.appendChild(empty);
+        return;
+      }
+
+      const candle = candles[index];
+      const prev = candles[index - 1];
+      const base = prev ? prev.close : candle.open;
+      const delta = base === 0 ? 0 : ((candle.close - base) / base) * 100;
+      const bodyDelta = candle.open === 0 ? 0 : ((candle.close - candle.open) / candle.open) * 100;
+      const sign = delta > 0 ? "+" : "";
+      const trend = delta > 0 ? "positive" : delta < 0 ? "negative" : "flat";
+      const bodyTrend = bodyDelta > 0 ? "positive" : bodyDelta < 0 ? "negative" : "flat";
+
+      const time = document.createElement("div");
+      time.className = "kline-detail-time";
+      time.textContent = formatKlineTimeLabel(candle.timestamp);
+      container.appendChild(time);
+
+      const entries = [
+        { label: "Open", value: formatChartPrice(candle.open), variant: "" },
+        { label: "High", value: formatChartPrice(candle.high), variant: "positive" },
+        { label: "Low", value: formatChartPrice(candle.low), variant: "negative" },
+        { label: "Close", value: formatChartPrice(candle.close), variant: bodyTrend },
+        { label: "Change %", value: sign + delta.toFixed(2) + "%", variant: trend }
+      ];
+
+      entries.forEach((entry) => {
+        const item = document.createElement("div");
+        item.className = "kline-detail-item" + (entry.variant ? " " + entry.variant : "");
+        const label = document.createElement("label");
+        label.textContent = entry.label;
+        const value = document.createElement("strong");
+        value.textContent = entry.value;
+        item.appendChild(label);
+        item.appendChild(value);
+        container.appendChild(item);
+      });
+    }
+
+    function createKlineChartSVG(candles) {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "kline-chart");
+      svg.setAttribute("viewBox", "0 0 360 220");
+      svg.setAttribute("preserveAspectRatio", "none");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "Token candlestick chart");
+
+      const padding = { top: 14, right: 46, bottom: 26, left: 12 };
+      const plotWidth = 360 - padding.left - padding.right;
+      const plotHeight = 220 - padding.top - padding.bottom;
+      const highs = candles.map((candle) => candle.high);
+      const lows = candles.map((candle) => candle.low);
+      const maxPrice = Math.max.apply(null, highs);
+      const minPrice = Math.min.apply(null, lows);
+      const priceRange = maxPrice - minPrice || Math.max(maxPrice * 0.01, 1);
+      const paddedRange = priceRange * 0.08;
+      const domainMin = minPrice - paddedRange;
+      const domainMax = maxPrice + paddedRange;
+      const range = domainMax - domainMin;
+
+      const xPositions = candles.map((_, index) => (
+        padding.left + (candles.length === 1 ? plotWidth / 2 : (plotWidth / (candles.length - 1)) * index)
+      ));
+      const closeYs = candles.map((candle) => toChartY(candle.close, domainMin, range, padding.top, plotHeight));
+
+      const candleWidth = Math.max(Math.min((plotWidth / Math.max(candles.length, 1)) * 0.6, 14), 4);
+
+      klineChartCounter += 1;
+      const gradientId = "kline-area-" + klineChartCounter;
+
+      const defs = document.createElementNS(svgNS, "defs");
+      const gradient = document.createElementNS(svgNS, "linearGradient");
+      gradient.setAttribute("id", gradientId);
+      gradient.setAttribute("x1", "0");
+      gradient.setAttribute("y1", "0");
+      gradient.setAttribute("x2", "0");
+      gradient.setAttribute("y2", "1");
+      const stopTop = document.createElementNS(svgNS, "stop");
+      stopTop.setAttribute("offset", "0%");
+      stopTop.setAttribute("stop-color", "#60a5fa");
+      stopTop.setAttribute("stop-opacity", "0.34");
+      const stopBottom = document.createElementNS(svgNS, "stop");
+      stopBottom.setAttribute("offset", "100%");
+      stopBottom.setAttribute("stop-color", "#60a5fa");
+      stopBottom.setAttribute("stop-opacity", "0");
+      gradient.appendChild(stopTop);
+      gradient.appendChild(stopBottom);
+      defs.appendChild(gradient);
+      svg.appendChild(defs);
+
+      for (let index = 0; index < 5; index += 1) {
+        const y = padding.top + (plotHeight / 4) * index;
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("x1", String(padding.left));
+        line.setAttribute("x2", String(padding.left + plotWidth));
+        line.setAttribute("y1", String(y));
+        line.setAttribute("y2", String(y));
+        line.setAttribute("stroke", "rgba(148, 163, 184, 0.12)");
+        line.setAttribute("stroke-width", "1");
+        line.setAttribute("stroke-dasharray", "2 5");
+        svg.appendChild(line);
+
+        const value = domainMax - (range / 4) * index;
+        const label = document.createElementNS(svgNS, "text");
+        label.setAttribute("x", String(padding.left + plotWidth + 6));
+        label.setAttribute("y", String(y + 3.6));
+        label.setAttribute("fill", "rgba(148, 163, 184, 0.86)");
+        label.setAttribute("font-size", "10");
+        label.textContent = formatChartAxisPrice(value);
+        svg.appendChild(label);
+      }
+
+      const trendPoints = xPositions.map((x, index) => ({ x, y: closeYs[index] }));
+      svg.appendChild(createKlineTrendArea(svgNS, trendPoints, padding.top + plotHeight, gradientId));
+
+      candles.forEach((candle, index) => {
+        const x = xPositions[index];
+        const openY = toChartY(candle.open, domainMin, range, padding.top, plotHeight);
+        const closeY = toChartY(candle.close, domainMin, range, padding.top, plotHeight);
+        const highY = toChartY(candle.high, domainMin, range, padding.top, plotHeight);
+        const lowY = toChartY(candle.low, domainMin, range, padding.top, plotHeight);
+        const isUp = candle.close >= candle.open;
+        const color = isUp ? "#34d399" : "#f87171";
+
+        const wick = document.createElementNS(svgNS, "line");
+        wick.setAttribute("x1", String(x));
+        wick.setAttribute("x2", String(x));
+        wick.setAttribute("y1", String(highY));
+        wick.setAttribute("y2", String(lowY));
+        wick.setAttribute("stroke", color);
+        wick.setAttribute("stroke-width", "1.1");
+        wick.setAttribute("stroke-linecap", "round");
+        wick.setAttribute("stroke-opacity", "0.9");
+        svg.appendChild(wick);
+
+        const body = document.createElementNS(svgNS, "rect");
+        body.setAttribute("x", String(x - candleWidth / 2));
+        body.setAttribute("y", String(Math.min(openY, closeY)));
+        body.setAttribute("width", String(candleWidth));
+        body.setAttribute("height", String(Math.max(Math.abs(closeY - openY), 1.4)));
+        body.setAttribute("rx", "1.2");
+        body.setAttribute("fill", color);
+        body.setAttribute("fill-opacity", isUp ? "0.96" : "0.9");
+        svg.appendChild(body);
+      });
+
+      buildKlineXAxisLabels(candles, xPositions).forEach((tick) => {
+        const text = document.createElementNS(svgNS, "text");
+        text.setAttribute("x", String(tick.x));
+        text.setAttribute("y", "212");
+        text.setAttribute("text-anchor", tick.anchor);
+        text.setAttribute("fill", "rgba(148, 163, 184, 0.86)");
+        text.setAttribute("font-size", "10");
+        text.textContent = tick.label;
+        svg.appendChild(text);
+      });
+
+      const crosshairV = document.createElementNS(svgNS, "line");
+      crosshairV.setAttribute("stroke", "rgba(148, 163, 184, 0.65)");
+      crosshairV.setAttribute("stroke-width", "1");
+      crosshairV.setAttribute("stroke-dasharray", "3 3");
+      crosshairV.setAttribute("visibility", "hidden");
+      crosshairV.setAttribute("pointer-events", "none");
+      svg.appendChild(crosshairV);
+
+      const crosshairDot = document.createElementNS(svgNS, "circle");
+      crosshairDot.setAttribute("r", "3.4");
+      crosshairDot.setAttribute("fill", "#60a5fa");
+      crosshairDot.setAttribute("stroke", "#0f172a");
+      crosshairDot.setAttribute("stroke-width", "1.4");
+      crosshairDot.setAttribute("visibility", "hidden");
+      crosshairDot.setAttribute("pointer-events", "none");
+      svg.appendChild(crosshairDot);
+
+      svg.__klineLayout = {
+        padding,
+        plotWidth,
+        plotHeight,
+        xPositions,
+        closeYs,
+        crosshairV,
+        crosshairDot
+      };
+
+      return svg;
+    }
+
+    function createKlineTrendArea(svgNS, points, baselineY, gradientId) {
+      const polygon = document.createElementNS(svgNS, "polygon");
+      const areaPoints = points
+        .map((point) => point.x.toFixed(2) + "," + point.y.toFixed(2))
+        .concat([
+          points[points.length - 1].x.toFixed(2) + "," + baselineY.toFixed(2),
+          points[0].x.toFixed(2) + "," + baselineY.toFixed(2)
+        ])
+        .join(" ");
+      polygon.setAttribute("points", areaPoints);
+      polygon.setAttribute("fill", gradientId ? "url(#" + gradientId + ")" : "rgba(96, 165, 250, 0.12)");
+      polygon.setAttribute("pointer-events", "none");
+      return polygon;
+    }
+
+    function buildKlineTrendPolylinePoints(points) {
+      return points.map((point) => point.x.toFixed(2) + "," + point.y.toFixed(2)).join(" ");
+    }
+
+    function buildKlineXAxisLabels(candles, xPositions) {
+      const indices = Array.from(new Set([0, Math.floor((candles.length - 1) / 2), candles.length - 1]));
+      return indices.map((index) => {
+        const label = formatKlineTimeLabel(candles[index].timestamp);
+        const position = candles.length === 1 || !xPositions
+          ? 180
+          : xPositions[index];
+        return {
+          x: position,
+          label,
+          anchor: index === 0 ? "start" : index === candles.length - 1 ? "end" : "middle"
+        };
+      });
+    }
+
+    function formatKlineTimeLabel(timestamp) {
+      const date = new Date(timestamp);
+      if (Number.isNaN(date.getTime())) {
+        return timestamp;
+      }
+      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(date.getUTCDate()).padStart(2, "0");
+      const hour = String(date.getUTCHours()).padStart(2, "0");
+      const minute = String(date.getUTCMinutes()).padStart(2, "0");
+      return month + "/" + day + " " + hour + ":" + minute;
+    }
+
+    function toChartY(value, minPrice, range, top, height) {
+      return top + ((minPrice + range - value) / range) * height;
+    }
+
+    function formatChartPrice(value) {
+      if (value >= 1000) {
+        return value.toFixed(2);
+      }
+      if (value >= 1) {
+        return value.toFixed(4);
+      }
+      if (value >= 0.01) {
+        return value.toFixed(6);
+      }
+      return value.toFixed(8);
+    }
+
+    function formatChartAxisPrice(value) {
+      if (value >= 1000) {
+        return value.toFixed(0);
+      }
+      if (value >= 1) {
+        return value.toFixed(2);
+      }
+      return value.toFixed(4);
+    }
+
+    function formatUSDPrice(value) {
+      const amount = Number(value || 0);
+      if (amount >= 1000) {
+        return "$" + amount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+      }
+      if (amount >= 1) {
+        return "$" + amount.toFixed(2);
+      }
+      if (amount >= 0.01) {
+        return "$" + amount.toFixed(4);
+      }
+      return "$" + amount.toFixed(6);
+    }
+
+    function formatPercent(value) {
+      const amount = Number(value || 0);
+      const sign = amount > 0 ? "+" : "";
+      return sign + amount.toFixed(2) + "%";
+    }
+
+    function formatCompactCurrency(value) {
+      const amount = Number(value || 0);
+      if (!amount) {
+        return "$0.00";
+      }
+      return "$" + amount.toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 });
+    }
+
+    function formatCompactAmount(value) {
+      const amount = Number(value || 0);
+      if (!amount) {
+        return "0";
+      }
+      return amount.toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 });
+    }
+
+    function formatUpdatedTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return value;
+      }
+      const hour = String(date.getHours()).padStart(2, "0");
+      const minute = String(date.getMinutes()).padStart(2, "0");
+      const second = String(date.getSeconds()).padStart(2, "0");
+      return hour + ":" + minute + ":" + second;
     }
 
     function scrollThreadToBottom(tab) {

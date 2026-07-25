@@ -22,8 +22,12 @@ const (
 )
 
 type Config struct {
-	Service *Service       `json:"service" yaml:"service, required"`
-	Models  []*ModelConfig `json:"models" yaml:"models, required"`
+	Service         *Service          `json:"service" yaml:"service, required"`
+	Models          []*ModelConfig    `json:"models" yaml:"models, required"`
+	MarketProviders []*MarketProvider `json:"marketProviders" yaml:"marketProviders, required"`
+}
+
+type Wallet struct {
 }
 
 type Service struct {
@@ -39,6 +43,13 @@ type ModelConfig struct {
 	Name     string `json:"name" yaml:"name, required"`
 	BaseURL  string `json:"base_url" yaml:"base_url, required"`
 	APIKey   string `json:"api_key" yaml:"api_key, required"`
+}
+
+type MarketProvider struct {
+	Used    bool   `json:"used" yaml:"used, required"`
+	Name    string `json:"name" yaml:"name, required"`
+	BaseURL string `json:"base_url" yaml:"base_url, required"`
+	APIKey  string `json:"api_key" yaml:"api_key, required"`
 }
 
 func Load() (Config, error) {
@@ -67,7 +78,16 @@ func LoadFrom(path string) (Config, error) {
 	}
 	cfg.Models = models
 
+	marketProviders, err := loadMarketProviders(properties)
+	if err != nil {
+		return Config{}, err
+	}
+	cfg.MarketProviders = marketProviders
+
 	if _, err := cfg.ActiveModel(); err != nil {
+		return Config{}, err
+	}
+	if _, err := cfg.ActiveMarketProvider(); err != nil {
 		return Config{}, err
 	}
 
@@ -107,6 +127,22 @@ func (c Config) ActiveModel() (*ModelConfig, error) {
 		return nil, fmt.Errorf("model %q under provider %q is configured but disabled", modelName, provider)
 	}
 	return nil, fmt.Errorf("enabled model %q under provider %q is not configured", modelName, provider)
+}
+
+func (c Config) ActiveMarketProvider() (*MarketProvider, error) {
+	for _, provider := range c.MarketProviders {
+		if provider == nil || !provider.Used {
+			continue
+		}
+		if strings.TrimSpace(provider.Name) == "" {
+			return nil, errors.New("market provider name is required")
+		}
+		if strings.TrimSpace(provider.BaseURL) == "" {
+			return nil, fmt.Errorf("market provider %q base_url is required", provider.Name)
+		}
+		return provider, nil
+	}
+	return nil, errors.New("no enabled market provider configured")
 }
 
 func (s Service) ListenAddr() string {
@@ -306,21 +342,77 @@ func loadModels(properties map[string]string) ([]*ModelConfig, error) {
 	return models, nil
 }
 
+func loadMarketProviders(properties map[string]string) ([]*MarketProvider, error) {
+	indexedProviders := make(map[int]*MarketProvider)
+
+	for key, value := range properties {
+		if !strings.HasPrefix(key, "marketProviders.") {
+			continue
+		}
+
+		index, field, err := parseIndexedPropertyKey(key, "marketProviders.")
+		if err != nil {
+			return nil, err
+		}
+
+		provider := indexedProviders[index]
+		if provider == nil {
+			provider = &MarketProvider{}
+		}
+
+		switch field {
+		case "used":
+			provider.Used = strings.EqualFold(value, "true")
+		case "name":
+			provider.Name = value
+		case "base_url":
+			provider.BaseURL = value
+		case "api_key":
+			provider.APIKey = value
+		default:
+			return nil, fmt.Errorf("unsupported market provider config field %q", key)
+		}
+
+		indexedProviders[index] = provider
+	}
+
+	indexes := make([]int, 0, len(indexedProviders))
+	for index := range indexedProviders {
+		indexes = append(indexes, index)
+	}
+	sort.Ints(indexes)
+
+	providers := make([]*MarketProvider, 0, len(indexes))
+	for _, index := range indexes {
+		provider := indexedProviders[index]
+		if provider == nil {
+			continue
+		}
+		providers = append(providers, provider)
+	}
+
+	return providers, nil
+}
+
 func parseModelPropertyKey(key string) (int, string, error) {
-	remainder := strings.TrimPrefix(key, "models.")
+	return parseIndexedPropertyKey(key, "models.")
+}
+
+func parseIndexedPropertyKey(key, prefix string) (int, string, error) {
+	remainder := strings.TrimPrefix(key, prefix)
 	parts := strings.SplitN(remainder, ".", 2)
 	if len(parts) != 2 {
-		return 0, "", fmt.Errorf("invalid model config key %q", key)
+		return 0, "", fmt.Errorf("invalid config key %q", key)
 	}
 
 	index, err := strconv.Atoi(strings.Trim(parts[0], "[]"))
 	if err != nil || index < 0 {
-		return 0, "", fmt.Errorf("invalid model index in key %q", key)
+		return 0, "", fmt.Errorf("invalid config index in key %q", key)
 	}
 
 	field := strings.TrimSpace(parts[1])
 	if field == "" {
-		return 0, "", fmt.Errorf("invalid model config key %q", key)
+		return 0, "", fmt.Errorf("invalid config key %q", key)
 	}
 
 	return index, field, nil

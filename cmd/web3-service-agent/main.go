@@ -14,6 +14,7 @@ import (
 	"web3-service-agent/internal/config"
 	"web3-service-agent/internal/httpapi"
 	"web3-service-agent/internal/llm/provider"
+	"web3-service-agent/internal/marketdata"
 	"web3-service-agent/internal/mcp"
 	"web3-service-agent/internal/prompt"
 	"web3-service-agent/internal/session"
@@ -28,6 +29,9 @@ func main() {
 	}
 	if cfg.Service == nil {
 		log.Fatal("service config is required")
+	}
+	if err := marketdata.Configure(&cfg); err != nil {
+		log.Fatalf("configure market data provider: %v", err)
 	}
 
 	sessionManager := session.NewManager()

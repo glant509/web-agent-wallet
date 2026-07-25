@@ -23,6 +23,10 @@ models.0.name=gpt-5.4-mini
 models.0.used=true
 models.0.base_url=https://example.com/v1
 models.0.api_key=${OPENAI_API_KEY}
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
+marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
 `)
 	if err := os.WriteFile(path, content, 0o644); err != nil {
 		t.Fatalf("write properties: %v", err)
@@ -61,6 +65,13 @@ models.0.api_key=${OPENAI_API_KEY}
 	if model.APIKey != "secret-from-env" {
 		t.Fatalf("unexpected model api key: %q", model.APIKey)
 	}
+	provider, err := cfg.ActiveMarketProvider()
+	if err != nil {
+		t.Fatalf("resolve active market provider: %v", err)
+	}
+	if provider.APIKey != "" {
+		t.Fatalf("unexpected provider api key: %q", provider.APIKey)
+	}
 }
 
 func TestLoadFromDotEnvFile(t *testing.T) {
@@ -76,6 +87,7 @@ func TestLoadFromDotEnvFile(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(rootDir, ".env"), []byte(`
 OPENROUTER_API_KEY=openrouter-from-dotenv
 DEEPSEEK_API_KEY=deepseek-from-dotenv
+CG-1HoLG61sqiEsjoXaieJUwmkq=cg-from-dotenv
 `), 0o644); err != nil {
 		t.Fatalf("write dotenv: %v", err)
 	}
@@ -94,6 +106,10 @@ models.1.name=deepseek-chat
 models.1.used=true
 models.1.base_url=https://api.deepseek.com
 models.1.api_key=${DEEPSEEK_API_KEY}
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
+marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
 `), 0o644); err != nil {
 		t.Fatalf("write properties: %v", err)
 	}
@@ -114,6 +130,13 @@ models.1.api_key=${DEEPSEEK_API_KEY}
 	if model.APIKey != "deepseek-from-dotenv" {
 		t.Fatalf("unexpected deepseek api key: %q", model.APIKey)
 	}
+	provider, err := cfg.ActiveMarketProvider()
+	if err != nil {
+		t.Fatalf("resolve active market provider: %v", err)
+	}
+	if provider.APIKey != "cg-from-dotenv" {
+		t.Fatalf("unexpected market provider api key: %q", provider.APIKey)
+	}
 }
 
 func TestLoadFromUsesDefaults(t *testing.T) {
@@ -125,6 +148,9 @@ models.0.provider=openai
 models.0.name=gpt-5-mini
 models.0.used=true
 models.0.base_url=https://api.openai.com/v1
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
 `), 0o644); err != nil {
 		t.Fatalf("write properties: %v", err)
 	}
@@ -167,6 +193,12 @@ models.1.name=deepseek-chat
 models.1.used=true
 models.1.base_url=https://api.deepseek.com
 models.1.api_key=${DEEPSEEK_API_KEY}
+marketProviders.0.used=false
+marketProviders.0.name=disabled
+marketProviders.0.base_url=https://disabled.example
+marketProviders.1.used=true
+marketProviders.1.name=coingecko
+marketProviders.1.base_url=https://api.coingecko.com/api/v3
 `), 0o644); err != nil {
 		t.Fatalf("write properties: %v", err)
 	}
@@ -185,5 +217,12 @@ models.1.api_key=${DEEPSEEK_API_KEY}
 	}
 	if model.Used != true {
 		t.Fatal("expected enabled model to be selected")
+	}
+	provider, err := cfg.ActiveMarketProvider()
+	if err != nil {
+		t.Fatalf("resolve active market provider: %v", err)
+	}
+	if provider.Name != "coingecko" {
+		t.Fatalf("unexpected active provider: %q", provider.Name)
 	}
 }

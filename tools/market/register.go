@@ -9,19 +9,20 @@ import (
 	"net/url"
 	"path/filepath"
 	"runtime"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"web3-service-agent/internal/marketdata"
 	"web3-service-agent/internal/tool"
 )
 
-const marketTokenOverviewToolName = "market_token_overview"
+const (
+	marketTokenKlinesToolName   = "market_token_klines"
+	marketTokenOverviewToolName = "market_token_overview"
+)
 
 var (
-	coingeckoSearchURL  = "https://api.coingecko.com/api/v3/search"
-	coingeckoMarketsURL = "https://api.coingecko.com/api/v3/coins/markets"
 	dexScreenerTokenURL = "https://api.dexscreener.com/latest/dex/tokens"
 	marketHTTPClient    = &http.Client{Timeout: 15 * time.Second}
 )
@@ -31,31 +32,6 @@ type marketOverviewRequest struct {
 	TokenAddress string `json:"token_address"`
 	Chain        string `json:"chain"`
 	VSCurrency   string `json:"vs_currency"`
-}
-
-type coinSearchResponse struct {
-	Coins []coinSearchItem `json:"coins"`
-}
-
-type coinSearchItem struct {
-	ID            string `json:"id"`
-	Name          string `json:"name"`
-	Symbol        string `json:"symbol"`
-	APISymbol     string `json:"api_symbol"`
-	MarketCapRank int    `json:"market_cap_rank"`
-}
-
-type coinMarket struct {
-	ID                    string   `json:"id"`
-	Symbol                string   `json:"symbol"`
-	Name                  string   `json:"name"`
-	CurrentPrice          float64  `json:"current_price"`
-	MarketCap             float64  `json:"market_cap"`
-	TotalVolume           float64  `json:"total_volume"`
-	CirculatingSupply     float64  `json:"circulating_supply"`
-	TotalSupply           *float64 `json:"total_supply"`
-	FullyDilutedValuation float64  `json:"fully_diluted_valuation"`
-	MarketCapRank         int      `json:"market_cap_rank"`
 }
 
 type dexPairsResponse struct {
@@ -86,11 +62,25 @@ type dexLiquidity struct {
 }
 
 func Register(registry *tool.Registry) error {
-	definition, err := tool.LoadDefinition(definitionPath())
-	if err != nil {
-		return err
+	registrations := []struct {
+		path    string
+		handler tool.Handler
+	}{
+		{path: klinesDefinitionPath(), handler: handleMarketTokenKlines},
+		{path: overviewDefinitionPath(), handler: handleMarketTokenOverview},
 	}
-	return registry.Register(definition, handleMarketTokenOverview)
+
+	for _, item := range registrations {
+		definition, err := tool.LoadDefinition(item.path)
+		if err != nil {
+			return err
+		}
+		if err := registry.Register(definition, item.handler); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func handleMarketTokenOverview(ctx context.Context, call tool.Call) (tool.Result, error) {
@@ -116,7 +106,7 @@ func handleMarketTokenOverview(ctx context.Context, call tool.Call) (tool.Result
 		}
 		return tool.Result{Content: content}, nil
 	case token != "":
-		content, err := fetchCoinGeckoOverview(ctx, marketHTTPClient, token, vsCurrency)
+		content, err := fetchMarketOverview(ctx, token, vsCurrency)
 		if err != nil {
 			return tool.Result{}, err
 		}
@@ -126,146 +116,21 @@ func handleMarketTokenOverview(ctx context.Context, call tool.Call) (tool.Result
 	}
 }
 
-func fetchCoinGeckoOverview(ctx context.Context, client *http.Client, token, vsCurrency string) (string, error) {
-	match, err := searchCoin(ctx, client, token)
+func fetchMarketOverview(ctx context.Context, token, vsCurrency string) (string, error) {
+	match, err := marketdata.Default().SearchCoin(ctx, token)
 	if err != nil {
 		return "", err
 	}
 
-	market, err := fetchCoinMarket(ctx, client, match.ID, vsCurrency)
+	market, err := marketdata.Default().FetchMarket(ctx, match.ID, vsCurrency)
 	if err != nil {
 		return "", err
 	}
 
-	return renderCoinGeckoOverview(market, vsCurrency), nil
+	return renderCoinGeckoOverview(market, vsCurrency, marketdata.Default().ProviderName()), nil
 }
 
-func searchCoin(ctx context.Context, client *http.Client, token string) (coinSearchItem, error) {
-	endpoint, err := url.Parse(coingeckoSearchURL)
-	if err != nil {
-		return coinSearchItem{}, fmt.Errorf("parse coingecko search url: %w", err)
-	}
-
-	query := endpoint.Query()
-	query.Set("query", token)
-	endpoint.RawQuery = query.Encode()
-
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
-	if err != nil {
-		return coinSearchItem{}, fmt.Errorf("build coingecko search request: %w", err)
-	}
-	request.Header.Set("Accept", "application/json")
-
-	response, err := client.Do(request)
-	if err != nil {
-		return coinSearchItem{}, fmt.Errorf("request coingecko search: %w", err)
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode >= http.StatusBadRequest {
-		body, _ := io.ReadAll(io.LimitReader(response.Body, 8*1024))
-		return coinSearchItem{}, fmt.Errorf("coingecko search returned %s: %s", response.Status, strings.TrimSpace(string(body)))
-	}
-
-	var payload coinSearchResponse
-	if err := json.NewDecoder(response.Body).Decode(&payload); err != nil {
-		return coinSearchItem{}, fmt.Errorf("decode coingecko search response: %w", err)
-	}
-
-	match, ok := bestCoinSearchMatch(token, payload.Coins)
-	if !ok {
-		return coinSearchItem{}, fmt.Errorf("no coin match found for %q", token)
-	}
-	return match, nil
-}
-
-func bestCoinSearchMatch(query string, coins []coinSearchItem) (coinSearchItem, bool) {
-	if len(coins) == 0 {
-		return coinSearchItem{}, false
-	}
-
-	target := normalizeTokenQuery(query)
-	candidates := make([]coinSearchItem, len(coins))
-	copy(candidates, coins)
-
-	sort.SliceStable(candidates, func(i, j int) bool {
-		leftPriority, leftRank := coinMatchScore(target, candidates[i])
-		rightPriority, rightRank := coinMatchScore(target, candidates[j])
-		if leftPriority != rightPriority {
-			return leftPriority < rightPriority
-		}
-		if leftRank != rightRank {
-			return leftRank < rightRank
-		}
-		return strings.ToLower(candidates[i].ID) < strings.ToLower(candidates[j].ID)
-	})
-
-	return candidates[0], true
-}
-
-func coinMatchScore(target string, coin coinSearchItem) (int, int) {
-	switch {
-	case normalizeTokenQuery(coin.ID) == target:
-		return 0, marketRankValue(coin.MarketCapRank)
-	case normalizeTokenQuery(coin.Symbol) == target || normalizeTokenQuery(coin.APISymbol) == target:
-		return 1, marketRankValue(coin.MarketCapRank)
-	case normalizeTokenQuery(coin.Name) == target:
-		return 2, marketRankValue(coin.MarketCapRank)
-	case strings.Contains(normalizeTokenQuery(coin.ID), target):
-		return 3, marketRankValue(coin.MarketCapRank)
-	case strings.Contains(normalizeTokenQuery(coin.Name), target):
-		return 4, marketRankValue(coin.MarketCapRank)
-	default:
-		return 5, marketRankValue(coin.MarketCapRank)
-	}
-}
-
-func marketRankValue(rank int) int {
-	if rank <= 0 {
-		return int(^uint(0) >> 1)
-	}
-	return rank
-}
-
-func fetchCoinMarket(ctx context.Context, client *http.Client, coinID, vsCurrency string) (coinMarket, error) {
-	endpoint, err := url.Parse(coingeckoMarketsURL)
-	if err != nil {
-		return coinMarket{}, fmt.Errorf("parse coingecko markets url: %w", err)
-	}
-
-	query := endpoint.Query()
-	query.Set("ids", coinID)
-	query.Set("vs_currency", vsCurrency)
-	endpoint.RawQuery = query.Encode()
-
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
-	if err != nil {
-		return coinMarket{}, fmt.Errorf("build coingecko market request: %w", err)
-	}
-	request.Header.Set("Accept", "application/json")
-
-	response, err := client.Do(request)
-	if err != nil {
-		return coinMarket{}, fmt.Errorf("request coingecko market data: %w", err)
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode >= http.StatusBadRequest {
-		body, _ := io.ReadAll(io.LimitReader(response.Body, 8*1024))
-		return coinMarket{}, fmt.Errorf("coingecko market data returned %s: %s", response.Status, strings.TrimSpace(string(body)))
-	}
-
-	var payload []coinMarket
-	if err := json.NewDecoder(response.Body).Decode(&payload); err != nil {
-		return coinMarket{}, fmt.Errorf("decode coingecko market response: %w", err)
-	}
-	if len(payload) == 0 {
-		return coinMarket{}, fmt.Errorf("coingecko market data missing asset %q", coinID)
-	}
-	return payload[0], nil
-}
-
-func renderCoinGeckoOverview(market coinMarket, vsCurrency string) string {
+func renderCoinGeckoOverview(market marketdata.MarketAsset, vsCurrency, source string) string {
 	lines := []string{
 		fmt.Sprintf("Market overview for %s (%s):", market.Name, strings.ToUpper(market.Symbol)),
 		fmt.Sprintf("- asset_id: %s", market.ID),
@@ -286,7 +151,7 @@ func renderCoinGeckoOverview(market coinMarket, vsCurrency string) string {
 	if market.MarketCapRank > 0 {
 		lines = append(lines, fmt.Sprintf("- market_cap_rank: %d", market.MarketCapRank))
 	}
-	lines = append(lines, "- source: CoinGecko")
+	lines = append(lines, fmt.Sprintf("- source: %s", source))
 
 	return strings.Join(lines, "\n")
 }
@@ -378,10 +243,6 @@ func renderDexScreenerOverview(pair dexPair) string {
 	return strings.Join(lines, "\n")
 }
 
-func normalizeTokenQuery(value string) string {
-	return strings.ToLower(strings.TrimSpace(value))
-}
-
 func normalizeChainSlug(value string) string {
 	normalized := strings.ToLower(strings.TrimSpace(value))
 	normalized = strings.ReplaceAll(normalized, "_", "-")
@@ -422,7 +283,12 @@ func formatPrice(value float64) string {
 	}
 }
 
-func definitionPath() string {
+func overviewDefinitionPath() string {
 	_, currentFile, _, _ := runtime.Caller(0)
 	return filepath.Join(filepath.Dir(currentFile), "market_token_overview.json")
+}
+
+func klinesDefinitionPath() string {
+	_, currentFile, _, _ := runtime.Caller(0)
+	return filepath.Join(filepath.Dir(currentFile), "market_token_klines.json")
 }

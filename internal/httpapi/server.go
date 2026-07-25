@@ -33,7 +33,11 @@ func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", server.handleIndex)
+	mux.HandleFunc("GET /wallet/bip39-english", server.handleBIP39Wordlist)
 	mux.HandleFunc("GET /healthz", server.handleHealthz)
+	mux.HandleFunc("GET /v1/market/top", server.handleMarketTop)
+	mux.HandleFunc("GET /v1/trade/token", server.handleTradeToken)
+	mux.HandleFunc("GET /v1/trade/klines", server.handleTradeKlines)
 	mux.HandleFunc("POST /v1/sessions", server.handleCreateSession)
 	mux.HandleFunc("POST /v1/agent/runs", server.handleRun)
 	mux.HandleFunc("POST /v1/agent/runs/stream", server.handleStream)

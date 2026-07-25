@@ -63,11 +63,18 @@ models.1.name=deepseek-chat
 models.1.used=true
 models.1.base_url=https://api.deepseek.com
 models.1.api_key=${DEEPSEEK_API_KEY}
+
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
+marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
 ```
 
 启动时会遍历 `models.*` 列表，根据 `service.modelProvider` 和 `service.modelName` 选出当前模型，并且只会选中 `used=true` 的项。
 
-`models.<index>.api_key` 支持 `${ENV_NAME}` 形式的环境变量展开，便于把密钥留在环境变量里，不直接写入仓库。
+行情能力会遍历 `marketProviders.*` 列表，并使用 **第一个 `used=true` 的 provider** 作为当前市场数据源。当前已抽象 provider 层，不同数据源后续可以接入不同请求路径；现阶段默认实现是 CoinGecko。
+
+`models.<index>.api_key` 和 `marketProviders.<index>.api_key` 都支持 `${ENV_NAME}` 形式的环境变量展开，便于把密钥留在环境变量里，不直接写入仓库。
 
 如果要切到 DeepSeek，可以把配置改成：
 
@@ -96,6 +103,10 @@ models.0.api_key=${DEEPSEEK_API_KEY}
 | `models.<index>.used` | `true/false` | 第 N 个模型是否可被选中 |
 | `models.<index>.base_url` | 视 provider 而定 | 第 N 个模型的 API Base URL |
 | `models.<index>.api_key` | - | 第 N 个模型的 API Key |
+| `marketProviders.<index>.used` | `true/false` | 第 N 个行情源是否启用 |
+| `marketProviders.<index>.name` | - | 第 N 个行情源名称 |
+| `marketProviders.<index>.base_url` | 视 provider 而定 | 第 N 个行情源 API Base URL |
+| `marketProviders.<index>.api_key` | - | 第 N 个行情源 API Key |
 
 ## 设计取向
 
@@ -115,10 +126,15 @@ models.0.api_key=${DEEPSEEK_API_KEY}
 - `dex`：交易、询价、路由相关能力
 - `yield`：收益、质押、借贷相关能力
 
-例如现在已经把原来的 `btc_price_lookup` 收敛成了通用的 `market_token_overview`：
+例如现在已经把原来的 `btc_price_lookup` 收敛成了通用的市场工具：
 
 - 查主流资产：传 `token=BTC`、`token=ETH`、`token=SOL`
 - 查链上 token：传 `token_address=<address>`，必要时再带 `chain`
+- 基础行情：用 `market_token_overview`
+- K 线 / 历史 K 线：用 `market_token_klines`，最近行情可传 `days`，历史区间可传 `from_timestamp` + `to_timestamp`
+- H5 market 页会把 `market_token_klines` 返回的 candle 数据自动渲染成类似 DEX / wallet 的可视化蜡烛图卡片，而不只是纯文本
+- H5 market 页在切换进入时，还会自动拉取并展示 **市值前 10** 代币，包含名称、当前价格和 24h 涨跌幅
+- 点击 market 榜单里的代币后，会切换到 **trade** 页，并展示类似 OKX / Bitget DEX 风格的交易数据看板；同时新增了 `dex_token_trade_dashboard` tool
 
 这样后续新增链和 token 时，不需要再为每条链或每个币单独新增一个查询基础行情的工具。
 
