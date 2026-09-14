@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 	"web3-service-agent/internal/agent"
 	"web3-service-agent/internal/llm"
+	"web3-service-agent/internal/logging"
 
 	"web3-service-agent/internal/session"
 )
@@ -33,15 +35,17 @@ func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", server.handleIndex)
+	mux.HandleFunc("GET /ui/{path...}", server.handleUIAsset)
 	mux.HandleFunc("GET /wallet/bip39-english", server.handleBIP39Wordlist)
 	mux.HandleFunc("GET /healthz", server.handleHealthz)
 	mux.HandleFunc("GET /v1/market/top", server.handleMarketTop)
+	mux.HandleFunc("POST /v1/asset/portfolio", server.handleAssetPortfolio)
 	mux.HandleFunc("GET /v1/trade/token", server.handleTradeToken)
 	mux.HandleFunc("GET /v1/trade/klines", server.handleTradeKlines)
 	mux.HandleFunc("POST /v1/sessions", server.handleCreateSession)
 	mux.HandleFunc("POST /v1/agent/runs", server.handleRun)
 	mux.HandleFunc("POST /v1/agent/runs/stream", server.handleStream)
-	return mux
+	return withRequestLogging(mux)
 }
 
 func (s *Server) handleHealthz(w http.ResponseWriter, _ *http.Request) {
@@ -157,6 +161,38 @@ func writeSSE(w http.ResponseWriter, event string, payload any) {
 	_, _ = w.Write([]byte("data: "))
 	_, _ = w.Write(body)
 	_, _ = w.Write([]byte("\n\n"))
+}
+
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
+}
+
+func withRequestLogging(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		recorder := &statusRecorder{ResponseWriter: w}
+		next.ServeHTTP(recorder, r)
+		status := recorder.status
+		if status == 0 {
+			status = http.StatusOK
+		}
+
+		message := fmt.Sprintf("%s %s -> %d (%s)", r.Method, r.URL.RequestURI(), status, time.Since(start).Round(time.Millisecond))
+		switch {
+		case status >= http.StatusInternalServerError:
+			logging.Errorf("%s", message)
+		case status >= http.StatusBadRequest:
+			logging.Warnf("%s", message)
+		default:
+			logging.Infof("%s", message)
+		}
+	})
 }
 
 var _ = llm.StreamEvent{}

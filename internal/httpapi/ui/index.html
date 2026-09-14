@@ -130,6 +130,113 @@
       min-width: 0;
     }
 
+    .wallet-header-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .wallet-header-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .wallet-header-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .wallet-app-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.82);
+      margin-bottom: 6px;
+    }
+
+    .wallet-header-address {
+      flex: 0 1 auto;
+      max-width: 150px;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wallet-account-menu-button {
+      display: none;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 5px 8px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 10px;
+      color: #bae6fd;
+      background: rgba(14, 116, 144, 0.14);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .wallet-account-menu-button:hover {
+      border-color: rgba(56, 189, 248, 0.42);
+      background: rgba(14, 116, 144, 0.24);
+    }
+
+    .wallet-account-menu-button span:last-child {
+      max-width: 72px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .app-shell[data-active-tab="asset"] .wallet-account-menu-button:not([hidden]) {
+      display: inline-flex;
+    }
+
+    .wallet-account-menu-button[hidden] {
+      display: none !important;
+    }
+
+    .wallet-header-copy {
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .wallet-header-copy:disabled {
+      opacity: 0.42;
+    }
+
+    .wallet-header-actions button {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 8px 12px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wallet-header-actions button.primary {
+      border: 0;
+      color: #fff;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
     .brand {
       font-size: 19px;
       font-weight: 700;
@@ -162,6 +269,7 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 6px;
+      position: relative;
     }
 
     .mini-status {
@@ -171,6 +279,140 @@
       color: rgba(226, 232, 240, 0.86);
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .topbar-meta[hidden] {
+      display: none !important;
+    }
+
+    .wallet-chain-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.96));
+      color: #e2e8f0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .wallet-export-mnemonic-button {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 5px 10px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 999px;
+      color: #bae6fd;
+      background: rgba(14, 116, 144, 0.14);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .wallet-export-mnemonic-button:hover {
+      border-color: rgba(56, 189, 248, 0.42);
+      background: rgba(14, 116, 144, 0.24);
+    }
+
+    .app-shell[data-active-tab="asset"] .wallet-export-mnemonic-button:not([hidden]) {
+      display: inline-flex;
+    }
+
+    .wallet-export-mnemonic-button[hidden] {
+      display: none !important;
+    }
+
+    .wallet-chain-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .chain-ethereum { background: linear-gradient(135deg, #627eea, #8b5cf6); }
+    .chain-base { background: linear-gradient(135deg, #0052ff, #38bdf8); }
+    .chain-arbitrum { background: linear-gradient(135deg, #28a0f0, #1d4ed8); }
+    .chain-optimism { background: linear-gradient(135deg, #ff0420, #fb7185); }
+    .chain-bnb { background: linear-gradient(135deg, #f3ba2f, #f59e0b); }
+    .chain-polygon { background: linear-gradient(135deg, #8247e5, #a855f7); }
+    .chain-solana { background: linear-gradient(135deg, #14f195, #9945ff); }
+    .chain-bitcoin { background: linear-gradient(135deg, #f7931a, #fb923c); }
+    .chain-avalanche { background: linear-gradient(135deg, #e84142, #f87171); }
+    .chain-sui { background: linear-gradient(135deg, #6fbcf0, #0ea5e9); }
+
+    .wallet-chain-code {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .wallet-chain-caret {
+      color: rgba(148, 163, 184, 0.92);
+      font-size: 12px;
+    }
+
+    .wallet-chain-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: min(260px, calc(100vw - 32px));
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(8, 15, 30, 0.98), rgba(2, 6, 23, 0.98));
+      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.44);
+      display: grid;
+      gap: 8px;
+      z-index: 12;
+    }
+
+    .wallet-chain-menu[hidden] {
+      display: none !important;
+    }
+
+    .wallet-chain-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.62);
+      color: #e2e8f0;
+      text-align: left;
+    }
+
+    .wallet-chain-option.active {
+      border-color: rgba(96, 165, 250, 0.24);
+      background: rgba(37, 99, 235, 0.14);
+    }
+
+    .wallet-chain-option-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .wallet-chain-option-copy strong {
+      font-size: 13px;
+    }
+
+    .wallet-chain-option-copy span {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .views {
@@ -1202,6 +1444,192 @@
       display: flex;
     }
 
+    .wallet-account-dialog {
+      position: absolute;
+      inset: 0 0 calc(84px + env(safe-area-inset-bottom)) 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: calc(24px + env(safe-area-inset-top)) 20px 24px;
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(18px);
+      z-index: 4;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .wallet-account-dialog.visible {
+      display: flex;
+    }
+
+    .wallet-account-card {
+      width: min(440px, 100%);
+      margin: auto;
+      max-height: calc(100dvh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      overflow-y: auto;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 24px;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      box-shadow: 0 24px 70px rgba(2, 6, 23, 0.6);
+    }
+
+    .wallet-account-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .wallet-account-head h2 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+
+    .wallet-account-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .wallet-account-close {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 18px;
+    }
+
+    .wallet-account-list {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .wallet-account-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 16px;
+      padding: 12px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.035);
+      text-align: left;
+    }
+
+    .wallet-account-row.active {
+      border-color: rgba(56, 189, 248, 0.34);
+      background: rgba(14, 116, 144, 0.12);
+    }
+
+    .wallet-account-copy {
+      min-width: 0;
+    }
+
+    .wallet-account-copy strong,
+    .wallet-account-copy span {
+      display: block;
+    }
+
+    .wallet-account-copy strong {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .wallet-account-copy span {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wallet-account-row em {
+      color: #7dd3fc;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .wallet-account-add {
+      width: 100%;
+      min-height: 44px;
+      border: 1px dashed rgba(56, 189, 248, 0.34);
+      border-radius: 14px;
+      color: #bae6fd;
+      background: rgba(14, 116, 144, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wallet-account-rename {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .wallet-account-rename[hidden] {
+      display: none !important;
+    }
+
+    .wallet-account-rename label {
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
+    .wallet-account-rename input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 14px;
+      padding: 0 13px;
+      outline: none;
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .wallet-account-rename input:focus {
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    }
+
+    .wallet-account-rename-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 8px;
+    }
+
+    .wallet-account-rename-actions button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 13px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wallet-account-rename-actions button:last-child {
+      color: #082f49;
+      background: #7dd3fc;
+    }
+
+    .wallet-account-error {
+      min-height: 17px;
+      color: #fda4af;
+      font-size: 11px;
+    }
+
     .wallet-lock-card {
       width: min(440px, 100%);
       margin: auto;
@@ -1256,6 +1684,10 @@
     .wallet-lock-field {
       display: grid;
       gap: 8px;
+    }
+
+    .wallet-lock-field[hidden] {
+      display: none !important;
     }
 
     .wallet-lock-field label {
@@ -1400,6 +1832,89 @@
       font-weight: 700;
     }
 
+    .wallet-change-password-button {
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: #bfdbfe;
+      background: rgba(30, 64, 175, 0.2);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .asset-balance-card {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .asset-balance-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .asset-balance-head strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .asset-balance-head span,
+    .asset-balance-status {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .asset-balance-total {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .asset-balance-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .asset-balance-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .asset-balance-token strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .asset-balance-token span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .asset-balance-values {
+      text-align: right;
+    }
+
+    .asset-balance-values strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .asset-balance-values span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     .wallet-address {
       margin: 16px 0;
       padding: 12px;
@@ -1533,6 +2048,10 @@
       color: #e2e8f0;
       font-size: 12px;
       line-height: 1.4;
+    }
+
+    .wallet-recovery-confirm[hidden] {
+      display: none !important;
     }
 
     .wallet-import-paste {
@@ -1694,13 +2213,79 @@
 <body>
   <div class="app-shell" id="app-shell" data-active-tab="home">
     <header class="topbar">
-      <div class="brand-block">
-        <div class="brand">web3-service-agent</div>
-        <div class="subtitle" id="page-subtitle">移动端 H5 入口</div>
+      <div class="wallet-header-block">
+        <div class="wallet-app-label">web3-service-agent</div>
+        <div class="wallet-header-row">
+          <button type="button" class="wallet-account-menu-button" id="wallet-account-menu-button" hidden aria-haspopup="dialog">
+            <span aria-hidden="true">☰</span>
+            <span id="wallet-account-menu-label">账户 ▾</span>
+          </button>
+          <div class="wallet-header-address" id="wallet-header-address">点击 asset 创建或解锁钱包</div>
+          <button type="button" class="wallet-header-copy" id="wallet-header-copy" disabled>copy</button>
+        </div>
+        <div class="wallet-header-actions">
+          <button type="button" class="primary" id="wallet-access-button">创建或解锁</button>
+          <button type="button" id="wallet-lock-button" hidden>锁定</button>
+          <button type="button" class="wallet-change-password-button" id="wallet-change-password-button" hidden>换密</button>
+          <button type="button" class="wallet-reset-button" id="wallet-reset-button" hidden>重置</button>
+        </div>
       </div>
       <div class="status-stack">
-        <div class="status-pill" id="page-title">home</div>
-        <div class="mini-status" id="page-status">AI copilot online</div>
+        <button type="button" class="wallet-chain-button" id="chain-selector-button" aria-haspopup="menu" aria-expanded="false">
+          <span class="wallet-chain-logo chain-ethereum" id="chain-selector-logo">Ξ</span>
+          <span class="wallet-chain-code" id="chain-selector-code">ETH</span>
+          <span class="wallet-chain-caret">▾</span>
+        </button>
+        <button type="button" class="wallet-export-mnemonic-button" id="wallet-export-mnemonic-button" hidden>
+          导出助记词
+        </button>
+        <div class="wallet-chain-menu" id="chain-selector-menu" hidden>
+          <button type="button" class="wallet-chain-option active" data-chain-id="ethereum">
+            <span class="wallet-chain-logo chain-ethereum">Ξ</span>
+            <span class="wallet-chain-option-copy"><strong>Ethereum</strong><span>ETH mainnet</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="base">
+            <span class="wallet-chain-logo chain-base">B</span>
+            <span class="wallet-chain-option-copy"><strong>Base</strong><span>Base L2</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="arbitrum">
+            <span class="wallet-chain-logo chain-arbitrum">A</span>
+            <span class="wallet-chain-option-copy"><strong>Arbitrum</strong><span>Arbitrum One</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="optimism">
+            <span class="wallet-chain-logo chain-optimism">OP</span>
+            <span class="wallet-chain-option-copy"><strong>Optimism</strong><span>OP mainnet</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="bnb">
+            <span class="wallet-chain-logo chain-bnb">◎</span>
+            <span class="wallet-chain-option-copy"><strong>BNB Chain</strong><span>BSC mainnet</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="polygon">
+            <span class="wallet-chain-logo chain-polygon">P</span>
+            <span class="wallet-chain-option-copy"><strong>Polygon</strong><span>Polygon PoS</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="solana">
+            <span class="wallet-chain-logo chain-solana">S</span>
+            <span class="wallet-chain-option-copy"><strong>Solana</strong><span>SOL mainnet</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="bitcoin">
+            <span class="wallet-chain-logo chain-bitcoin">₿</span>
+            <span class="wallet-chain-option-copy"><strong>Bitcoin</strong><span>BTC mainnet</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="avalanche">
+            <span class="wallet-chain-logo chain-avalanche">A</span>
+            <span class="wallet-chain-option-copy"><strong>Avalanche</strong><span>AVAX C-Chain</span></span>
+          </button>
+          <button type="button" class="wallet-chain-option" data-chain-id="sui">
+            <span class="wallet-chain-logo chain-sui">SUI</span>
+            <span class="wallet-chain-option-copy"><strong>Sui</strong><span>Sui mainnet</span></span>
+          </button>
+        </div>
+        <div class="topbar-meta" hidden>
+          <div class="status-pill" id="page-title">home</div>
+          <div class="mini-status" id="page-status">AI copilot online</div>
+          <div class="subtitle" id="page-subtitle">移动端 H5 入口</div>
+        </div>
       </div>
     </header>
 
@@ -1710,7 +2295,7 @@
           <article class="card hero-card">
             <div class="eyebrow">H5 Mobile UI</div>
             <h1 class="hero-title">像手机 App 一样的 Web3 入口</h1>
-            <p class="hero-copy">默认进入 home 页面，底部固定菜单切换到 market、trade、pay、asset。现在 5 个页面都可以直接聊天，输入框固定在底部菜单上方，方便随时提问和滚动查看历史消息。</p>
+            <p class="hero-copy">默认进入 home 页面，底部固定菜单切换到 market、trade、pay、asset。AI 询问框只保留在 home 页面，其他页面聚焦各自的业务看板和操作区。</p>
             <div class="phone-preview">
               <div class="preview-header">
                 <div>
@@ -1732,11 +2317,11 @@
               <div class="preview-card">
                 <div class="preview-row">
                   <strong>market / trade / pay / asset</strong>
-                  <span class="preview-chip">聊天页</span>
+                  <span class="preview-chip">业务页</span>
                 </div>
                 <div class="mini-thread">
-                  <div class="mini-bubble assistant">每个页面都可以单独滚动查看聊天记录。</div>
-                  <div class="mini-bubble user">风格接近 ChatGPT，适合后续接真实业务能力。</div>
+                  <div class="mini-bubble assistant">market、trade、pay、asset 只展示各自业务内容。</div>
+                  <div class="mini-bubble user">AI 对话和询问入口统一收敛到 home 页面。</div>
                 </div>
               </div>
             </div>
@@ -1778,30 +2363,30 @@
               <div class="feature-item">
                 <div>
                   <strong>market</strong>
-                  <span>市场问答，适合价格与行情分析</span>
+                  <span>市场看板，适合价格与行情分析</span>
                 </div>
-                <span>chat</span>
+                <span>board</span>
               </div>
               <div class="feature-item">
                 <div>
                   <strong>trade</strong>
-                  <span>交易问答，适合 swap、quote、route</span>
+                  <span>交易看板，适合 swap、quote、route</span>
                 </div>
-                <span>chat</span>
+                <span>board</span>
               </div>
               <div class="feature-item">
                 <div>
                   <strong>pay</strong>
-                  <span>支付问答，适合付款与转账流程</span>
+                  <span>支付页，适合付款与转账流程</span>
                 </div>
-                <span>chat</span>
+                <span>flow</span>
               </div>
               <div class="feature-item">
                 <div>
                   <strong>asset</strong>
-                  <span>资产问答，适合余额、持仓和收益</span>
+                  <span>资产页，适合余额、持仓和收益</span>
                 </div>
-                <span>chat</span>
+                <span>wallet</span>
               </div>
             </div>
           </article>
@@ -1867,19 +2452,6 @@
             <div class="market-board-status" id="market-board-status">切换到 market 后加载中</div>
             <div class="market-top-list" id="market-top-list"></div>
           </article>
-          <article class="card chat-intro">
-            <h1 class="section-title">market</h1>
-            <p class="section-copy">这里是市场聊天页，聊天记录可滚动查看，适合承接行情、价格、热点和市场摘要能力。</p>
-            <div class="prompt-row">
-              <button type="button" data-prompt="帮我看一下 BTC 和 ETH 的最新行情">BTC / ETH 行情</button>
-              <button type="button" data-prompt="帮我展示 BTC 最近 7 天的 K 线图">BTC 7 天 K 线</button>
-              <button type="button" data-prompt="给我一份今天的市场摘要">今日市场摘要</button>
-              <button type="button" data-prompt="最近哪些代币值得关注">关注代币</button>
-            </div>
-          </article>
-          <article class="card thread-card">
-            <div class="thread" id="market-thread"></div>
-          </article>
         </div>
       </section>
 
@@ -1900,34 +2472,18 @@
             <div class="trade-dashboard-status" id="trade-dashboard-status">从 market 榜单点击代币后查看</div>
             <div id="trade-dashboard-content" class="trade-dashboard-empty">选择一个代币后，这里会展示当前价格、24h 涨跌、24h 高低点、成交量、市值和供应量等交易数据。</div>
           </article>
-          <article class="card chat-intro">
+          <article class="card info-card">
             <h1 class="section-title">trade</h1>
-            <p class="section-copy">这里是交易聊天页，支持滚动对话，适合后续接 swap、quote、route、approve、bridge 等能力。</p>
-            <div class="prompt-row">
-              <button type="button" data-prompt="帮我规划一笔 ETH 换 USDC 的交易步骤">交易步骤</button>
-              <button type="button" data-prompt="给我一份跨链到 Base 的操作建议">跨链建议</button>
-              <button type="button" data-prompt="解释一下 swap 时需要注意哪些风险">交易风险</button>
-            </div>
-          </article>
-          <article class="card thread-card">
-            <div class="thread" id="trade-thread"></div>
+            <p class="section-copy">这里专注展示交易看板、价格、流动性和后续的 swap / route / bridge 执行能力，不再放 AI 询问框。</p>
           </article>
         </div>
       </section>
 
       <section class="view chat-view" data-view="pay">
         <div class="chat-panel">
-          <article class="card chat-intro">
+          <article class="card info-card">
             <h1 class="section-title">pay</h1>
-            <p class="section-copy">这里是支付聊天页，滚动展示支付相关问答，适合收款、付款、地址确认和链上转账场景。</p>
-            <div class="prompt-row">
-              <button type="button" data-prompt="告诉我链上支付前应该确认哪些信息">支付前检查</button>
-              <button type="button" data-prompt="我想给朋友转一笔 USDC，需要注意什么">USDC 转账</button>
-              <button type="button" data-prompt="怎样设计一个更顺畅的 Web3 支付流程">支付流程设计</button>
-            </div>
-          </article>
-          <article class="card thread-card">
-            <div class="thread" id="pay-thread"></div>
+            <p class="section-copy">这里保留支付、收款、转账和链上确认的业务入口展示，不再放 AI 询问框。</p>
           </article>
         </div>
       </section>
@@ -1942,27 +2498,26 @@
               </div>
               <div class="wallet-vault-meta">
                 <span class="wallet-vault-state locked" id="wallet-vault-state">LOCKED</span>
-                <button type="button" class="wallet-reset-button" id="wallet-reset-button" hidden>reset</button>
               </div>
             </div>
             <div class="wallet-address" id="wallet-address">未解锁：助记词和私钥不会保存在页面或服务器。</div>
             <div class="wallet-keyrings" id="wallet-keyrings" hidden></div>
-            <div class="wallet-vault-actions">
-              <button type="button" class="primary" id="wallet-access-button">创建或解锁</button>
-              <button type="button" id="wallet-lock-button" hidden>锁定</button>
-            </div>
           </article>
-          <article class="card chat-intro">
+          <article class="card asset-balance-card">
+            <div class="asset-balance-head">
+              <div>
+                <strong>asset</strong>
+                <span>展示当前选择链的主币和主流 token 链上余额，不再请求第三方估值。</span>
+              </div>
+              <div class="market-badge" id="asset-balance-chain-badge">ETH</div>
+            </div>
+            <div class="asset-balance-status" id="asset-balance-status">解锁钱包后加载余额</div>
+            <div class="asset-balance-total" id="asset-balance-total">--</div>
+            <div class="asset-balance-list" id="asset-balance-list"></div>
+          </article>
+          <article class="card info-card">
             <h1 class="section-title">asset</h1>
             <p class="section-copy">钱包保险库只保存 AES-GCM 加密后的助记词到本设备 IndexedDB。密码、助记词、私钥永远不会发送到服务端。</p>
-            <div class="prompt-row">
-              <button type="button" data-prompt="帮我总结一下一个钱包页面通常需要哪些资产模块">资产模块</button>
-              <button type="button" data-prompt="我想展示持仓分布，应该包含哪些指标">持仓指标</button>
-              <button type="button" data-prompt="给我一份资产页的交互建议">资产页建议</button>
-            </div>
-          </article>
-          <article class="card thread-card">
-            <div class="thread" id="asset-thread"></div>
           </article>
         </div>
       </section>
@@ -1976,6 +2531,29 @@
         </div>
         <button type="submit" id="send-button">发送</button>
       </form>
+    </div>
+
+    <div class="wallet-account-dialog" id="wallet-account-dialog" aria-hidden="true">
+      <section class="wallet-account-card" role="dialog" aria-modal="true" aria-labelledby="wallet-account-title">
+        <div class="wallet-account-head">
+          <div>
+            <h2 id="wallet-account-title">钱包账户</h2>
+            <p>按 BIP44 account 层级管理；点击账户即可切换并修改名称。</p>
+          </div>
+          <button type="button" class="wallet-account-close" id="wallet-account-close" aria-label="关闭账户列表">×</button>
+        </div>
+        <div class="wallet-account-list" id="wallet-account-list"></div>
+        <button type="button" class="wallet-account-add" id="wallet-account-add">＋ 添加账户</button>
+        <form class="wallet-account-rename" id="wallet-account-rename" hidden>
+          <label for="wallet-account-name">修改账户名称</label>
+          <input id="wallet-account-name" type="text" maxlength="24" autocomplete="off" placeholder="输入账户名称" />
+          <div class="wallet-account-rename-actions">
+            <button type="button" id="wallet-account-rename-cancel">取消</button>
+            <button type="submit">保存名称</button>
+          </div>
+        </form>
+        <div class="wallet-account-error" id="wallet-account-error"></div>
+      </section>
     </div>
 
     <div class="wallet-lock" id="wallet-lock" aria-hidden="true">
@@ -2002,6 +2580,12 @@
                 inputmode="text"
                 placeholder="请输入钱包密码"
               />
+            </div>
+            <div class="wallet-lock-field" id="wallet-new-password-field" hidden>
+              <label for="wallet-new-password">新钱包密码</label>
+              <input id="wallet-new-password" name="wallet-new-password" type="password" minlength="8" maxlength="16"
+                autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false"
+                inputmode="text" placeholder="请输入新钱包密码" />
             </div>
             <div class="wallet-lock-field" id="wallet-password-confirm-field" hidden>
               <label for="wallet-password-confirm">确认钱包密码</label>
@@ -2035,12 +2619,12 @@
           </div>
           <div class="wallet-recovery" id="wallet-recovery" hidden>
             <div class="wallet-recovery-head">
-              <strong>备份恢复短语</strong>
+              <strong id="wallet-recovery-title">备份恢复短语</strong>
               <button type="button" class="wallet-recovery-copy" id="wallet-recovery-copy">copy</button>
             </div>
-            <p>请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。</p>
+            <p id="wallet-recovery-description">请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。</p>
             <div class="wallet-mnemonic" id="wallet-mnemonic"></div>
-            <label class="wallet-recovery-confirm">
+            <label class="wallet-recovery-confirm" id="wallet-recovery-confirm-row">
               <input type="checkbox" id="wallet-recovery-confirm" />
               <span>我已离线备份恢复短语，并理解任何获得它的人都能控制钱包。</span>
             </label>
@@ -2093,17 +2677,20 @@
     </nav>
   </div>
 
+  <script src="/ui/wallet_derivation.js"></script>
   <script>
-    const chatTabs = ["home", "market", "trade", "pay", "asset"];
+    const chatTabs = ["home"];
     const state = {
       activeTab: "home",
       busyTab: "",
+      selectedChainId: "ethereum",
       sessionId: window.sessionStorage.getItem("agent-session-id") || "",
       wallet: {
         vault: null,
         masterKey: null,
         mnemonic: null,
         seed: null,
+        addresses: {},
         keyring: null,
         mode: "",
         pendingAction: "",
@@ -2132,6 +2719,15 @@
         error: "",
         updatedAt: "",
         refreshTimer: 0
+      },
+      assetBalances: {
+        loading: false,
+        error: "",
+        totalUSD: 0,
+        items: [],
+        selectedChainID: "",
+        updatedAt: "",
+        requestToken: 0
       }
     };
 
@@ -2146,10 +2742,31 @@
     const pageTitleEl = document.getElementById("page-title");
     const pageSubtitleEl = document.getElementById("page-subtitle");
     const pageStatusEl = document.getElementById("page-status");
+    const walletHeaderAddressEl = document.getElementById("wallet-header-address");
+    const walletHeaderCopyEl = document.getElementById("wallet-header-copy");
+    const walletAccountMenuButtonEl = document.getElementById("wallet-account-menu-button");
+    const walletAccountMenuLabelEl = document.getElementById("wallet-account-menu-label");
+    const walletAccountDialogEl = document.getElementById("wallet-account-dialog");
+    const walletAccountCloseEl = document.getElementById("wallet-account-close");
+    const walletAccountListEl = document.getElementById("wallet-account-list");
+    const walletAccountAddEl = document.getElementById("wallet-account-add");
+    const walletAccountRenameEl = document.getElementById("wallet-account-rename");
+    const walletAccountNameEl = document.getElementById("wallet-account-name");
+    const walletAccountRenameCancelEl = document.getElementById("wallet-account-rename-cancel");
+    const walletAccountErrorEl = document.getElementById("wallet-account-error");
+    const chainSelectorButtonEl = document.getElementById("chain-selector-button");
+    const chainSelectorLogoEl = document.getElementById("chain-selector-logo");
+    const chainSelectorCodeEl = document.getElementById("chain-selector-code");
+    const chainSelectorMenuEl = document.getElementById("chain-selector-menu");
     const marketTopListEl = document.getElementById("market-top-list");
     const marketBoardStatusEl = document.getElementById("market-board-status");
     const tradeDashboardStatusEl = document.getElementById("trade-dashboard-status");
     const tradeDashboardContentEl = document.getElementById("trade-dashboard-content");
+    const walletVaultCardEl = document.getElementById("wallet-vault-card");
+    const assetBalanceStatusEl = document.getElementById("asset-balance-status");
+    const assetBalanceTotalEl = document.getElementById("asset-balance-total");
+    const assetBalanceListEl = document.getElementById("asset-balance-list");
+    const assetBalanceChainBadgeEl = document.getElementById("asset-balance-chain-badge");
     const walletLockEl = document.getElementById("wallet-lock");
     const walletLockFormEl = document.getElementById("wallet-lock-form");
     const walletPasswordEl = document.getElementById("wallet-password");
@@ -2158,6 +2775,8 @@
     const walletLockSubmitEl = document.getElementById("wallet-lock-submit");
     const walletPasswordConfirmFieldEl = document.getElementById("wallet-password-confirm-field");
     const walletPasswordConfirmEl = document.getElementById("wallet-password-confirm");
+    const walletNewPasswordFieldEl = document.getElementById("wallet-new-password-field");
+    const walletNewPasswordEl = document.getElementById("wallet-new-password");
     const walletLockCopyEl = document.getElementById("wallet-lock-copy");
     const walletPasswordLabelEl = document.getElementById("wallet-password-label");
     const walletCreateStepEl = document.getElementById("wallet-create-step");
@@ -2178,12 +2797,32 @@
     const walletKeyringsEl = document.getElementById("wallet-keyrings");
     const walletAccessButtonEl = document.getElementById("wallet-access-button");
     const walletLockButtonEl = document.getElementById("wallet-lock-button");
+    const walletChangePasswordButtonEl = document.getElementById("wallet-change-password-button");
     const walletResetButtonEl = document.getElementById("wallet-reset-button");
+    const walletExportMnemonicButtonEl = document.getElementById("wallet-export-mnemonic-button");
     const walletRecoveryCopyButtonEl = document.getElementById("wallet-recovery-copy");
+    const walletRecoveryTitleEl = document.getElementById("wallet-recovery-title");
+    const walletRecoveryDescriptionEl = document.getElementById("wallet-recovery-description");
+    const walletRecoveryConfirmRowEl = document.getElementById("wallet-recovery-confirm-row");
     const walletSessionTimeoutMs = 5 * 60 * 1000;
     const walletKDFIterations = 600000;
     let bip39EnglishWords = null;
     let walletRecoveryCopyTimer = 0;
+    let walletMnemonicExportTimer = 0;
+    let walletAccountRenameIndex = -1;
+    const supportedChains = [
+      { id: "ethereum", label: "Ethereum", short: "ETH", logo: "Ξ", logoClass: "chain-ethereum", networkId: "ethereum" },
+      { id: "base", label: "Base", short: "BASE", logo: "B", logoClass: "chain-base", networkId: "base" },
+      { id: "arbitrum", label: "Arbitrum", short: "ARB", logo: "A", logoClass: "chain-arbitrum", networkId: "" },
+      { id: "optimism", label: "Optimism", short: "OP", logo: "OP", logoClass: "chain-optimism", networkId: "" },
+      { id: "bnb", label: "BNB Chain", short: "BNB", logo: "◎", logoClass: "chain-bnb", networkId: "" },
+      { id: "polygon", label: "Polygon", short: "POL", logo: "P", logoClass: "chain-polygon", networkId: "" },
+      { id: "solana", label: "Solana", short: "SOL", logo: "S", logoClass: "chain-solana", networkId: "solana" },
+      { id: "bitcoin", label: "Bitcoin", short: "BTC", logo: "₿", logoClass: "chain-bitcoin", networkId: "bitcoin" },
+      { id: "avalanche", label: "Avalanche", short: "AVAX", logo: "A", logoClass: "chain-avalanche", networkId: "" },
+      { id: "sui", label: "Sui", short: "SUI", logo: "SUI", logoClass: "chain-sui", networkId: "sui" }
+    ];
+    const supportedBalanceChains = ["ethereum", "base", "arbitrum", "optimism", "bsc", "polygon", "solana", "avalanche"];
 
     const pageMeta = {
       home: {
@@ -2229,6 +2868,9 @@
     };
 
     ensureDefaultMessages();
+    renderChainSelector();
+    renderWalletHeader();
+    renderAssetBalances();
     bindEvents();
     switchTab("home");
     queueMicrotask(() => void initializeWallet());
@@ -2244,6 +2886,322 @@
         }
       });
       persistMessagesByTab();
+    }
+
+    function getSelectedChain() {
+      return supportedChains.find((chain) => chain.id === state.selectedChainId) || supportedChains[0];
+    }
+
+    function renderChainSelector() {
+      const chain = getSelectedChain();
+      chainSelectorLogoEl.textContent = chain.logo;
+      chainSelectorLogoEl.className = "wallet-chain-logo " + chain.logoClass;
+      chainSelectorCodeEl.textContent = chain.short;
+      Array.from(chainSelectorMenuEl.querySelectorAll("[data-chain-id]")).forEach((option) => {
+        option.classList.toggle("active", option.dataset.chainId === chain.id);
+      });
+    }
+
+    function renderWalletHeader() {
+      const address = getSelectedChainAddress();
+      if (!isWalletUnlocked()) {
+        walletAccountMenuButtonEl.hidden = !state.wallet.vault;
+        walletAccountMenuLabelEl.textContent = "账户 ▾";
+        walletHeaderAddressEl.textContent = "点击 asset 创建或解锁钱包";
+        walletHeaderCopyEl.disabled = true;
+        walletHeaderCopyEl.textContent = "copy";
+        return;
+      }
+      const selectedAccount = getSelectedWalletAccount();
+      walletAccountMenuButtonEl.hidden = false;
+      walletAccountMenuLabelEl.textContent = selectedAccount.name + " ▾";
+      if (address) {
+        walletHeaderAddressEl.textContent = maskAddress(address);
+        walletHeaderCopyEl.disabled = false;
+        walletHeaderCopyEl.textContent = "copy";
+        return;
+      }
+      walletHeaderAddressEl.textContent = "地址派生中...";
+      walletHeaderCopyEl.disabled = true;
+      void ensureSelectedChainAddress();
+    }
+
+    function getSelectedChainAddress() {
+      if (!state.wallet.addresses || typeof state.wallet.addresses !== "object") {
+        return "";
+      }
+      const address = state.wallet.addresses[state.selectedChainId];
+      return typeof address === "string" ? address : "";
+    }
+
+    function maskAddress(address) {
+      if (typeof address !== "string") {
+        return "";
+      }
+      const normalized = address.trim();
+      if (normalized.length <= 8) {
+        return normalized;
+      }
+      return normalized.slice(0, 4) + "****" + normalized.slice(-4);
+    }
+
+    async function ensureSelectedChainAddress() {
+      if (!isWalletUnlocked()) {
+        return "";
+      }
+      const cachedAddress = getSelectedChainAddress();
+      if (cachedAddress) {
+        return cachedAddress;
+      }
+      try {
+        const address = deriveAddressForChain(state.selectedChainId);
+        state.wallet.addresses[state.selectedChainId] = address;
+        if (state.selectedChainId) {
+          walletHeaderAddressEl.textContent = maskAddress(address);
+        }
+        walletHeaderCopyEl.disabled = false;
+        return address;
+      } catch (_) {
+        walletHeaderAddressEl.textContent = "地址派生失败";
+        walletHeaderCopyEl.disabled = true;
+        return "";
+      }
+    }
+
+    async function copySelectedChainAddress() {
+      let address = getSelectedChainAddress();
+      if (!address) {
+        walletHeaderCopyEl.textContent = "...";
+        address = await ensureSelectedChainAddress();
+      }
+      if (!address) {
+        walletHeaderCopyEl.textContent = "失败";
+        window.setTimeout(() => {
+          walletHeaderCopyEl.textContent = "copy";
+        }, 1600);
+        return;
+      }
+      try {
+        await copyTextToClipboard(address);
+        walletHeaderCopyEl.textContent = "已复制";
+        window.setTimeout(() => {
+          walletHeaderCopyEl.textContent = "copy";
+        }, 1600);
+      } catch (_) {
+        walletHeaderCopyEl.textContent = "失败";
+        window.setTimeout(() => {
+          walletHeaderCopyEl.textContent = "copy";
+        }, 1600);
+      }
+    }
+
+    function deriveAddressForChain(chainId) {
+      if (
+        !window.WalletAddressDerivation ||
+        typeof window.WalletAddressDerivation.deriveAddress !== "function" ||
+        !(state.wallet.seed instanceof Uint8Array)
+      ) {
+        throw new Error("地址派生能力不可用。");
+      }
+      return window.WalletAddressDerivation.deriveAddress(state.wallet.seed, chainId, getSelectedWalletAccountIndex());
+    }
+
+    function normalizeAssetBalanceChainID(chainId) {
+      return chainId === "bnb" ? "bsc" : chainId;
+    }
+
+    function derivationChainIDForBalanceChain(chainId) {
+      return chainId === "bsc" ? "bnb" : chainId;
+    }
+
+    function formatUSDValue(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: value >= 1000 ? 2 : 2,
+        maximumFractionDigits: value >= 1 ? 2 : 4
+      }).format(value || 0);
+    }
+
+    function formatAssetBalanceSummary(items) {
+      const count = Array.isArray(items) ? items.length : 0;
+      return count > 0 ? `已加载 ${count} 项余额` : "--";
+    }
+
+    function syncPageStatus() {
+      const meta = pageMeta[state.activeTab];
+      if (!pageStatusEl || !meta) {
+        return;
+      }
+      pageStatusEl.textContent = state.activeTab === "asset" && !isWalletUnlocked()
+        ? "Wallet locked"
+        : (meta.status || "");
+    }
+
+    function currentAssetBalanceItems() {
+      const selectedChainID = normalizeAssetBalanceChainID(state.selectedChainId);
+      if (state.assetBalances.selectedChainID !== selectedChainID) {
+        return [];
+      }
+      return Array.isArray(state.assetBalances.items) ? state.assetBalances.items : [];
+    }
+
+    function renderAssetBalances() {
+      const selectedChain = getSelectedChain();
+      assetBalanceChainBadgeEl.textContent = selectedChain.short;
+
+      if (!isWalletUnlocked()) {
+        assetBalanceStatusEl.textContent = "解锁钱包后加载余额";
+        assetBalanceTotalEl.textContent = "--";
+        assetBalanceListEl.replaceChildren();
+        return;
+      }
+
+      if (!supportedBalanceChains.includes(normalizeAssetBalanceChainID(state.selectedChainId))) {
+        assetBalanceStatusEl.textContent = "当前余额看板暂支持 ETH、Base、Arbitrum、OP、BNB、Polygon、Solana、Avalanche";
+        assetBalanceTotalEl.textContent = formatAssetBalanceSummary(currentAssetBalanceItems());
+        assetBalanceListEl.replaceChildren();
+        return;
+      }
+
+      if (state.assetBalances.loading) {
+        assetBalanceStatusEl.textContent = "余额加载中...";
+        assetBalanceTotalEl.textContent = formatAssetBalanceSummary(currentAssetBalanceItems());
+        assetBalanceListEl.replaceChildren();
+        return;
+      }
+
+      if (state.assetBalances.error) {
+        assetBalanceStatusEl.textContent = state.assetBalances.error;
+        assetBalanceTotalEl.textContent = "--";
+        assetBalanceListEl.replaceChildren();
+        return;
+      }
+
+      assetBalanceStatusEl.textContent = state.assetBalances.updatedAt
+        ? "已更新 · " + new Date(state.assetBalances.updatedAt).toLocaleTimeString()
+        : "已加载";
+      const items = currentAssetBalanceItems();
+      assetBalanceTotalEl.textContent = formatAssetBalanceSummary(items);
+      assetBalanceListEl.replaceChildren();
+
+      items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "asset-balance-item";
+
+        const token = document.createElement("div");
+        token.className = "asset-balance-token";
+        const tokenTitle = document.createElement("strong");
+        tokenTitle.textContent = item.symbol + (item.is_native ? " · Native" : "");
+        const tokenName = document.createElement("span");
+        tokenName.textContent = item.name;
+        token.appendChild(tokenTitle);
+        token.appendChild(tokenName);
+
+        const values = document.createElement("div");
+        values.className = "asset-balance-values";
+        const balanceValue = document.createElement("strong");
+        balanceValue.textContent = item.balance;
+        const rawValue = document.createElement("span");
+        rawValue.textContent = "Raw: " + String(item.balance_raw || "0");
+        values.appendChild(balanceValue);
+        values.appendChild(rawValue);
+
+        row.appendChild(token);
+        row.appendChild(values);
+        assetBalanceListEl.appendChild(row);
+      });
+    }
+
+    async function buildSelectedBalanceAddressMap(selectedChainID) {
+      const derived = await ensureBalanceAddressForChain(selectedChainID);
+      if (typeof derived !== "string" || !derived) {
+        return {};
+      }
+      return { [selectedChainID]: derived };
+    }
+
+    async function ensureBalanceAddressForChain(balanceChainID) {
+      if (!isWalletUnlocked()) {
+        return "";
+      }
+      const normalizedChainID = normalizeAssetBalanceChainID(balanceChainID);
+      const cachedAddress = state.wallet.addresses[normalizedChainID];
+      if (typeof cachedAddress === "string" && cachedAddress) {
+        return cachedAddress;
+      }
+      const derived = deriveAddressForChain(derivationChainIDForBalanceChain(normalizedChainID));
+      state.wallet.addresses[normalizedChainID] = derived;
+      return derived;
+    }
+
+    async function refreshAssetBalances() {
+      renderAssetBalances();
+      if (!isWalletUnlocked()) {
+        state.assetBalances = { loading: false, error: "", totalUSD: 0, items: [], selectedChainID: "", updatedAt: "", requestToken: state.assetBalances.requestToken };
+        renderAssetBalances();
+        return;
+      }
+
+      const selectedChainID = normalizeAssetBalanceChainID(state.selectedChainId);
+      if (!supportedBalanceChains.includes(selectedChainID)) {
+        state.assetBalances = { loading: false, error: "", totalUSD: 0, items: [], selectedChainID: selectedChainID, updatedAt: "", requestToken: state.assetBalances.requestToken };
+        renderAssetBalances();
+        return;
+      }
+
+      const requestToken = state.assetBalances.requestToken + 1;
+      state.assetBalances.requestToken = requestToken;
+      state.assetBalances.loading = true;
+      state.assetBalances.error = "";
+      state.assetBalances.items = [];
+      state.assetBalances.selectedChainID = selectedChainID;
+      state.assetBalances.updatedAt = "";
+      renderAssetBalances();
+
+      try {
+        const addresses = await buildSelectedBalanceAddressMap(selectedChainID);
+        if (!addresses[selectedChainID]) {
+          throw new Error("当前链地址派生失败");
+        }
+        const response = await fetch("/v1/asset/portfolio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            selected_chain_id: selectedChainID,
+            addresses
+          })
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "余额查询失败");
+        }
+        if (requestToken !== state.assetBalances.requestToken || normalizeAssetBalanceChainID(state.selectedChainId) !== selectedChainID) {
+          return;
+        }
+        const selected = payload && typeof payload.selected === "object" ? payload.selected : {};
+        const walletChains = payload && payload.wallet && Array.isArray(payload.wallet.chains) ? payload.wallet.chains : [];
+        const fallbackChain = walletChains.find((item) => item && item.chain_id === selectedChainID) || walletChains[0] || {};
+        const nextItems = Array.isArray(selected.items) ? selected.items : (Array.isArray(fallbackChain.items) ? fallbackChain.items : []);
+        const nextChainID = selected.chain_id || fallbackChain.chain_id || selectedChainID;
+        state.assetBalances.loading = false;
+        state.assetBalances.error = "";
+        state.assetBalances.totalUSD = 0;
+        state.assetBalances.items = nextItems;
+        state.assetBalances.selectedChainID = nextChainID;
+        state.assetBalances.updatedAt = payload.updated_at || "";
+      } catch (error) {
+        if (requestToken !== state.assetBalances.requestToken || normalizeAssetBalanceChainID(state.selectedChainId) !== selectedChainID) {
+          return;
+        }
+        state.assetBalances.loading = false;
+        state.assetBalances.error = error instanceof Error ? error.message : "余额查询失败";
+        state.assetBalances.totalUSD = 0;
+        state.assetBalances.items = [];
+        state.assetBalances.selectedChainID = selectedChainID;
+        state.assetBalances.updatedAt = "";
+      }
+      renderAssetBalances();
     }
 
     function bindEvents() {
@@ -2327,8 +3285,12 @@
         void prepareWalletAccess();
       });
       walletLockButtonEl.addEventListener("click", () => lockWallet());
+      walletChangePasswordButtonEl.addEventListener("click", () => openWalletUnlock("change-password"));
       walletResetButtonEl.addEventListener("click", () => {
         void requestWalletReset();
+      });
+      walletExportMnemonicButtonEl.addEventListener("click", () => {
+        void requestWalletMnemonicExport();
       });
       walletRecoveryCopyButtonEl.addEventListener("click", () => {
         void copyWalletRecoveryPhrase();
@@ -2342,6 +3304,70 @@
       walletImportFillEl.addEventListener("click", () => {
         void hydrateImportedMnemonicInputs();
       });
+      chainSelectorButtonEl.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const expanded = chainSelectorButtonEl.getAttribute("aria-expanded") === "true";
+        chainSelectorButtonEl.setAttribute("aria-expanded", String(!expanded));
+        chainSelectorMenuEl.hidden = expanded;
+      });
+      chainSelectorMenuEl.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-chain-id]");
+        if (!option) {
+          return;
+        }
+        state.selectedChainId = option.dataset.chainId || "ethereum";
+        chainSelectorMenuEl.hidden = true;
+        chainSelectorButtonEl.setAttribute("aria-expanded", "false");
+        renderChainSelector();
+        renderWalletHeader();
+        if (state.activeTab === "asset") {
+          state.assetBalances.items = [];
+          state.assetBalances.error = "";
+          state.assetBalances.selectedChainID = normalizeAssetBalanceChainID(state.selectedChainId);
+          state.assetBalances.updatedAt = "";
+          void refreshAssetBalances();
+        }
+      });
+      walletHeaderCopyEl.addEventListener("click", () => {
+        void copySelectedChainAddress();
+      });
+      walletAccountMenuButtonEl.addEventListener("click", () => {
+        openWalletAccountDialog();
+      });
+      walletAccountCloseEl.addEventListener("click", () => {
+        closeWalletAccountDialog();
+      });
+      walletAccountDialogEl.addEventListener("click", (event) => {
+        if (event.target === walletAccountDialogEl) {
+          closeWalletAccountDialog();
+        }
+      });
+      walletAccountListEl.addEventListener("click", (event) => {
+        const accountButton = event.target.closest("[data-wallet-account-index]");
+        if (!accountButton) {
+          return;
+        }
+        const accountIndex = Number(accountButton.dataset.walletAccountIndex);
+        if (Number.isSafeInteger(accountIndex) && accountIndex >= 0) {
+          void selectWalletAccount(accountIndex, true);
+        }
+      });
+      walletAccountAddEl.addEventListener("click", () => {
+        void addWalletAccount();
+      });
+      walletAccountRenameEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveWalletAccountName();
+      });
+      walletAccountRenameCancelEl.addEventListener("click", () => {
+        closeWalletAccountRename();
+      });
+      document.addEventListener("click", (event) => {
+        if (!chainSelectorMenuEl.contains(event.target) && !chainSelectorButtonEl.contains(event.target)) {
+          chainSelectorMenuEl.hidden = true;
+          chainSelectorButtonEl.setAttribute("aria-expanded", "false");
+        }
+      });
       ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
         document.addEventListener(eventName, refreshWalletSession, { passive: true });
       });
@@ -2350,10 +3376,18 @@
           lockWallet();
         }
       });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && walletAccountDialogEl.classList.contains("visible")) {
+          closeWalletAccountDialog();
+        }
+      });
     }
 
     function switchTab(tab) {
       state.activeTab = tab;
+      if (tab !== "asset") {
+        closeWalletAccountDialog();
+      }
       if (appShellEl) {
         appShellEl.dataset.activeTab = tab;
       }
@@ -2373,7 +3407,7 @@
       composerWrapEl.classList.toggle("hidden", !showComposer);
       inputEl.placeholder = meta.placeholder || "";
       sendButton.disabled = !showComposer || Boolean(state.busyTab);
-      pageStatusEl.textContent = tab === "asset" && !isWalletUnlocked() ? "Wallet locked" : meta.status || "";
+      syncPageStatus();
 
       if (tab === "market") {
         renderMarketTopList();
@@ -2397,6 +3431,7 @@
 
       if (tab === "asset") {
         void prepareWalletAccess();
+        void refreshAssetBalances();
       }
     }
 
@@ -2436,7 +3471,11 @@
       walletLockErrorEl.textContent = "";
       walletPasswordEl.value = "";
       walletPasswordConfirmEl.value = "";
+      walletNewPasswordEl.value = "";
       walletRecoveryConfirmEl.checked = false;
+      walletRecoveryConfirmRowEl.hidden = false;
+      walletRecoveryTitleEl.textContent = "备份恢复短语";
+      walletRecoveryDescriptionEl.textContent = "请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。";
       walletRecoveryEl.hidden = true;
       walletImportStepEl.hidden = true;
       walletCreateStepEl.hidden = false;
@@ -2445,19 +3484,29 @@
       walletImportTextEl.value = "";
       walletRecoveryCopyButtonEl.textContent = "copy";
       walletRecoveryCopyButtonEl.hidden = true;
+      walletLockCancelEl.textContent = "取消";
       walletLockSubmitEl.hidden = false;
       walletMnemonicEl.replaceChildren();
       walletImportMnemonicEl.replaceChildren();
       walletPasswordEl.disabled = false;
       walletPasswordConfirmEl.disabled = false;
+      walletNewPasswordEl.disabled = false;
 
       const creating = mode === "create" || mode === "backup";
-      walletPasswordConfirmFieldEl.hidden = !creating;
-      walletPasswordLabelEl.textContent = creating ? "设置钱包密码" : "钱包密码";
-      walletLockCopyEl.textContent = creating
+      const changingPassword = mode === "change-password";
+      const exportingMnemonic = mode === "export-mnemonic";
+      walletPasswordConfirmFieldEl.hidden = !creating && !changingPassword;
+      walletNewPasswordFieldEl.hidden = !changingPassword;
+      walletPasswordLabelEl.textContent = creating ? "设置钱包密码" : changingPassword ? "当前钱包密码" : "钱包密码";
+      walletPasswordConfirmEl.placeholder = changingPassword ? "再次输入新钱包密码" : "再次输入钱包密码";
+      walletLockCopyEl.textContent = exportingMnemonic
+        ? "为保护资产，请再次验证当前钱包密码。验证成功后助记词只在本设备临时显示。"
+        : changingPassword
+        ? "验证当前密码后，将使用新的随机盐和 IV 重新加密本地钱包保险库。"
+        : creating
         ? "创建后，恢复短语只会在此设备显示一次。保险库仅保存 AES-GCM 加密数据到 IndexedDB。"
         : "输入本地钱包密码以派生密钥并解密保险库。密码和恢复短语不会发送到服务器。";
-      walletLockSubmitEl.textContent = creating ? "下一步" : "解锁";
+      walletLockSubmitEl.textContent = exportingMnemonic ? "验证并显示" : changingPassword ? "确认更换" : creating ? "下一步" : "解锁";
       walletPasswordEl.focus();
     }
 
@@ -2467,15 +3516,24 @@
       }
       window.clearTimeout(walletRecoveryCopyTimer);
       walletRecoveryCopyTimer = 0;
+      window.clearTimeout(walletMnemonicExportTimer);
+      walletMnemonicExportTimer = 0;
       walletLockEl.classList.remove("visible");
       walletLockEl.setAttribute("aria-hidden", "true");
       walletLockErrorEl.textContent = "";
       walletPasswordEl.value = "";
       walletPasswordConfirmEl.value = "";
+      walletNewPasswordEl.value = "";
       walletPasswordEl.disabled = false;
       walletPasswordConfirmEl.disabled = false;
+      walletNewPasswordEl.disabled = false;
+      walletNewPasswordFieldEl.hidden = true;
       walletRecoveryCopyButtonEl.textContent = "copy";
       walletRecoveryCopyButtonEl.hidden = true;
+      walletRecoveryConfirmRowEl.hidden = false;
+      walletRecoveryTitleEl.textContent = "备份恢复短语";
+      walletRecoveryDescriptionEl.textContent = "请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。";
+      walletLockCancelEl.textContent = "取消";
       walletLockSubmitEl.hidden = false;
       walletCreateStepEl.hidden = false;
       walletChoiceStepEl.hidden = true;
@@ -2500,6 +3558,42 @@
           return;
         }
         await unlockWallet(password);
+        return;
+      }
+
+      if (state.wallet.mode === "change-password") {
+        const newPassword = walletNewPasswordEl.value;
+        if (!isValidWalletPassword(password)) {
+          walletLockErrorEl.textContent = "当前密码格式不正确。";
+          return;
+        }
+        if (!isValidWalletPassword(newPassword)) {
+          walletLockErrorEl.textContent = "新密码必须是 8-16 位，并且仅包含字母、数字和 !@#$%^&*.";
+          return;
+        }
+        if (newPassword === password) {
+          walletLockErrorEl.textContent = "新密码不能与当前密码相同。";
+          return;
+        }
+        if (walletPasswordConfirmEl.value !== newPassword) {
+          walletLockErrorEl.textContent = "两次输入的新密码不一致。";
+          return;
+        }
+        await changeWalletPassword(password, newPassword);
+        return;
+      }
+
+      if (state.wallet.mode === "export-mnemonic") {
+        if (!isValidWalletPassword(password)) {
+          walletLockErrorEl.textContent = "密码必须是 8-16 位，并且仅包含字母、数字和 !@#$%^&*.";
+          return;
+        }
+        await exportWalletMnemonic(password);
+        return;
+      }
+
+      if (state.wallet.mode === "export-display") {
+        closeWalletUnlock();
         return;
       }
 
@@ -2574,20 +3668,116 @@
         state.wallet.masterKey = masterKey;
         state.wallet.mnemonic = payload.mnemonic;
         state.wallet.seed = await deriveBIP39Seed(payload.mnemonic);
+        state.wallet.addresses = {};
         state.wallet.keyring = normalizeBIP44Keyring(payload.keyring);
-        const shouldResetWallet = state.wallet.pendingAction === "reset";
+        const pendingAction = state.wallet.pendingAction;
         closeWalletUnlock(false);
         startWalletSession();
         renderWalletVault();
-        if (shouldResetWallet) {
+        if (pendingAction === "reset") {
           state.wallet.pendingAction = "";
           await confirmWalletReset();
+        } else if (pendingAction === "accounts") {
+          state.wallet.pendingAction = "";
+          openWalletAccountDialog();
         }
       } catch (_) {
         walletLockErrorEl.textContent = "无法解锁钱包，请检查密码。";
       } finally {
         walletLockSubmitEl.disabled = false;
         walletPasswordEl.value = "";
+      }
+    }
+
+    async function changeWalletPassword(currentPassword, newPassword) {
+      if (!state.wallet.vault) {
+        walletLockErrorEl.textContent = "未找到本地钱包保险库。";
+        return;
+      }
+      walletLockSubmitEl.disabled = true;
+      try {
+        const salt = base64ToBytes(state.wallet.vault.salt);
+        const currentKey = await deriveVaultKey(currentPassword, salt, state.wallet.vault.kdfParams.iterations);
+        const plaintext = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: base64ToBytes(state.wallet.vault.iv) },
+          currentKey,
+          base64ToBytes(state.wallet.vault.ciphertext)
+        );
+        const payload = JSON.parse(new TextDecoder().decode(plaintext));
+        if (!payload || typeof payload.mnemonic !== "string") {
+          throw new Error("钱包保险库内容无效。");
+        }
+        const updatedWallet = await createWalletVault(newPassword, payload.mnemonic, payload.keyring);
+        state.wallet.vault = updatedWallet.vault;
+        state.wallet.masterKey = updatedWallet.masterKey;
+        state.wallet.mnemonic = payload.mnemonic;
+        state.wallet.seed = await deriveBIP39Seed(payload.mnemonic);
+        state.wallet.addresses = {};
+        state.wallet.keyring = normalizeBIP44Keyring(payload.keyring);
+        closeWalletUnlock();
+        startWalletSession();
+        renderWalletVault();
+        window.alert("钱包密码已更换。下次解锁请使用新密码。");
+      } catch (_) {
+        walletLockErrorEl.textContent = "无法更换密码，请检查当前密码。";
+      } finally {
+        walletLockSubmitEl.disabled = false;
+      }
+    }
+
+    async function requestWalletMnemonicExport() {
+      if (!state.wallet.vault) {
+        return;
+      }
+      openWalletUnlock("export-mnemonic");
+    }
+
+    async function exportWalletMnemonic(password) {
+      if (!state.wallet.vault) {
+        walletLockErrorEl.textContent = "未找到本地钱包保险库。";
+        return;
+      }
+
+      walletLockSubmitEl.disabled = true;
+      try {
+        const salt = base64ToBytes(state.wallet.vault.salt);
+        const exportKey = await deriveVaultKey(password, salt, state.wallet.vault.kdfParams.iterations);
+        const plaintext = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: base64ToBytes(state.wallet.vault.iv) },
+          exportKey,
+          base64ToBytes(state.wallet.vault.ciphertext)
+        );
+        const payload = JSON.parse(new TextDecoder().decode(plaintext));
+        if (!payload || typeof payload.mnemonic !== "string") {
+          throw new Error("钱包保险库内容无效。");
+        }
+
+        state.wallet.pendingMnemonic = payload.mnemonic;
+        state.wallet.mode = "export-display";
+        renderWalletRecoveryPhrase(payload.mnemonic);
+        walletCreateStepEl.hidden = true;
+        walletChoiceStepEl.hidden = true;
+        walletImportStepEl.hidden = true;
+        walletRecoveryEl.hidden = false;
+        walletRecoveryConfirmRowEl.hidden = true;
+        walletRecoveryCopyButtonEl.hidden = false;
+        walletRecoveryTitleEl.textContent = "导出恢复短语";
+        walletRecoveryDescriptionEl.textContent = "请在安全环境中离线备份。助记词将在关闭窗口、切换后台或 60 秒后从页面清除。";
+        walletLockCopyEl.textContent = "任何获得助记词的人都可以控制钱包资产，请勿截图、联网保存或发送给他人。";
+        walletLockCancelEl.textContent = "关闭";
+        walletLockSubmitEl.textContent = "完成";
+        walletLockErrorEl.textContent = "";
+        walletPasswordEl.value = "";
+        window.clearTimeout(walletMnemonicExportTimer);
+        walletMnemonicExportTimer = window.setTimeout(() => {
+          if (state.wallet.mode === "export-display") {
+            closeWalletUnlock();
+          }
+        }, 60000);
+      } catch (_) {
+        walletLockErrorEl.textContent = "无法导出助记词，请检查钱包密码。";
+      } finally {
+        walletLockSubmitEl.disabled = false;
       }
     }
 
@@ -2613,11 +3803,16 @@
     }
 
     function lockWallet() {
+      closeWalletAccountDialog();
+      if (state.wallet.mode === "export-display") {
+        closeWalletUnlock();
+      }
       window.clearTimeout(state.wallet.idleTimer);
       state.wallet.idleTimer = 0;
       state.wallet.lastActivity = 0;
       state.wallet.pendingAction = "";
       state.wallet.pendingPassword = "";
+      state.wallet.addresses = {};
       state.wallet.masterKey = null;
       state.wallet.mnemonic = null;
       if (state.wallet.seed instanceof Uint8Array) {
@@ -2628,7 +3823,7 @@
       state.wallet.pendingMnemonic = null;
       renderWalletVault();
       if (state.activeTab === "asset") {
-        pageStatusEl.textContent = "Wallet locked";
+        syncPageStatus();
       }
     }
 
@@ -2638,18 +3833,25 @@
       }
 
       if (errorMessage) {
+        walletVaultCardEl.hidden = false;
         walletVaultCopyEl.textContent = errorMessage;
         walletVaultStateEl.textContent = "UNAVAILABLE";
         walletVaultStateEl.classList.add("locked");
         walletAddressEl.textContent = "请使用受支持的现代浏览器并启用 IndexedDB。";
         walletAccessButtonEl.disabled = true;
         walletLockButtonEl.hidden = true;
+        walletChangePasswordButtonEl.hidden = true;
         walletResetButtonEl.hidden = true;
+        walletExportMnemonicButtonEl.hidden = true;
+        renderWalletHeader();
+        renderAssetBalances();
+        syncPageStatus();
         return;
       }
 
       walletAccessButtonEl.disabled = false;
       if (isWalletUnlocked()) {
+        walletVaultCardEl.hidden = true;
         walletVaultCopyEl.textContent = "钱包已解锁。助记词仅存在于当前页面内存，会在 5 分钟无操作、关闭页面或手动锁定时清除。";
         walletVaultStateEl.textContent = "UNLOCKED";
         walletVaultStateEl.classList.remove("locked");
@@ -2658,11 +3860,21 @@
         walletAccessButtonEl.textContent = "已解锁";
         walletAccessButtonEl.disabled = true;
         walletLockButtonEl.hidden = false;
+        walletChangePasswordButtonEl.hidden = false;
         walletResetButtonEl.hidden = false;
+        walletExportMnemonicButtonEl.hidden = false;
+        renderWalletHeader();
+        syncPageStatus();
+        if (state.activeTab === "asset") {
+          void refreshAssetBalances();
+        } else {
+          renderAssetBalances();
+        }
         return;
       }
 
       const hasVault = Boolean(state.wallet.vault);
+      walletVaultCardEl.hidden = false;
       walletKeyringsEl.hidden = true;
       walletKeyringsEl.replaceChildren();
       walletVaultCopyEl.textContent = hasVault
@@ -2675,7 +3887,12 @@
         : "创建钱包后，保险库只保存经过 AES-256-GCM 加密的恢复短语。";
       walletAccessButtonEl.textContent = hasVault ? "解锁钱包" : "创建钱包";
       walletLockButtonEl.hidden = true;
+      walletChangePasswordButtonEl.hidden = !hasVault;
       walletResetButtonEl.hidden = !hasVault;
+      walletExportMnemonicButtonEl.hidden = !hasVault;
+      renderWalletHeader();
+      renderAssetBalances();
+      syncPageStatus();
     }
 
     function renderWalletRecoveryPhrase(mnemonic) {
@@ -2807,6 +4024,7 @@
         state.wallet.masterKey = createdWallet.masterKey;
         state.wallet.mnemonic = mnemonic;
         state.wallet.seed = await deriveBIP39Seed(mnemonic);
+        state.wallet.addresses = {};
         state.wallet.keyring = keyring;
         state.wallet.pendingMnemonic = null;
         state.wallet.pendingPassword = "";
@@ -2830,31 +4048,275 @@
       return state.wallet.pendingMnemonic;
     }
 
+    function createBIP44Networks(accountIndex) {
+      const account = Number.isSafeInteger(accountIndex) && accountIndex >= 0 ? accountIndex : 0;
+      const evmPath = "m/44'/60'/" + account + "'/0/0";
+      return [
+        { id: "bitcoin", label: "Bitcoin", coinType: 0, path: "m/44'/0'/" + account + "'/0/0", curve: "secp256k1" },
+        { id: "ethereum", label: "Ethereum", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "base", label: "Base", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "arbitrum", label: "Arbitrum", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "optimism", label: "Optimism", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "bnb", label: "BNB Chain", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "polygon", label: "Polygon", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "avalanche", label: "Avalanche", coinType: 60, path: evmPath, curve: "secp256k1" },
+        { id: "solana", label: "Solana", coinType: 501, path: "m/44'/501'/" + account + "'/0'", curve: "ed25519" },
+        { id: "sui", label: "Sui", coinType: 784, path: "m/44'/784'/" + account + "'/0'/0'", curve: "ed25519" }
+      ];
+    }
+
     function createDefaultBIP44Keyring() {
       return {
         standard: "BIP44",
         account: 0,
+        selectedAccount: 0,
         index: 0,
-        networks: [
-          { id: "bitcoin", label: "Bitcoin", coinType: 0, path: "m/44'/0'/0'/0/0", curve: "secp256k1" },
-          { id: "ethereum", label: "Ethereum", coinType: 60, path: "m/44'/60'/0'/0/0", curve: "secp256k1" },
-          { id: "base", label: "Base", coinType: 60, path: "m/44'/60'/0'/0/0", curve: "secp256k1" },
-          { id: "solana", label: "Solana", coinType: 501, path: "m/44'/501'/0'/0'", curve: "ed25519" },
-          { id: "sui", label: "Sui", coinType: 784, path: "m/44'/784'/0'/0'/0'", curve: "ed25519" }
-        ]
+        accounts: [{ index: 0, name: "账户 0" }],
+        networks: createBIP44Networks(0)
       };
     }
 
     function normalizeBIP44Keyring(keyring) {
-      if (
-        keyring &&
-        keyring.standard === "BIP44" &&
-        Array.isArray(keyring.networks) &&
-        keyring.networks.length > 0
-      ) {
-        return keyring;
+      const source = keyring && keyring.standard === "BIP44" ? keyring : {};
+      const sourceAccounts = Array.isArray(source.accounts) ? source.accounts : [];
+      const accounts = [];
+      const seen = new Set();
+      sourceAccounts.forEach((account) => {
+        const index = Number(account && account.index);
+        if (!Number.isSafeInteger(index) || index < 0 || index > 99 || seen.has(index)) {
+          return;
+        }
+        seen.add(index);
+        const rawName = typeof account.name === "string" ? account.name.trim() : "";
+        accounts.push({ index, name: (rawName || "账户 " + index).slice(0, 24) });
+      });
+      if (accounts.length === 0) {
+        const legacyAccount = Number(source.account);
+        const index = Number.isSafeInteger(legacyAccount) && legacyAccount >= 0 && legacyAccount <= 99 ? legacyAccount : 0;
+        accounts.push({ index, name: "账户 " + index });
       }
-      return createDefaultBIP44Keyring();
+      accounts.sort((left, right) => left.index - right.index);
+      const requestedAccount = Number(source.selectedAccount ?? source.account);
+      const selectedAccount = accounts.some((account) => account.index === requestedAccount)
+        ? requestedAccount
+        : accounts[0].index;
+      return {
+        ...source,
+        standard: "BIP44",
+        account: selectedAccount,
+        selectedAccount,
+        index: 0,
+        accounts,
+        networks: createBIP44Networks(selectedAccount)
+      };
+    }
+
+    function getWalletAccounts() {
+      state.wallet.keyring = normalizeBIP44Keyring(state.wallet.keyring);
+      return state.wallet.keyring.accounts;
+    }
+
+    function getSelectedWalletAccountIndex() {
+      const normalized = normalizeBIP44Keyring(state.wallet.keyring);
+      return normalized.selectedAccount;
+    }
+
+    function getSelectedWalletAccount() {
+      const accounts = getWalletAccounts();
+      const selectedAccount = getSelectedWalletAccountIndex();
+      return accounts.find((account) => account.index === selectedAccount) || accounts[0];
+    }
+
+    function getWalletAccountPath(chainId, accountIndex) {
+      const network = createBIP44Networks(accountIndex).find((item) => item.id === chainId);
+      return network ? network.path : "BIP44 account " + accountIndex;
+    }
+
+    function renderWalletAccountList() {
+      walletAccountListEl.replaceChildren();
+      const selectedAccountIndex = getSelectedWalletAccountIndex();
+      getWalletAccounts().forEach((account) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "wallet-account-row" + (account.index === selectedAccountIndex ? " active" : "");
+        button.dataset.walletAccountIndex = String(account.index);
+        button.setAttribute("aria-label", account.name + "，账户 " + account.index + "，点击切换并修改名称");
+
+        const copy = document.createElement("span");
+        copy.className = "wallet-account-copy";
+        const name = document.createElement("strong");
+        name.textContent = account.name + " · #" + account.index;
+        const detail = document.createElement("span");
+        let address = "地址将在解锁后派生";
+        try {
+          address = maskAddress(window.WalletAddressDerivation.deriveAddress(state.wallet.seed, state.selectedChainId, account.index));
+        } catch (_) {
+          address = "地址派生失败";
+        }
+        detail.textContent = address + " · " + getWalletAccountPath(state.selectedChainId, account.index);
+        copy.append(name, detail);
+
+        const stateLabel = document.createElement("em");
+        stateLabel.textContent = account.index === selectedAccountIndex ? "当前" : "切换 / 改名";
+        button.append(copy, stateLabel);
+        walletAccountListEl.appendChild(button);
+      });
+    }
+
+    function openWalletAccountDialog() {
+      if (!isWalletUnlocked()) {
+        if (state.wallet.vault) {
+          state.wallet.pendingAction = "accounts";
+          openWalletUnlock("unlock");
+          walletLockErrorEl.textContent = "请先解锁钱包，再查看和切换账户。";
+        }
+        return;
+      }
+      walletAccountErrorEl.textContent = "";
+      closeWalletAccountRename();
+      renderWalletAccountList();
+      walletAccountDialogEl.classList.add("visible");
+      walletAccountDialogEl.setAttribute("aria-hidden", "false");
+    }
+
+    function closeWalletAccountDialog() {
+      walletAccountDialogEl.classList.remove("visible");
+      walletAccountDialogEl.setAttribute("aria-hidden", "true");
+      walletAccountErrorEl.textContent = "";
+      closeWalletAccountRename();
+    }
+
+    function openWalletAccountRename(accountIndex) {
+      const account = getWalletAccounts().find((item) => item.index === accountIndex);
+      if (!account) {
+        return;
+      }
+      walletAccountRenameIndex = accountIndex;
+      walletAccountNameEl.value = account.name;
+      walletAccountRenameEl.hidden = false;
+      walletAccountErrorEl.textContent = "";
+      walletAccountNameEl.focus();
+      walletAccountNameEl.select();
+    }
+
+    function closeWalletAccountRename() {
+      walletAccountRenameIndex = -1;
+      walletAccountNameEl.value = "";
+      walletAccountRenameEl.hidden = true;
+    }
+
+    async function selectWalletAccount(accountIndex, editName) {
+      const currentKeyring = normalizeBIP44Keyring(state.wallet.keyring);
+      if (!currentKeyring.accounts.some((account) => account.index === accountIndex)) {
+        return;
+      }
+      if (currentKeyring.selectedAccount !== accountIndex) {
+        const previousKeyring = currentKeyring;
+        state.wallet.keyring = normalizeBIP44Keyring({ ...currentKeyring, account: accountIndex, selectedAccount: accountIndex });
+        try {
+          await persistWalletKeyring();
+          state.wallet.addresses = {};
+          state.assetBalances.items = [];
+          state.assetBalances.error = "";
+          state.assetBalances.updatedAt = "";
+          renderWalletHeader();
+          renderBIP44Keyrings(state.wallet.keyring);
+          renderWalletAccountList();
+          void refreshAssetBalances();
+        } catch (_) {
+          state.wallet.keyring = previousKeyring;
+          walletAccountErrorEl.textContent = "切换账户失败，请稍后重试。";
+          return;
+        }
+      }
+      if (editName) {
+        openWalletAccountRename(accountIndex);
+      }
+    }
+
+    async function addWalletAccount() {
+      const currentKeyring = normalizeBIP44Keyring(state.wallet.keyring);
+      const nextIndex = currentKeyring.accounts.reduce((largest, account) => Math.max(largest, account.index), -1) + 1;
+      if (nextIndex > 99) {
+        walletAccountErrorEl.textContent = "最多可以添加 100 个账户。";
+        return;
+      }
+      const previousKeyring = currentKeyring;
+      state.wallet.keyring = normalizeBIP44Keyring({
+        ...currentKeyring,
+        account: nextIndex,
+        selectedAccount: nextIndex,
+        accounts: [...currentKeyring.accounts, { index: nextIndex, name: "账户 " + nextIndex }]
+      });
+      walletAccountAddEl.disabled = true;
+      try {
+        await persistWalletKeyring();
+        state.wallet.addresses = {};
+        state.assetBalances.items = [];
+        state.assetBalances.error = "";
+        state.assetBalances.updatedAt = "";
+        renderWalletHeader();
+        renderBIP44Keyrings(state.wallet.keyring);
+        renderWalletAccountList();
+        openWalletAccountRename(nextIndex);
+        void refreshAssetBalances();
+      } catch (_) {
+        state.wallet.keyring = previousKeyring;
+        walletAccountErrorEl.textContent = "添加账户失败，请稍后重试。";
+      } finally {
+        walletAccountAddEl.disabled = false;
+      }
+    }
+
+    async function saveWalletAccountName() {
+      const name = walletAccountNameEl.value.trim();
+      if (!name) {
+        walletAccountErrorEl.textContent = "账户名称不能为空。";
+        return;
+      }
+      const currentKeyring = normalizeBIP44Keyring(state.wallet.keyring);
+      if (!currentKeyring.accounts.some((account) => account.index === walletAccountRenameIndex)) {
+        walletAccountErrorEl.textContent = "未找到需要修改的账户。";
+        return;
+      }
+      const previousKeyring = currentKeyring;
+      state.wallet.keyring = normalizeBIP44Keyring({
+        ...currentKeyring,
+        accounts: currentKeyring.accounts.map((account) => account.index === walletAccountRenameIndex
+          ? { ...account, name: name.slice(0, 24) }
+          : account)
+      });
+      try {
+        await persistWalletKeyring();
+        renderWalletHeader();
+        renderWalletAccountList();
+        closeWalletAccountRename();
+      } catch (_) {
+        state.wallet.keyring = previousKeyring;
+        walletAccountErrorEl.textContent = "保存账户名称失败，请稍后重试。";
+      }
+    }
+
+    async function persistWalletKeyring() {
+      if (!isWalletUnlocked() || !state.wallet.vault || !state.wallet.masterKey) {
+        throw new Error("钱包尚未解锁。");
+      }
+      const iv = randomBytes(12);
+      const plaintext = new TextEncoder().encode(JSON.stringify({
+        mnemonic: state.wallet.mnemonic,
+        keyring: normalizeBIP44Keyring(state.wallet.keyring),
+        createdAt: state.wallet.vault.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }));
+      const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, state.wallet.masterKey, plaintext);
+      const updatedVault = {
+        ...state.wallet.vault,
+        iv: bytesToBase64(iv),
+        ciphertext: bytesToBase64(new Uint8Array(ciphertext)),
+        updatedAt: new Date().toISOString()
+      };
+      await WalletVaultStore.save(updatedVault);
+      state.wallet.vault = updatedVault;
     }
 
     function renderBIP44Keyrings(keyring) {

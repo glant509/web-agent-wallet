@@ -5,6 +5,7 @@ import (
 	"web3-service-agent/tools/bridge"
 	"web3-service-agent/tools/dex"
 	"web3-service-agent/tools/market"
+	wallettool "web3-service-agent/tools/wallet"
 	yieldtool "web3-service-agent/tools/yield"
 )
 
@@ -13,6 +14,7 @@ func RegisterAll(registry *tool.Registry) error {
 		market.Register,
 		dex.Register,
 		bridge.Register,
+		wallettool.Register,
 		yieldtool.Register,
 	}
 

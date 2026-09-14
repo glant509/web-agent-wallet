@@ -18,6 +18,7 @@ service.port=9090
 service.agentMaxSteps=12
 service.modelProvider=openai
 service.modelName=gpt-5.4-mini
+log.path=/var/tmp/web3-agent
 models.0.provider=openai
 models.0.name=gpt-5.4-mini
 models.0.used=true
@@ -27,6 +28,17 @@ marketProviders.0.used=true
 marketProviders.0.name=coingecko
 marketProviders.0.base_url=https://api.coingecko.com/api/v3
 marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
+chains.0.used=true
+chains.0.type=evm
+chains.0.name=Ethereum
+chains.0.chain_id=ethereum
+chains.0.urls.0=https://rpc-a.example
+chains.0.urls.1=https://rpc-b.example
+chains.1.used=false
+chains.1.type=evm
+chains.1.name=Ignored
+chains.1.chain_id=ignored
+chains.1.urls.0=https://ignored.example
 `)
 	if err := os.WriteFile(path, content, 0o644); err != nil {
 		t.Fatalf("write properties: %v", err)
@@ -45,6 +57,9 @@ marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
 	}
 	if cfg.Service.AgentMaxSteps != 12 {
 		t.Fatalf("unexpected max steps: %d", cfg.Service.AgentMaxSteps)
+	}
+	if cfg.Log == nil || cfg.Log.Path != "/var/tmp/web3-agent" {
+		t.Fatalf("unexpected log path: %#v", cfg.Log)
 	}
 	model, err := cfg.ActiveModel()
 	if err != nil {
@@ -71,6 +86,16 @@ marketProviders.0.api_key=${CG-1HoLG61sqiEsjoXaieJUwmkq}
 	}
 	if provider.APIKey != "" {
 		t.Fatalf("unexpected provider api key: %q", provider.APIKey)
+	}
+	chain, err := cfg.ActiveChain("ethereum")
+	if err != nil {
+		t.Fatalf("resolve active chain: %v", err)
+	}
+	if chain.Type != "evm" {
+		t.Fatalf("unexpected chain type: %q", chain.Type)
+	}
+	if len(chain.Urls) != 2 {
+		t.Fatalf("unexpected chain url count: %d", len(chain.Urls))
 	}
 }
 
@@ -163,6 +188,9 @@ marketProviders.0.base_url=https://api.coingecko.com/api/v3
 	if cfg.Service.Name != defaultServiceName {
 		t.Fatalf("unexpected default service name: %q", cfg.Service.Name)
 	}
+	if cfg.Log == nil || cfg.Log.Path != defaultLogPath {
+		t.Fatalf("unexpected default log path: %#v", cfg.Log)
+	}
 	model, err := cfg.ActiveModel()
 	if err != nil {
 		t.Fatalf("resolve default model: %v", err)
@@ -224,5 +252,48 @@ marketProviders.1.base_url=https://api.coingecko.com/api/v3
 	}
 	if provider.Name != "coingecko" {
 		t.Fatalf("unexpected active provider: %q", provider.Name)
+	}
+}
+
+func TestRandomChainURLUsesConfiguredList(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "application.properties")
+	if err := os.WriteFile(path, []byte(`
+models.0.provider=openai
+models.0.name=gpt-5-mini
+models.0.used=true
+models.0.base_url=https://api.openai.com/v1
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
+chains.0.used=true
+chains.0.type=evm
+chains.0.name=Base
+chains.0.chain_id=base
+chains.0.urls.0=https://base-a.example
+chains.0.urls.1=https://base-b.example
+chains.0.urls.2=https://base-c.example
+`), 0o644); err != nil {
+		t.Fatalf("write properties: %v", err)
+	}
+
+	cfg, err := LoadFrom(path)
+	if err != nil {
+		t.Fatalf("load config: %v", err)
+	}
+
+	allowed := map[string]bool{
+		"https://base-a.example": true,
+		"https://base-b.example": true,
+		"https://base-c.example": true,
+	}
+	for i := 0; i < 12; i++ {
+		url, err := cfg.RandomChainURL("base")
+		if err != nil {
+			t.Fatalf("random chain url: %v", err)
+		}
+		if !allowed[url] {
+			t.Fatalf("unexpected url selected: %q", url)
+		}
 	}
 }

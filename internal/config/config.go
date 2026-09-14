@@ -2,8 +2,10 @@ package config
 
 import (
 	"bufio"
+	"crypto/rand"
 	"errors"
 	"fmt"
+	"math/big"
 	"os"
 	"path/filepath"
 	"sort"
@@ -19,12 +21,27 @@ const (
 	defaultModelName     = "gpt-5-mini"
 	defaultAgentMaxSteps = 8
 	defaultServiceName   = "web3-service-agent"
+	defaultLogPath       = "."
 )
 
 type Config struct {
 	Service         *Service          `json:"service" yaml:"service, required"`
+	Log             *Log              `json:"log" yaml:"log"`
 	Models          []*ModelConfig    `json:"models" yaml:"models, required"`
 	MarketProviders []*MarketProvider `json:"marketProviders" yaml:"marketProviders, required"`
+	Chains          []*Chain          `json:"chains" yaml:"chains"`
+}
+
+type Log struct {
+	Path string `json:"path" yaml:"path"`
+}
+
+type Chain struct {
+	Type    string   `json:"type" yaml:"type"`
+	Name    string   `json:"name" yaml:"name"`
+	ChainID string   `json:"chain_id" yaml:"chain_id"`
+	Urls    []string `json:"urls" yaml:"urls"`
+	Used    bool     `json:"used" yaml:"used"`
 }
 
 type Wallet struct {
@@ -70,6 +87,9 @@ func LoadFrom(path string) (Config, error) {
 			ModelProvider: getString(properties, "service.modelProvider", defaultModelProvider),
 			ModelName:     getString(properties, "service.modelName", defaultModelName),
 		},
+		Log: &Log{
+			Path: getString(properties, "log.path", defaultLogPath),
+		},
 	}
 
 	models, err := loadModels(properties)
@@ -83,6 +103,12 @@ func LoadFrom(path string) (Config, error) {
 		return Config{}, err
 	}
 	cfg.MarketProviders = marketProviders
+
+	chains, err := loadChains(properties)
+	if err != nil {
+		return Config{}, err
+	}
+	cfg.Chains = chains
 
 	if _, err := cfg.ActiveModel(); err != nil {
 		return Config{}, err
@@ -143,6 +169,55 @@ func (c Config) ActiveMarketProvider() (*MarketProvider, error) {
 		return provider, nil
 	}
 	return nil, errors.New("no enabled market provider configured")
+}
+
+func (c Config) ActiveChain(chainID string) (*Chain, error) {
+	target := normalizeChainKey(chainID)
+	if target == "" {
+		return nil, errors.New("chain_id is required")
+	}
+	for _, chain := range c.Chains {
+		if chain == nil || !chain.Used {
+			continue
+		}
+		if normalizeChainKey(chain.ChainID) != target && normalizeChainKey(chain.Name) != target {
+			continue
+		}
+		if len(chain.Urls) == 0 {
+			return nil, fmt.Errorf("chain %q has no configured urls", chain.ChainID)
+		}
+		return chain, nil
+	}
+	return nil, fmt.Errorf("no enabled chain configured for %q", chainID)
+}
+
+func (c Config) RandomChainURL(chainID string) (string, error) {
+	chain, err := c.ActiveChain(chainID)
+	if err != nil {
+		return "", err
+	}
+	return chain.RandomURL()
+}
+
+func (c Chain) RandomURL() (string, error) {
+	urls := make([]string, 0, len(c.Urls))
+	for _, value := range c.Urls {
+		trimmed := strings.TrimSpace(value)
+		if trimmed != "" {
+			urls = append(urls, trimmed)
+		}
+	}
+	if len(urls) == 0 {
+		return "", fmt.Errorf("chain %q has no configured urls", c.ChainID)
+	}
+	if len(urls) == 1 {
+		return urls[0], nil
+	}
+	index, err := rand.Int(rand.Reader, big.NewInt(int64(len(urls))))
+	if err != nil {
+		return "", fmt.Errorf("choose random url for chain %q: %w", c.ChainID, err)
+	}
+	return urls[index.Int64()], nil
 }
 
 func (s Service) ListenAddr() string {
@@ -394,8 +469,85 @@ func loadMarketProviders(properties map[string]string) ([]*MarketProvider, error
 	return providers, nil
 }
 
+func loadChains(properties map[string]string) ([]*Chain, error) {
+	indexedChains := make(map[int]*Chain)
+
+	for key, value := range properties {
+		if !strings.HasPrefix(key, "chains.") {
+			continue
+		}
+
+		index, field, err := parseIndexedPropertyKey(key, "chains.")
+		if err != nil {
+			return nil, err
+		}
+
+		chain := indexedChains[index]
+		if chain == nil {
+			chain = &Chain{}
+		}
+
+		switch {
+		case field == "used":
+			chain.Used = strings.EqualFold(value, "true")
+		case field == "type":
+			chain.Type = value
+		case field == "name":
+			chain.Name = value
+		case field == "chain_id":
+			chain.ChainID = value
+		case strings.HasPrefix(field, "urls."):
+			urlIndex, err := strconv.Atoi(strings.TrimPrefix(field, "urls."))
+			if err != nil || urlIndex < 0 {
+				return nil, fmt.Errorf("invalid chain url index in key %q", key)
+			}
+			if len(chain.Urls) <= urlIndex {
+				expanded := make([]string, urlIndex+1)
+				copy(expanded, chain.Urls)
+				chain.Urls = expanded
+			}
+			chain.Urls[urlIndex] = value
+		default:
+			return nil, fmt.Errorf("unsupported chain config field %q", key)
+		}
+
+		indexedChains[index] = chain
+	}
+
+	indexes := make([]int, 0, len(indexedChains))
+	for index := range indexedChains {
+		indexes = append(indexes, index)
+	}
+	sort.Ints(indexes)
+
+	chains := make([]*Chain, 0, len(indexes))
+	for _, index := range indexes {
+		chain := indexedChains[index]
+		if chain == nil {
+			continue
+		}
+		chain.Urls = compactStrings(chain.Urls)
+		chains = append(chains, chain)
+	}
+	return chains, nil
+}
+
 func parseModelPropertyKey(key string) (int, string, error) {
 	return parseIndexedPropertyKey(key, "models.")
+}
+
+func compactStrings(values []string) []string {
+	compacted := make([]string, 0, len(values))
+	for _, value := range values {
+		if trimmed := strings.TrimSpace(value); trimmed != "" {
+			compacted = append(compacted, trimmed)
+		}
+	}
+	return compacted
+}
+
+func normalizeChainKey(value string) string {
+	return strings.ToLower(strings.TrimSpace(value))
 }
 
 func parseIndexedPropertyKey(key, prefix string) (int, string, error) {
