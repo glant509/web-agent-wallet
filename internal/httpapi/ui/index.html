@@ -1848,6 +1848,785 @@
       gap: 14px;
     }
 
+    .asset-action-card {
+      padding: 14px;
+    }
+
+    .asset-action-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .asset-action-button {
+      min-width: 0;
+      padding: 12px 6px 10px;
+      border: 1px solid rgba(96, 165, 250, 0.16);
+      border-radius: 16px;
+      color: #e2e8f0;
+      background: linear-gradient(145deg, rgba(30, 64, 175, 0.18), rgba(15, 23, 42, 0.55));
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .asset-action-button:not(:disabled):hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.45);
+      background: linear-gradient(145deg, rgba(37, 99, 235, 0.28), rgba(15, 23, 42, 0.68));
+    }
+
+    .asset-action-button:disabled {
+      color: #64748b;
+      border-color: rgba(148, 163, 184, 0.08);
+      background: rgba(15, 23, 42, 0.36);
+      cursor: default;
+    }
+
+    .asset-action-icon {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      margin: 0 auto 7px;
+      border-radius: 11px;
+      color: #bae6fd;
+      background: rgba(14, 165, 233, 0.13);
+      font-size: 16px;
+    }
+
+    .asset-action-button:disabled .asset-action-icon {
+      color: #64748b;
+      background: rgba(100, 116, 139, 0.1);
+    }
+
+    .wallet-history-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 86;
+      display: none;
+      align-items: stretch;
+      justify-content: center;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(16px);
+    }
+
+    .wallet-history-dialog.visible {
+      display: flex;
+    }
+
+    .wallet-history-page {
+      width: min(100%, 480px);
+      min-height: 100dvh;
+      max-height: 100dvh;
+      overflow: auto;
+      padding: max(18px, env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));
+      color: #f8fafc;
+      background:
+        radial-gradient(circle at 84% 4%, rgba(37, 99, 235, 0.15), transparent 30%),
+        linear-gradient(180deg, #07111f 0%, #030712 100%);
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.56);
+    }
+
+    .wallet-history-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      align-items: center;
+      min-height: 48px;
+    }
+
+    .wallet-history-back {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 14px;
+      color: #e2e8f0;
+      background: rgba(148, 163, 184, 0.08);
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .wallet-history-head h2 {
+      margin: 0;
+      text-align: center;
+      font-size: 21px;
+      letter-spacing: 0.02em;
+    }
+
+    .wallet-history-filters {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      margin: 28px 0 20px;
+    }
+
+    .wallet-history-filter {
+      position: relative;
+    }
+
+    .wallet-history-filter-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      height: 46px;
+      padding: 0 13px;
+      border: 1px solid rgba(125, 211, 252, 0.13);
+      border-radius: 15px;
+      outline: none;
+      color: #e2e8f0;
+      background: rgba(15, 23, 42, 0.74);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 750;
+      text-align: left;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .wallet-history-filter.open .wallet-history-filter-trigger,
+    .wallet-history-filter-trigger:focus-visible {
+      border-color: rgba(56, 189, 248, 0.48);
+      background: rgba(15, 23, 42, 0.96);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .wallet-history-filter-chevron {
+      color: #7dd3fc;
+      font-size: 13px;
+      transition: transform 160ms ease;
+    }
+
+    .wallet-history-filter.open .wallet-history-filter-chevron {
+      transform: rotate(180deg);
+    }
+
+    .wallet-history-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      z-index: 4;
+      display: grid;
+      width: 100%;
+      max-height: min(320px, 48vh);
+      gap: 4px;
+      padding: 7px;
+      overflow: auto;
+      border: 1px solid rgba(125, 211, 252, 0.18);
+      border-radius: 16px;
+      background: rgba(8, 18, 34, 0.98);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.52), inset 0 1px rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(20px);
+    }
+
+    .wallet-history-menu[hidden] {
+      display: none;
+    }
+
+    .wallet-history-menu-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      min-height: 44px;
+      padding: 0 11px;
+      border: 0;
+      border-radius: 11px;
+      color: #cbd5e1;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .wallet-history-menu-option:hover,
+    .wallet-history-menu-option:focus-visible {
+      color: #f8fafc;
+      background: rgba(56, 189, 248, 0.1);
+      outline: none;
+    }
+
+    .wallet-history-menu-option.active {
+      color: #bae6fd;
+      background: rgba(14, 165, 233, 0.14);
+    }
+
+    .wallet-history-menu-option.active::after {
+      content: "✓";
+      color: #38bdf8;
+    }
+
+    .wallet-history-list {
+      display: grid;
+      gap: 22px;
+    }
+
+    .wallet-history-group {
+      display: grid;
+      gap: 5px;
+    }
+
+    .wallet-history-date {
+      margin: 0 0 5px;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: 0.03em;
+    }
+
+    .wallet-history-item {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      min-height: 72px;
+      padding: 9px 4px;
+      border: 0;
+      color: inherit;
+      text-align: left;
+      background: transparent;
+    }
+
+    .wallet-history-item + .wallet-history-item {
+      border-top: 1px solid rgba(148, 163, 184, 0.09);
+    }
+
+    .wallet-history-token-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(147, 197, 253, 0.25);
+      border-radius: 50%;
+      color: #dbeafe;
+      background: linear-gradient(145deg, #5b7cfa, #3156d9);
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.2);
+    }
+
+    .wallet-history-copy,
+    .wallet-history-value {
+      min-width: 0;
+    }
+
+    .wallet-history-copy strong,
+    .wallet-history-copy span,
+    .wallet-history-value strong,
+    .wallet-history-value span {
+      display: block;
+    }
+
+    .wallet-history-copy strong {
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .wallet-history-copy span {
+      overflow: hidden;
+      color: #94a3b8;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wallet-history-value {
+      max-width: 140px;
+      text-align: right;
+    }
+
+    .wallet-history-value strong {
+      color: #f8fafc;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .wallet-history-value strong.incoming {
+      color: #4ade80;
+    }
+
+    .wallet-history-value span {
+      margin-top: 5px;
+      color: #64748b;
+      font-size: 10px;
+    }
+
+    .wallet-history-empty {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      padding: 68px 18px;
+      text-align: center;
+    }
+
+    .wallet-history-empty[hidden] {
+      display: none;
+    }
+
+    .wallet-history-loading {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      padding: 72px 18px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .wallet-history-loading[hidden] {
+      display: none;
+    }
+
+    .wallet-history-spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(125, 211, 252, 0.16);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: wallet-history-spin 720ms linear infinite;
+    }
+
+    @keyframes wallet-history-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .wallet-history-error {
+      margin: 4px 2px 16px;
+      padding: 11px 13px;
+      border: 1px solid rgba(251, 113, 133, 0.18);
+      border-radius: 13px;
+      color: #fda4af;
+      background: rgba(159, 18, 57, 0.1);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .wallet-history-error[hidden] {
+      display: none;
+    }
+
+    .wallet-history-empty-icon {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      color: #7dd3fc;
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.14);
+      font-size: 23px;
+    }
+
+    .wallet-history-empty strong {
+      font-size: 16px;
+    }
+
+    .wallet-history-empty p,
+    .wallet-history-note {
+      margin: 0;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .wallet-history-footer {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      padding: 30px 0 8px;
+    }
+
+    .wallet-history-explorer {
+      min-height: 46px;
+      padding: 0 20px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 999px;
+      color: #e2e8f0;
+      background: rgba(148, 163, 184, 0.09);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    @media (min-width: 600px) {
+      .wallet-history-dialog {
+        align-items: center;
+        padding: 24px;
+      }
+
+      .wallet-history-page {
+        min-height: min(820px, calc(100dvh - 48px));
+        max-height: calc(100dvh - 48px);
+        border: 1px solid rgba(125, 211, 252, 0.14);
+        border-radius: 28px;
+      }
+    }
+
+    .asset-action-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 84;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+      background: rgba(2, 6, 23, 0.74);
+      backdrop-filter: blur(14px);
+    }
+
+    .asset-action-dialog.visible {
+      display: flex;
+    }
+
+    .asset-action-sheet {
+      width: min(100%, 460px);
+      max-height: min(78dvh, 680px);
+      overflow: auto;
+      padding: 20px;
+      border: 1px solid rgba(125, 211, 252, 0.16);
+      border-radius: 26px;
+      background: linear-gradient(155deg, rgba(15, 23, 42, 0.98), rgba(3, 7, 18, 0.99));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.52);
+    }
+
+    .asset-action-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .asset-action-head h2 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+
+    .asset-action-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .asset-action-close {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 12px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.7);
+      font-size: 20px;
+    }
+
+    .asset-token-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .asset-token-option {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 17px;
+      color: #e2e8f0;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .asset-token-option:hover {
+      border-color: rgba(56, 189, 248, 0.34);
+      background: rgba(14, 165, 233, 0.08);
+    }
+
+    .asset-token-symbol {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      color: #bae6fd;
+      background: linear-gradient(145deg, rgba(37, 99, 235, 0.32), rgba(8, 145, 178, 0.18));
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .asset-token-copy strong,
+    .asset-token-copy span {
+      display: block;
+    }
+
+    .asset-token-copy strong {
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .asset-token-copy span,
+    .asset-token-option em {
+      color: var(--muted);
+      font-size: 11px;
+      font-style: normal;
+    }
+
+    .asset-action-detail[hidden],
+    .asset-token-picker[hidden] {
+      display: none;
+    }
+
+    .asset-action-selected {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 11px 12px;
+      border-radius: 16px;
+      background: rgba(14, 165, 233, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+
+    .asset-action-selected strong {
+      font-size: 14px;
+    }
+
+    .asset-action-selected button {
+      border: 0;
+      color: #7dd3fc;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .asset-send-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .asset-send-form label {
+      display: grid;
+      gap: 7px;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .asset-send-form input {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 13px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 14px;
+      outline: none;
+      color: #f8fafc;
+      background: rgba(2, 6, 23, 0.62);
+      font-size: 13px;
+    }
+
+    .asset-send-form input:focus {
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .asset-amount-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .asset-send-max {
+      min-width: 64px;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 14px;
+      color: #7dd3fc;
+      background: rgba(14, 165, 233, 0.09);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .asset-send-max[hidden] {
+      display: none;
+    }
+
+    .asset-send-submit,
+    .asset-receive-copy {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      color: #e0f2fe;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.55), rgba(8, 145, 178, 0.42));
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .asset-send-note,
+    .asset-action-error {
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .asset-action-error {
+      color: #fda4af;
+    }
+
+    .asset-transaction-review,
+    .asset-transaction-success {
+      display: grid;
+      gap: 13px;
+    }
+
+    .asset-transaction-review[hidden],
+    .asset-transaction-success[hidden] {
+      display: none;
+    }
+
+    .asset-transaction-rows {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.11);
+      border-radius: 17px;
+      background: rgba(148, 163, 184, 0.1);
+    }
+
+    .asset-transaction-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 12px;
+      padding: 11px 12px;
+      background: rgba(2, 6, 23, 0.86);
+    }
+
+    .asset-transaction-row span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .asset-transaction-row strong {
+      min-width: 0;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.5;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .asset-transaction-warning {
+      padding: 10px 12px;
+      border-radius: 13px;
+      color: #fde68a;
+      background: rgba(161, 98, 7, 0.12);
+      border: 1px solid rgba(250, 204, 21, 0.14);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .asset-review-actions {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 9px;
+    }
+
+    .asset-review-back {
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 14px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.7);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .asset-transaction-success {
+      justify-items: center;
+      padding: 14px 0 4px;
+      text-align: center;
+    }
+
+    .asset-success-icon {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      color: #bbf7d0;
+      background: rgba(34, 197, 94, 0.13);
+      border: 1px solid rgba(74, 222, 128, 0.22);
+      font-size: 30px;
+    }
+
+    .asset-transaction-success h3 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .asset-transaction-success p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .asset-transaction-hash {
+      width: 100%;
+      padding: 11px;
+      border-radius: 13px;
+      color: #86efac;
+      background: rgba(20, 83, 45, 0.16);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .asset-receive-panel {
+      display: grid;
+      justify-items: center;
+      gap: 13px;
+      text-align: center;
+    }
+
+    .asset-receive-qr {
+      display: grid;
+      place-items: center;
+      width: 218px;
+      height: 218px;
+      padding: 12px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+    }
+
+    .asset-receive-qr svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .asset-receive-address {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      color: #e2e8f0;
+      background: rgba(2, 6, 23, 0.56);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      line-height: 1.55;
+      word-break: break-all;
+    }
+
     .asset-balance-head {
       display: flex;
       align-items: flex-start;
@@ -2503,6 +3282,30 @@
             <div class="wallet-address" id="wallet-address">未解锁：助记词和私钥不会保存在页面或服务器。</div>
             <div class="wallet-keyrings" id="wallet-keyrings" hidden></div>
           </article>
+          <article class="card asset-action-card" aria-label="钱包操作">
+            <div class="asset-action-grid">
+              <button type="button" class="asset-action-button" data-asset-action="send">
+                <span class="asset-action-icon">↗</span>
+                Send
+              </button>
+              <button type="button" class="asset-action-button" data-asset-action="receive">
+                <span class="asset-action-icon">↙</span>
+                Receive
+              </button>
+              <button type="button" class="asset-action-button" disabled aria-label="Bridge，暂未开放">
+                <span class="asset-action-icon">⇄</span>
+                Bridge
+              </button>
+              <button type="button" class="asset-action-button" disabled aria-label="Swap，暂未开放">
+                <span class="asset-action-icon">⇆</span>
+                Swap
+              </button>
+              <button type="button" class="asset-action-button" data-asset-action="history">
+                <span class="asset-action-icon">↻</span>
+                History
+              </button>
+            </div>
+          </article>
           <article class="card asset-balance-card">
             <div class="asset-balance-head">
               <div>
@@ -2531,6 +3334,104 @@
         </div>
         <button type="submit" id="send-button">发送</button>
       </form>
+    </div>
+
+    <div class="wallet-history-dialog" id="wallet-history-dialog" aria-hidden="true">
+      <section class="wallet-history-page" role="dialog" aria-modal="true" aria-labelledby="wallet-history-title" data-screen-label="交易历史">
+        <header class="wallet-history-head">
+          <button type="button" class="wallet-history-back" id="wallet-history-back" aria-label="返回资产页面">‹</button>
+          <h2 id="wallet-history-title">交易历史</h2>
+          <span aria-hidden="true"></span>
+        </header>
+        <div class="wallet-history-filters">
+          <div class="wallet-history-filter" id="wallet-history-chain-filter">
+            <button type="button" class="wallet-history-filter-trigger" id="wallet-history-chain-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="wallet-history-chain-label">Ethereum</span>
+              <span class="wallet-history-filter-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <div class="wallet-history-menu" id="wallet-history-chain-menu" role="listbox" aria-label="筛选网络" hidden></div>
+          </div>
+          <div class="wallet-history-filter" id="wallet-history-type-filter">
+            <button type="button" class="wallet-history-filter-trigger" id="wallet-history-type-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="wallet-history-type-label">全部类型</span>
+              <span class="wallet-history-filter-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <div class="wallet-history-menu" id="wallet-history-type-menu" role="listbox" aria-label="筛选交易类型" hidden></div>
+          </div>
+        </div>
+        <div class="wallet-history-error" id="wallet-history-error" hidden></div>
+        <div class="wallet-history-loading" id="wallet-history-loading" hidden>
+          <span class="wallet-history-spinner" aria-hidden="true"></span>
+          <span>正在同步链上交易记录...</span>
+        </div>
+        <div class="wallet-history-list" id="wallet-history-list"></div>
+        <div class="wallet-history-empty" id="wallet-history-empty" hidden>
+          <div class="wallet-history-empty-icon">↻</div>
+          <strong>暂无交易记录</strong>
+          <p>完成一次转账后，交易会按日期出现在这里。</p>
+        </div>
+        <footer class="wallet-history-footer">
+          <button type="button" class="wallet-history-explorer" id="wallet-history-explorer">去浏览器查看</button>
+          <p class="wallet-history-note">交易记录来自当前账户的链上数据；刚广播的交易会先从本地缓存显示。</p>
+        </footer>
+      </section>
+    </div>
+
+    <div class="asset-action-dialog" id="asset-action-dialog" aria-hidden="true">
+      <section class="asset-action-sheet" role="dialog" aria-modal="true" aria-labelledby="asset-action-title">
+        <div class="asset-action-head">
+          <div>
+            <h2 id="asset-action-title">选择 Token</h2>
+            <p id="asset-action-description">选择当前链支持的 Token</p>
+          </div>
+          <button type="button" class="asset-action-close" id="asset-action-close" aria-label="关闭">×</button>
+        </div>
+        <div class="asset-token-picker" id="asset-token-picker">
+          <div class="asset-token-list" id="asset-token-list"></div>
+        </div>
+        <div class="asset-action-detail" id="asset-action-detail" hidden>
+          <div class="asset-action-selected">
+            <strong id="asset-action-selected-token">Token</strong>
+            <button type="button" id="asset-action-change-token">更换 Token</button>
+          </div>
+          <form class="asset-send-form" id="asset-send-form" hidden>
+            <label>
+              接收地址
+              <input id="asset-send-address" type="text" autocomplete="off" spellcheck="false" placeholder="输入或粘贴接收地址" />
+            </label>
+            <label>
+              数量
+              <span class="asset-amount-row">
+                <input id="asset-send-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" />
+                <button type="button" class="asset-send-max" id="asset-send-max">最大值</button>
+              </span>
+            </label>
+            <button type="submit" class="asset-send-submit" id="asset-send-next">下一步</button>
+            <div class="asset-send-note" id="asset-send-fee-preview">手续费将在下一步通过当前网络实时预估。</div>
+          </form>
+          <div class="asset-receive-panel" id="asset-receive-panel" hidden>
+            <div class="asset-receive-qr" id="asset-receive-qr" aria-label="接收地址二维码"></div>
+            <div class="asset-receive-address" id="asset-receive-address"></div>
+            <button type="button" class="asset-receive-copy" id="asset-receive-copy">复制接收地址</button>
+          </div>
+          <div class="asset-action-error" id="asset-action-error"></div>
+        </div>
+        <div class="asset-transaction-review" id="asset-transaction-review" hidden>
+          <div class="asset-transaction-rows" id="asset-transaction-rows"></div>
+          <div class="asset-transaction-warning">确认后将在本设备内存中构建并签名交易，再将签名后的原始交易广播到当前网络。私钥不会发送到服务端。</div>
+          <div class="asset-review-actions">
+            <button type="button" class="asset-review-back" id="asset-transaction-back">返回修改</button>
+            <button type="button" class="asset-send-submit" id="asset-transaction-confirm">确认并广播</button>
+          </div>
+          <div class="asset-action-error" id="asset-transaction-error"></div>
+        </div>
+        <div class="asset-transaction-success" id="asset-transaction-success" hidden>
+          <div class="asset-success-icon">✓</div>
+          <h3>广播成功</h3>
+          <p>交易已提交到当前网络，即将返回资产页面。</p>
+          <div class="asset-transaction-hash" id="asset-transaction-hash"></div>
+        </div>
+      </section>
     </div>
 
     <div class="wallet-account-dialog" id="wallet-account-dialog" aria-hidden="true">
@@ -2678,6 +3579,7 @@
   </div>
 
   <script src="/ui/wallet_derivation.js"></script>
+  <script src="/ui/evm_signer.js"></script>
   <script>
     const chatTabs = ["home"];
     const state = {
@@ -2728,6 +3630,21 @@
         selectedChainID: "",
         updatedAt: "",
         requestToken: 0
+      },
+      assetAction: {
+        mode: "",
+        token: null,
+        plan: null,
+        sendMax: false,
+        busy: false
+      },
+      walletHistory: {
+        items: [],
+        chainId: "",
+        type: "all",
+        loading: false,
+        error: "",
+        requestToken: 0
       }
     };
 
@@ -2767,6 +3684,48 @@
     const assetBalanceTotalEl = document.getElementById("asset-balance-total");
     const assetBalanceListEl = document.getElementById("asset-balance-list");
     const assetBalanceChainBadgeEl = document.getElementById("asset-balance-chain-badge");
+    const assetActionDialogEl = document.getElementById("asset-action-dialog");
+    const assetActionCloseEl = document.getElementById("asset-action-close");
+    const assetActionTitleEl = document.getElementById("asset-action-title");
+    const assetActionDescriptionEl = document.getElementById("asset-action-description");
+    const assetTokenPickerEl = document.getElementById("asset-token-picker");
+    const assetTokenListEl = document.getElementById("asset-token-list");
+    const assetActionDetailEl = document.getElementById("asset-action-detail");
+    const assetActionSelectedTokenEl = document.getElementById("asset-action-selected-token");
+    const assetActionChangeTokenEl = document.getElementById("asset-action-change-token");
+    const assetSendFormEl = document.getElementById("asset-send-form");
+    const assetSendAddressEl = document.getElementById("asset-send-address");
+    const assetSendAmountEl = document.getElementById("asset-send-amount");
+    const assetSendMaxEl = document.getElementById("asset-send-max");
+    const assetSendNextEl = document.getElementById("asset-send-next");
+    const assetSendFeePreviewEl = document.getElementById("asset-send-fee-preview");
+    const assetReceivePanelEl = document.getElementById("asset-receive-panel");
+    const assetReceiveQREl = document.getElementById("asset-receive-qr");
+    const assetReceiveAddressEl = document.getElementById("asset-receive-address");
+    const assetReceiveCopyEl = document.getElementById("asset-receive-copy");
+    const assetActionErrorEl = document.getElementById("asset-action-error");
+    const assetTransactionReviewEl = document.getElementById("asset-transaction-review");
+    const assetTransactionRowsEl = document.getElementById("asset-transaction-rows");
+    const assetTransactionBackEl = document.getElementById("asset-transaction-back");
+    const assetTransactionConfirmEl = document.getElementById("asset-transaction-confirm");
+    const assetTransactionErrorEl = document.getElementById("asset-transaction-error");
+    const assetTransactionSuccessEl = document.getElementById("asset-transaction-success");
+    const assetTransactionHashEl = document.getElementById("asset-transaction-hash");
+    const walletHistoryDialogEl = document.getElementById("wallet-history-dialog");
+    const walletHistoryBackEl = document.getElementById("wallet-history-back");
+    const walletHistoryChainFilterEl = document.getElementById("wallet-history-chain-filter");
+    const walletHistoryChainTriggerEl = document.getElementById("wallet-history-chain-trigger");
+    const walletHistoryChainLabelEl = document.getElementById("wallet-history-chain-label");
+    const walletHistoryChainMenuEl = document.getElementById("wallet-history-chain-menu");
+    const walletHistoryTypeFilterEl = document.getElementById("wallet-history-type-filter");
+    const walletHistoryTypeTriggerEl = document.getElementById("wallet-history-type-trigger");
+    const walletHistoryTypeLabelEl = document.getElementById("wallet-history-type-label");
+    const walletHistoryTypeMenuEl = document.getElementById("wallet-history-type-menu");
+    const walletHistoryListEl = document.getElementById("wallet-history-list");
+    const walletHistoryEmptyEl = document.getElementById("wallet-history-empty");
+    const walletHistoryLoadingEl = document.getElementById("wallet-history-loading");
+    const walletHistoryErrorEl = document.getElementById("wallet-history-error");
+    const walletHistoryExplorerEl = document.getElementById("wallet-history-explorer");
     const walletLockEl = document.getElementById("wallet-lock");
     const walletLockFormEl = document.getElementById("wallet-lock-form");
     const walletPasswordEl = document.getElementById("wallet-password");
@@ -2809,6 +3768,7 @@
     let bip39EnglishWords = null;
     let walletRecoveryCopyTimer = 0;
     let walletMnemonicExportTimer = 0;
+    let assetActionReturnTimer = 0;
     let walletAccountRenameIndex = -1;
     const supportedChains = [
       { id: "ethereum", label: "Ethereum", short: "ETH", logo: "Ξ", logoClass: "chain-ethereum", networkId: "ethereum" },
@@ -2823,6 +3783,40 @@
       { id: "sui", label: "Sui", short: "SUI", logo: "SUI", logoClass: "chain-sui", networkId: "sui" }
     ];
     const supportedBalanceChains = ["ethereum", "base", "arbitrum", "optimism", "bsc", "polygon", "solana", "avalanche"];
+    const supportedEVMTransferChains = ["ethereum", "base", "arbitrum", "optimism", "bnb", "polygon", "avalanche"];
+    const supportedEVMHistoryChains = ["ethereum", "base", "arbitrum", "optimism", "polygon"];
+    const walletHistoryTypeOptions = [
+      { value: "all", label: "全部类型" },
+      { value: "send", label: "发送" },
+      { value: "receive", label: "接收" },
+      { value: "swap", label: "交易" },
+      { value: "bridge", label: "跨链" }
+    ];
+    const walletTransactionHistoryStorageKey = "web3_wallet_transaction_history_v1";
+    const chainExplorerURLs = {
+      ethereum: "https://etherscan.io",
+      base: "https://basescan.org",
+      arbitrum: "https://arbiscan.io",
+      optimism: "https://explorer.optimism.io",
+      bnb: "https://bscscan.com",
+      polygon: "https://polygonscan.com",
+      avalanche: "https://snowtrace.io",
+      solana: "https://solscan.io",
+      bitcoin: "https://mempool.space",
+      sui: "https://suiscan.xyz/mainnet"
+    };
+    const assetActionTokenCatalog = {
+      ethereum: [["ETH", "Ether"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["WBTC", "Wrapped BTC"], ["DAI", "Dai"], ["LINK", "Chainlink"]],
+      base: [["ETH", "Ether"], ["USDC", "USD Coin"], ["WETH", "Wrapped Ether"], ["cbBTC", "Coinbase Wrapped BTC"], ["DAI", "Dai"], ["USDT", "Tether USD"]],
+      arbitrum: [["ETH", "Ether"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["WBTC", "Wrapped BTC"], ["DAI", "Dai"], ["LINK", "Chainlink"]],
+      optimism: [["ETH", "Ether"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["WBTC", "Wrapped BTC"], ["DAI", "Dai"], ["OP", "Optimism"]],
+      bnb: [["BNB", "BNB"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["BTCB", "BTCB"], ["DAI", "Dai"], ["WBNB", "Wrapped BNB"]],
+      polygon: [["POL", "Polygon"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["WBTC", "Wrapped BTC"], ["DAI", "Dai"], ["WETH", "Wrapped Ether"]],
+      avalanche: [["AVAX", "Avalanche"], ["USDT", "Tether USD"], ["USDC", "USD Coin"], ["WBTC.e", "Wrapped BTC"], ["DAI.e", "Dai"], ["WETH.e", "Wrapped Ether"]],
+      solana: [["SOL", "Solana"], ["USDC", "USD Coin"], ["USDT", "Tether USD"], ["wSOL", "Wrapped SOL"]],
+      bitcoin: [["BTC", "Bitcoin"]],
+      sui: [["SUI", "Sui"]]
+    };
 
     const pageMeta = {
       home: {
@@ -2867,6 +3861,7 @@
       }
     };
 
+    state.walletHistory.items = loadWalletTransactionHistory();
     ensureDefaultMessages();
     renderChainSelector();
     renderWalletHeader();
@@ -3204,6 +4199,906 @@
       renderAssetBalances();
     }
 
+    function getAssetActionTokens() {
+      const balanceItems = currentAssetBalanceItems();
+      if (balanceItems.length > 0) {
+        return balanceItems.map((item) => ({
+          symbol: String(item.symbol || "TOKEN"),
+          name: String(item.name || item.symbol || "Token"),
+          balance: String(item.balance || "0"),
+          balanceRaw: String(item.balance_raw || "0"),
+          tokenAddress: String(item.token_address || ""),
+          decimals: Number.isSafeInteger(Number(item.decimals)) ? Number(item.decimals) : 18,
+          isNative: Boolean(item.is_native)
+        }));
+      }
+      const catalog = assetActionTokenCatalog[state.selectedChainId] || [];
+      return catalog.map(([symbol, name], index) => ({ symbol, name, balance: "--", balanceRaw: "0", tokenAddress: "", decimals: 18, isNative: index === 0 }));
+    }
+
+    function renderAssetTokenPicker() {
+      const chain = getSelectedChain();
+      const tokens = getAssetActionTokens();
+      assetActionTitleEl.textContent = state.assetAction.mode === "receive" ? "Receive" : "Send";
+      assetActionDescriptionEl.textContent = "选择 " + chain.label + " 支持的 Token";
+      assetTokenListEl.replaceChildren();
+      tokens.forEach((token, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "asset-token-option";
+        button.dataset.assetTokenIndex = String(index);
+        const unavailableForSend = state.assetAction.mode === "send" && !token.isNative && !token.tokenAddress;
+        button.disabled = unavailableForSend;
+
+        const icon = document.createElement("span");
+        icon.className = "asset-token-symbol";
+        icon.textContent = token.symbol.slice(0, 5);
+        const copy = document.createElement("span");
+        copy.className = "asset-token-copy";
+        const symbol = document.createElement("strong");
+        symbol.textContent = token.symbol + (token.isNative ? " · Native" : "");
+        const name = document.createElement("span");
+        name.textContent = token.name;
+        copy.append(symbol, name);
+        const balance = document.createElement("em");
+        balance.textContent = unavailableForSend ? "余额加载后可用" : (token.balance === "--" ? "选择" : token.balance);
+        button.append(icon, copy, balance);
+        assetTokenListEl.appendChild(button);
+      });
+      assetTokenPickerEl.hidden = false;
+      assetActionDetailEl.hidden = true;
+    }
+
+    function openAssetAction(mode) {
+      if (mode !== "send" && mode !== "receive") {
+        return;
+      }
+      if (!isWalletUnlocked()) {
+        if (state.wallet.vault) {
+          state.wallet.pendingAction = "asset-action:" + mode;
+          openWalletUnlock("unlock");
+          walletLockErrorEl.textContent = "请先解锁钱包，再使用 " + (mode === "send" ? "Send" : "Receive") + "。";
+        } else {
+          openWalletUnlock("create");
+          walletLockErrorEl.textContent = "请先创建钱包，再使用资产操作。";
+        }
+        return;
+      }
+      closeWalletAccountDialog();
+      window.clearTimeout(assetActionReturnTimer);
+      assetActionReturnTimer = 0;
+      state.assetAction.mode = mode;
+      state.assetAction.token = null;
+      state.assetAction.plan = null;
+      state.assetAction.sendMax = false;
+      state.assetAction.busy = false;
+      assetActionErrorEl.textContent = "";
+      assetSendAddressEl.value = "";
+      assetSendAmountEl.value = "";
+      assetReceiveQREl.replaceChildren();
+      assetReceiveAddressEl.textContent = "";
+      assetReceiveCopyEl.textContent = "复制接收地址";
+      assetSendNextEl.disabled = false;
+      assetSendNextEl.textContent = "下一步";
+      assetSendFeePreviewEl.textContent = "手续费将在下一步通过当前网络实时预估。";
+      assetTransactionReviewEl.hidden = true;
+      assetTransactionSuccessEl.hidden = true;
+      renderAssetTokenPicker();
+      assetActionDialogEl.classList.add("visible");
+      assetActionDialogEl.setAttribute("aria-hidden", "false");
+    }
+
+    function closeAssetAction() {
+      window.clearTimeout(assetActionReturnTimer);
+      assetActionReturnTimer = 0;
+      assetActionDialogEl.classList.remove("visible");
+      assetActionDialogEl.setAttribute("aria-hidden", "true");
+      state.assetAction.mode = "";
+      state.assetAction.token = null;
+      state.assetAction.plan = null;
+      state.assetAction.sendMax = false;
+      state.assetAction.busy = false;
+      assetActionErrorEl.textContent = "";
+      assetReceiveQREl.replaceChildren();
+      assetTransactionRowsEl.replaceChildren();
+    }
+
+    function loadWalletTransactionHistory() {
+      try {
+        const raw = window.localStorage.getItem(walletTransactionHistoryStorageKey);
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(parsed)) {
+          return [];
+        }
+        return parsed.filter((item) => item && typeof item === "object" && typeof item.hash === "string")
+          .slice(0, 200);
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function persistWalletTransactionHistory() {
+      try {
+        window.localStorage.setItem(
+          walletTransactionHistoryStorageKey,
+          JSON.stringify(state.walletHistory.items.slice(0, 200))
+        );
+      } catch (_) {
+        // History is a convenience cache; transaction broadcasting must not depend on it.
+      }
+    }
+
+    function recordBroadcastTransaction(plan, hash) {
+      const account = getSelectedWalletAccount();
+      const record = {
+        id: hash + ":local",
+        hash,
+        chainId: state.selectedChainId,
+        type: "send",
+        direction: "send",
+        timestamp: new Date().toISOString(),
+        accountIndex: account.index,
+        accountName: account.name,
+        from: getSelectedChainAddress(),
+        to: assetSendAddressEl.value.trim(),
+        tokenSymbol: plan.token_symbol,
+        amount: plan.amount,
+        fee: plan.estimated_fee,
+        feeSymbol: plan.native_symbol,
+        status: "broadcast"
+      };
+      state.walletHistory.items = [record, ...state.walletHistory.items.filter((item) => item.hash !== hash)].slice(0, 200);
+      persistWalletTransactionHistory();
+    }
+
+    function initializeWalletHistoryFilters() {
+      const chainOptions = [{ value: "all", label: "全部网络" }, ...supportedChains.map((chain) => ({ value: chain.id, label: chain.label }))];
+      renderWalletHistoryFilterMenu(walletHistoryChainMenuEl, "chain", chainOptions, state.walletHistory.chainId || state.selectedChainId);
+      renderWalletHistoryFilterMenu(walletHistoryTypeMenuEl, "type", walletHistoryTypeOptions, state.walletHistory.type || "all");
+      syncWalletHistoryFilterLabels();
+    }
+
+    function renderWalletHistoryFilterMenu(menu, kind, options, selectedValue) {
+      menu.replaceChildren();
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "wallet-history-menu-option" + (option.value === selectedValue ? " active" : "");
+        button.dataset.historyFilterKind = kind;
+        button.dataset.historyFilterValue = option.value;
+        button.setAttribute("role", "option");
+        button.setAttribute("aria-selected", option.value === selectedValue ? "true" : "false");
+        button.textContent = option.label;
+        menu.appendChild(button);
+      });
+    }
+
+    function syncWalletHistoryFilterLabels() {
+      const selectedChain = supportedChains.find((chain) => chain.id === state.walletHistory.chainId);
+      walletHistoryChainLabelEl.textContent = state.walletHistory.chainId === "all" ? "全部网络" : (selectedChain ? selectedChain.label : "Ethereum");
+      const selectedType = walletHistoryTypeOptions.find((option) => option.value === state.walletHistory.type);
+      walletHistoryTypeLabelEl.textContent = selectedType ? selectedType.label : "全部类型";
+    }
+
+    function closeWalletHistoryMenus() {
+      [
+        [walletHistoryChainFilterEl, walletHistoryChainTriggerEl, walletHistoryChainMenuEl],
+        [walletHistoryTypeFilterEl, walletHistoryTypeTriggerEl, walletHistoryTypeMenuEl]
+      ].forEach(([filter, trigger, menu]) => {
+        filter.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+        menu.hidden = true;
+      });
+    }
+
+    function toggleWalletHistoryMenu(kind) {
+      const target = kind === "chain"
+        ? [walletHistoryChainFilterEl, walletHistoryChainTriggerEl, walletHistoryChainMenuEl]
+        : [walletHistoryTypeFilterEl, walletHistoryTypeTriggerEl, walletHistoryTypeMenuEl];
+      const shouldOpen = target[2].hidden;
+      closeWalletHistoryMenus();
+      if (shouldOpen) {
+        target[0].classList.add("open");
+        target[1].setAttribute("aria-expanded", "true");
+        target[2].hidden = false;
+      }
+    }
+
+    function openWalletHistory() {
+      if (!isWalletUnlocked()) {
+        if (state.wallet.vault) {
+          state.wallet.pendingAction = "wallet-history";
+          openWalletUnlock("unlock");
+          walletLockErrorEl.textContent = "请先解锁钱包，再同步当前账户的链上交易记录。";
+        } else {
+          openWalletUnlock("create");
+          walletLockErrorEl.textContent = "请先创建钱包，再查看交易历史。";
+        }
+        return;
+      }
+      closeAssetAction();
+      closeWalletAccountDialog();
+      state.walletHistory.items = loadWalletTransactionHistory();
+      state.walletHistory.chainId = state.selectedChainId;
+      state.walletHistory.type = "all";
+      state.walletHistory.error = "";
+      initializeWalletHistoryFilters();
+      renderWalletHistory();
+      walletHistoryDialogEl.classList.add("visible");
+      walletHistoryDialogEl.setAttribute("aria-hidden", "false");
+      void refreshWalletTransactionHistory();
+    }
+
+    function closeWalletHistory() {
+      state.walletHistory.requestToken += 1;
+      state.walletHistory.loading = false;
+      closeWalletHistoryMenus();
+      walletHistoryDialogEl.classList.remove("visible");
+      walletHistoryDialogEl.setAttribute("aria-hidden", "true");
+    }
+
+    async function refreshWalletTransactionHistory() {
+      if (!isWalletUnlocked()) {
+        return;
+      }
+      const requestToken = state.walletHistory.requestToken + 1;
+      state.walletHistory.requestToken = requestToken;
+      state.walletHistory.loading = true;
+      state.walletHistory.error = "";
+      renderWalletHistory();
+
+      const requestedChains = state.walletHistory.chainId === "all"
+        ? supportedEVMHistoryChains
+        : [state.walletHistory.chainId];
+      const supportedChainsToLoad = requestedChains.filter((chainId) => supportedEVMHistoryChains.includes(chainId));
+      if (supportedChainsToLoad.length === 0) {
+        state.walletHistory.loading = false;
+        state.walletHistory.error = "当前网络暂不支持在钱包内同步交易历史，请使用下方区块浏览器查看。";
+        renderWalletHistory();
+        return;
+      }
+
+      const results = await Promise.allSettled(supportedChainsToLoad.map(async (chainId) => {
+        const address = await ensureBalanceAddressForChain(normalizeAssetBalanceChainID(chainId));
+        if (!address) {
+          throw new Error("无法派生当前账户地址");
+        }
+        const response = await fetch("/v1/wallet/evm/history", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chain_id: normalizeAssetBalanceChainID(chainId), address })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || "链上历史查询失败");
+        }
+        return Array.isArray(payload.items) ? payload.items.map(normalizeWalletHistoryItem) : [];
+      }));
+      if (requestToken !== state.walletHistory.requestToken) {
+        return;
+      }
+
+      const remoteItems = results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
+      state.walletHistory.items = mergeWalletHistoryItems(remoteItems, loadWalletTransactionHistory());
+      const failures = results.filter((result) => result.status === "rejected");
+      state.walletHistory.error = failures.length === results.length
+        ? "暂时无法同步链上历史，已显示本地记录。请稍后重试或前往区块浏览器查看。"
+        : (failures.length > 0 ? "部分网络同步失败，其余链上记录已显示。" : "");
+      state.walletHistory.loading = false;
+      renderWalletHistory();
+    }
+
+    function normalizeWalletHistoryItem(item) {
+      return {
+        id: String(item.id || item.hash || ""),
+        hash: String(item.hash || ""),
+        chainId: String(item.chain_id || item.chainId || ""),
+        type: String(item.type || ""),
+        direction: String(item.direction || ""),
+        timestamp: String(item.timestamp || ""),
+        from: String(item.from || ""),
+        to: String(item.to || ""),
+        tokenSymbol: String(item.token_symbol || item.tokenSymbol || ""),
+        amount: String(item.amount || "0"),
+        fee: String(item.fee || ""),
+        feeSymbol: String(item.fee_symbol || item.feeSymbol || ""),
+        status: String(item.status || "confirmed")
+      };
+    }
+
+    function walletHistoryRecordKey(item) {
+      return [item.chainId, item.hash, item.direction, item.tokenSymbol, item.amount].join(":").toLowerCase();
+    }
+
+    function mergeWalletHistoryItems(remoteItems, localItems) {
+      const merged = new Map();
+      [...remoteItems, ...localItems.map(normalizeWalletHistoryItem)].forEach((item) => {
+        const key = walletHistoryRecordKey(item);
+        if (item.hash && !merged.has(key)) {
+          merged.set(key, item);
+        }
+      });
+      return Array.from(merged.values()).slice(0, 200);
+    }
+
+    function walletHistoryTypeLabel(type) {
+      return ({ send: "发送", receive: "接收", swap: "交易", bridge: "跨链" })[type] || "交易";
+    }
+
+    function walletHistoryDateLabel(timestamp) {
+      const date = new Date(timestamp);
+      if (Number.isNaN(date.getTime())) {
+        return "日期未知";
+      }
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return year + "/" + month + "/" + day;
+    }
+
+    function filteredWalletHistory() {
+      const chainId = state.walletHistory.chainId || "all";
+      const type = state.walletHistory.type || "all";
+      return state.walletHistory.items
+        .filter((item) => chainId === "all" || item.chainId === chainId)
+        .filter((item) => type === "all" || item.type === type)
+        .sort((left, right) => new Date(right.timestamp).getTime() - new Date(left.timestamp).getTime());
+    }
+
+    function renderWalletHistory() {
+      const items = filteredWalletHistory();
+      walletHistoryListEl.replaceChildren();
+      walletHistoryLoadingEl.hidden = !state.walletHistory.loading;
+      walletHistoryErrorEl.hidden = !state.walletHistory.error;
+      walletHistoryErrorEl.textContent = state.walletHistory.error;
+      walletHistoryEmptyEl.hidden = state.walletHistory.loading || items.length > 0;
+      const groups = new Map();
+      items.forEach((item) => {
+        const date = walletHistoryDateLabel(item.timestamp);
+        if (!groups.has(date)) {
+          groups.set(date, []);
+        }
+        groups.get(date).push(item);
+      });
+      groups.forEach((transactions, date) => {
+        const group = document.createElement("section");
+        group.className = "wallet-history-group";
+        const heading = document.createElement("h3");
+        heading.className = "wallet-history-date";
+        heading.textContent = date;
+        group.appendChild(heading);
+        transactions.forEach((item) => group.appendChild(createWalletHistoryItem(item)));
+        walletHistoryListEl.appendChild(group);
+      });
+      walletHistoryExplorerEl.disabled = !walletHistoryExplorerTarget();
+    }
+
+    function createWalletHistoryItem(item) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "wallet-history-item";
+      button.dataset.walletHistoryHash = item.hash;
+      button.dataset.walletHistoryChain = item.chainId;
+      button.setAttribute("aria-label", walletHistoryTypeLabel(item.type) + " " + item.amount + " " + item.tokenSymbol);
+
+      const icon = document.createElement("span");
+      icon.className = "wallet-history-token-icon";
+      icon.textContent = String(item.tokenSymbol || "TX").slice(0, 5);
+      const copy = document.createElement("span");
+      copy.className = "wallet-history-copy";
+      const title = document.createElement("strong");
+      title.textContent = walletHistoryTypeLabel(item.type);
+      const detail = document.createElement("span");
+      const peer = item.direction === "receive" ? item.from : item.to;
+      detail.textContent = (item.direction === "receive" ? "来自 " : "至 ") + maskAddress(peer || "地址未知");
+      copy.append(title, detail);
+
+      const value = document.createElement("span");
+      value.className = "wallet-history-value";
+      const amount = document.createElement("strong");
+      const incoming = item.direction === "receive";
+      amount.className = incoming ? "incoming" : "";
+      amount.textContent = (incoming ? "+" : "-") + item.amount + " " + item.tokenSymbol;
+      const fee = document.createElement("span");
+      fee.textContent = incoming
+        ? (item.status === "broadcast" ? "已广播" : "")
+        : (item.fee ? "手续费 " + item.fee + " " + item.feeSymbol : (item.status === "broadcast" ? "已广播" : ""));
+      value.append(amount, fee);
+      button.append(icon, copy, value);
+      return button;
+    }
+
+    function explorerURL(chainId, kind, value) {
+      const base = chainExplorerURLs[chainId];
+      if (!base || !value) {
+        return "";
+      }
+      if (kind === "tx") {
+        return base + "/tx/" + encodeURIComponent(value);
+      }
+      const accountPath = chainId === "solana" ? "account" : "address";
+      return base + "/" + accountPath + "/" + encodeURIComponent(value);
+    }
+
+    function openExternalExplorer(url) {
+      if (!url) {
+        return;
+      }
+      const opened = window.open(url, "_blank", "noopener,noreferrer");
+      if (opened) {
+        opened.opener = null;
+      }
+    }
+
+    function walletHistoryExplorerTarget() {
+      const chainId = state.walletHistory.chainId === "all" ? state.selectedChainId : (state.walletHistory.chainId || state.selectedChainId);
+      let address = "";
+      if (isWalletUnlocked() && chainId === state.selectedChainId) {
+        address = getSelectedChainAddress();
+      }
+      if (!address) {
+        const record = state.walletHistory.items.find((item) => item.chainId === chainId);
+        address = record ? (record.from || record.to || "") : "";
+      }
+      return explorerURL(chainId, "address", address);
+    }
+
+    async function selectAssetActionToken(index) {
+      const tokens = getAssetActionTokens();
+      const token = tokens[index];
+      if (!token) {
+        return;
+      }
+      state.assetAction.token = token;
+      assetActionSelectedTokenEl.textContent = token.symbol + " · " + getSelectedChain().label;
+      assetTokenPickerEl.hidden = true;
+      assetActionDetailEl.hidden = false;
+      assetActionErrorEl.textContent = "";
+      const isReceive = state.assetAction.mode === "receive";
+      assetSendFormEl.hidden = isReceive;
+      assetReceivePanelEl.hidden = !isReceive;
+      assetSendMaxEl.hidden = !token.isNative;
+      state.assetAction.sendMax = false;
+      state.assetAction.plan = null;
+      assetSendFeePreviewEl.textContent = token.isNative
+        ? "点击最大值会自动预留实时预估的最高网络手续费。"
+        : "Token 转账手续费将使用 " + getSelectedChain().short + " 单独支付。";
+      assetActionTitleEl.textContent = isReceive ? "Receive " + token.symbol : "Send " + token.symbol;
+      assetActionDescriptionEl.textContent = isReceive ? "扫描二维码或复制地址接收资产" : "填写接收地址与转账数量";
+      if (isReceive) {
+        const address = await ensureSelectedChainAddress();
+        if (!address) {
+          assetActionErrorEl.textContent = "当前链接收地址派生失败。";
+          return;
+        }
+        assetReceiveAddressEl.textContent = address;
+        renderQRCode(assetReceiveQREl, address);
+      } else {
+        if (!supportedEVMTransferChains.includes(state.selectedChainId)) {
+          assetSendFormEl.hidden = true;
+          assetActionErrorEl.textContent = "当前链尚未配置安全的交易构建与广播能力。现阶段 Send 支持 Ethereum、Base、Arbitrum、Optimism、BNB、Polygon 和 Avalanche。";
+          return;
+        }
+        requestAnimationFrame(() => assetSendAddressEl.focus());
+      }
+    }
+
+    function isValidRecipientAddress(address) {
+      const value = String(address || "").trim();
+      if (!value) {
+        return false;
+      }
+      if (["ethereum", "base", "arbitrum", "optimism", "bnb", "polygon", "avalanche"].includes(state.selectedChainId)) {
+        return /^0x[0-9a-fA-F]{40}$/.test(value);
+      }
+      if (state.selectedChainId === "bitcoin") {
+        return /^(bc1[ac-hj-np-z02-9]{11,71}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/.test(value);
+      }
+      if (state.selectedChainId === "solana") {
+        return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value);
+      }
+      if (state.selectedChainId === "sui") {
+        return /^0x[0-9a-fA-F]{64}$/.test(value);
+      }
+      return value.length >= 20;
+    }
+
+    function validateAssetSendInput() {
+      const address = assetSendAddressEl.value.trim();
+      const amount = assetSendAmountEl.value.trim();
+      if (!isValidRecipientAddress(address)) {
+        assetActionErrorEl.textContent = "请输入有效的 " + getSelectedChain().label + " 接收地址。";
+        return false;
+      }
+      if (!/^\d+(\.\d+)?$/.test(amount) || Number(amount) <= 0) {
+        assetActionErrorEl.textContent = "请输入大于 0 的转账数量。";
+        return false;
+      }
+      return true;
+    }
+
+    async function requestEVMTransactionPlan(sendMax) {
+      const token = state.assetAction.token;
+      if (!token || !supportedEVMTransferChains.includes(state.selectedChainId)) {
+        throw new Error("当前链暂不支持发送。 ");
+      }
+      const from = await ensureSelectedChainAddress();
+      if (!from) {
+        throw new Error("发送地址派生失败。 ");
+      }
+      let recipient = assetSendAddressEl.value.trim();
+      if (sendMax && !isValidRecipientAddress(recipient)) {
+        recipient = from;
+      }
+      const response = await fetch("/v1/wallet/evm/prepare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chain_id: state.selectedChainId,
+          from,
+          to: recipient,
+          token_address: token.isNative ? "" : token.tokenAddress,
+          amount: sendMax ? "" : assetSendAmountEl.value.trim(),
+          send_max: Boolean(sendMax)
+        })
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "交易手续费预估失败。 ");
+      }
+      return payload;
+    }
+
+    async function applyNativeMaximum() {
+      if (!state.assetAction.token || !state.assetAction.token.isNative || state.assetAction.busy) {
+        return;
+      }
+      state.assetAction.busy = true;
+      assetSendMaxEl.disabled = true;
+      assetSendNextEl.disabled = true;
+      assetActionErrorEl.textContent = "";
+      assetSendFeePreviewEl.textContent = "正在根据当前网络计算可转出的最大值...";
+      try {
+        const plan = await requestEVMTransactionPlan(true);
+        state.assetAction.plan = plan;
+        state.assetAction.sendMax = true;
+        assetSendAmountEl.value = plan.amount;
+        assetSendFeePreviewEl.textContent = "已预留最高约 " + plan.estimated_fee + " " + plan.native_symbol + " 网络手续费。";
+      } catch (error) {
+        state.assetAction.sendMax = false;
+        state.assetAction.plan = null;
+        assetSendFeePreviewEl.textContent = "无法计算最大值。";
+        assetActionErrorEl.textContent = error instanceof Error ? error.message : "最大值计算失败。";
+      } finally {
+        state.assetAction.busy = false;
+        assetSendMaxEl.disabled = false;
+        assetSendNextEl.disabled = false;
+      }
+    }
+
+    async function prepareAssetSendReview() {
+      if (!validateAssetSendInput() || state.assetAction.busy) {
+        return;
+      }
+      state.assetAction.busy = true;
+      assetSendNextEl.disabled = true;
+      assetSendNextEl.textContent = "预估手续费...";
+      assetActionErrorEl.textContent = "";
+      try {
+        const plan = await requestEVMTransactionPlan(state.assetAction.sendMax);
+        state.assetAction.plan = plan;
+        assetSendAmountEl.value = plan.amount;
+        renderAssetTransactionReview(plan);
+      } catch (error) {
+        state.assetAction.plan = null;
+        assetActionErrorEl.textContent = error instanceof Error ? error.message : "交易准备失败。";
+      } finally {
+        state.assetAction.busy = false;
+        assetSendNextEl.disabled = false;
+        assetSendNextEl.textContent = "下一步";
+      }
+    }
+
+    function appendTransactionDetail(label, value) {
+      const row = document.createElement("div");
+      row.className = "asset-transaction-row";
+      const name = document.createElement("span");
+      name.textContent = label;
+      const detail = document.createElement("strong");
+      detail.textContent = value;
+      row.append(name, detail);
+      assetTransactionRowsEl.appendChild(row);
+    }
+
+    function renderAssetTransactionReview(plan) {
+      const from = getSelectedChainAddress();
+      const recipient = assetSendAddressEl.value.trim();
+      const account = getSelectedWalletAccount();
+      assetTransactionRowsEl.replaceChildren();
+      appendTransactionDetail("当前网络", getSelectedChain().label + " · Chain ID " + BigInt(plan.network_chain_id).toString());
+      appendTransactionDetail("发送资产", plan.amount + " " + plan.token_symbol);
+      appendTransactionDetail("预计手续费", "最高约 " + plan.estimated_fee + " " + plan.native_symbol);
+      appendTransactionDetail("账户编号", account.name + " · #" + account.index);
+      appendTransactionDetail("发送地址", from);
+      appendTransactionDetail("收款地址", recipient);
+      assetActionDetailEl.hidden = true;
+      assetTransactionSuccessEl.hidden = true;
+      assetTransactionReviewEl.hidden = false;
+      assetTransactionErrorEl.textContent = "";
+      assetActionTitleEl.textContent = "确认交易";
+      assetActionDescriptionEl.textContent = "请仔细核对网络、资产、手续费和地址";
+    }
+
+    function transactionForSigning(plan) {
+      const transaction = {
+        type: plan.transaction_type,
+        chainId: plan.network_chain_id,
+        nonce: plan.nonce,
+        to: plan.to,
+        value: plan.value,
+        data: plan.data,
+        gasLimit: plan.gas_limit
+      };
+      if (plan.transaction_type === 2) {
+        transaction.maxFeePerGas = plan.max_fee_per_gas;
+        transaction.maxPriorityFeePerGas = plan.max_priority_fee_per_gas;
+      } else {
+        transaction.gasPrice = plan.gas_price;
+      }
+      return transaction;
+    }
+
+    async function confirmAndBroadcastAssetTransaction() {
+      const plan = state.assetAction.plan;
+      if (!plan || state.assetAction.busy || !isWalletUnlocked()) {
+        return;
+      }
+      if (!window.WalletEVMSigner || typeof window.WalletEVMSigner.signTransaction !== "function") {
+        assetTransactionErrorEl.textContent = "本地交易签名模块不可用。";
+        return;
+      }
+      state.assetAction.busy = true;
+      assetTransactionConfirmEl.disabled = true;
+      assetTransactionConfirmEl.textContent = "本地签名并广播中...";
+      assetTransactionErrorEl.textContent = "";
+      try {
+        const accountIndex = getSelectedWalletAccountIndex();
+        const expectedAddress = getSelectedChainAddress().toLowerCase();
+        const signerAddress = window.WalletEVMSigner.getAddress(state.wallet.seed, accountIndex).toLowerCase();
+        if (expectedAddress !== signerAddress) {
+          throw new Error("签名账户与当前发送地址不一致，交易已取消。 ");
+        }
+        let rawTransaction = await window.WalletEVMSigner.signTransaction(
+          state.wallet.seed,
+          accountIndex,
+          transactionForSigning(plan)
+        );
+        const response = await fetch("/v1/wallet/evm/broadcast", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chain_id: plan.chain_id, raw_transaction: rawTransaction })
+        });
+        rawTransaction = "";
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "交易广播失败。 ");
+        }
+        if (payload.transaction_hash) {
+          recordBroadcastTransaction(plan, payload.transaction_hash);
+        }
+        assetTransactionReviewEl.hidden = true;
+        assetTransactionSuccessEl.hidden = false;
+        assetTransactionHashEl.textContent = payload.transaction_hash || "已提交";
+        assetActionTitleEl.textContent = "交易已广播";
+        assetActionDescriptionEl.textContent = getSelectedChain().label + " 网络已接收签名交易";
+        assetActionReturnTimer = window.setTimeout(() => {
+          assetActionReturnTimer = 0;
+          closeAssetAction();
+          switchTab("asset");
+          void refreshAssetBalances();
+        }, 2200);
+      } catch (error) {
+        assetTransactionErrorEl.textContent = error instanceof Error ? error.message : "交易签名或广播失败。";
+      } finally {
+        state.assetAction.busy = false;
+        assetTransactionConfirmEl.disabled = false;
+        assetTransactionConfirmEl.textContent = "确认并广播";
+      }
+    }
+
+    async function copyAssetReceiveAddress() {
+      const address = assetReceiveAddressEl.textContent.trim();
+      if (!address) {
+        return;
+      }
+      try {
+        await copyTextToClipboard(address);
+        assetReceiveCopyEl.textContent = "已复制";
+      } catch (_) {
+        assetReceiveCopyEl.textContent = "复制失败";
+      }
+      window.setTimeout(() => {
+        assetReceiveCopyEl.textContent = "复制接收地址";
+      }, 1600);
+    }
+
+    function renderQRCode(container, value) {
+      const matrix = createQRCodeMatrix(value);
+      const quietZone = 4;
+      const dimension = matrix.length + quietZone * 2;
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 " + dimension + " " + dimension);
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "接收地址二维码");
+      svg.setAttribute("shape-rendering", "crispEdges");
+      const background = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      background.setAttribute("width", String(dimension));
+      background.setAttribute("height", String(dimension));
+      background.setAttribute("fill", "#ffffff");
+      svg.appendChild(background);
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      let commands = "";
+      matrix.forEach((row, y) => {
+        row.forEach((dark, x) => {
+          if (dark) {
+            commands += "M" + (x + quietZone) + " " + (y + quietZone) + "h1v1h-1z";
+          }
+        });
+      });
+      path.setAttribute("d", commands);
+      path.setAttribute("fill", "#020617");
+      svg.appendChild(path);
+      container.replaceChildren(svg);
+    }
+
+    function createQRCodeMatrix(value) {
+      const version = 5;
+      const size = version * 4 + 17;
+      const dataCodewords = 108;
+      const errorCodewords = 26;
+      const bytes = Array.from(new TextEncoder().encode(value));
+      if (bytes.length > 106) {
+        throw new Error("接收地址过长，无法生成二维码。");
+      }
+      const bits = [];
+      const appendBits = (number, length) => {
+        for (let bit = length - 1; bit >= 0; bit -= 1) {
+          bits.push((number >>> bit) & 1);
+        }
+      };
+      appendBits(4, 4);
+      appendBits(bytes.length, 8);
+      bytes.forEach((byte) => appendBits(byte, 8));
+      appendBits(0, Math.min(4, dataCodewords * 8 - bits.length));
+      while (bits.length % 8 !== 0) {
+        bits.push(0);
+      }
+      let pad = 0;
+      while (bits.length < dataCodewords * 8) {
+        appendBits(pad % 2 === 0 ? 236 : 17, 8);
+        pad += 1;
+      }
+      const data = [];
+      for (let offset = 0; offset < bits.length; offset += 8) {
+        let byte = 0;
+        for (let bit = 0; bit < 8; bit += 1) {
+          byte = (byte << 1) | bits[offset + bit];
+        }
+        data.push(byte);
+      }
+
+      const exponent = new Array(512);
+      const logarithm = new Array(256).fill(0);
+      let valueAt = 1;
+      for (let index = 0; index < 255; index += 1) {
+        exponent[index] = valueAt;
+        logarithm[valueAt] = index;
+        valueAt <<= 1;
+        if (valueAt & 256) {
+          valueAt ^= 285;
+        }
+      }
+      for (let index = 255; index < 512; index += 1) {
+        exponent[index] = exponent[index - 255];
+      }
+      const multiply = (left, right) => left === 0 || right === 0 ? 0 : exponent[logarithm[left] + logarithm[right]];
+      let generator = [1];
+      for (let degree = 0; degree < errorCodewords; degree += 1) {
+        const next = new Array(generator.length + 1).fill(0);
+        generator.forEach((coefficient, index) => {
+          next[index] ^= coefficient;
+          next[index + 1] ^= multiply(coefficient, exponent[degree]);
+        });
+        generator = next;
+      }
+      const remainder = new Array(errorCodewords).fill(0);
+      data.forEach((byte) => {
+        const factor = byte ^ remainder[0];
+        remainder.shift();
+        remainder.push(0);
+        for (let index = 0; index < errorCodewords; index += 1) {
+          remainder[index] ^= multiply(generator[index + 1], factor);
+        }
+      });
+      const codewordBits = [];
+      data.concat(remainder).forEach((byte) => {
+        for (let bit = 7; bit >= 0; bit -= 1) {
+          codewordBits.push((byte >>> bit) & 1);
+        }
+      });
+
+      const matrix = Array.from({ length: size }, () => new Array(size).fill(false));
+      const functions = Array.from({ length: size }, () => new Array(size).fill(false));
+      const setFunction = (x, y, dark) => {
+        if (x >= 0 && y >= 0 && x < size && y < size) {
+          matrix[y][x] = Boolean(dark);
+          functions[y][x] = true;
+        }
+      };
+      const drawFinder = (left, top) => {
+        for (let dy = -1; dy <= 7; dy += 1) {
+          for (let dx = -1; dx <= 7; dx += 1) {
+            const inside = dx >= 0 && dx <= 6 && dy >= 0 && dy <= 6;
+            const dark = inside && (dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4));
+            setFunction(left + dx, top + dy, dark);
+          }
+        }
+      };
+      drawFinder(0, 0);
+      drawFinder(size - 7, 0);
+      drawFinder(0, size - 7);
+      for (let index = 8; index < size - 8; index += 1) {
+        if (!functions[6][index]) setFunction(index, 6, index % 2 === 0);
+        if (!functions[index][6]) setFunction(6, index, index % 2 === 0);
+      }
+      for (let dy = -2; dy <= 2; dy += 1) {
+        for (let dx = -2; dx <= 2; dx += 1) {
+          setFunction(30 + dx, 30 + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+        }
+      }
+      for (let index = 0; index < 15; index += 1) {
+        const verticalY = index < 6 ? index : (index < 8 ? index + 1 : size - 15 + index);
+        const horizontalX = index < 8 ? size - index - 1 : (index === 8 ? 7 : 14 - index);
+        setFunction(8, verticalY, false);
+        setFunction(horizontalX, 8, false);
+      }
+      setFunction(8, size - 8, true);
+
+      let bitIndex = 0;
+      let upward = true;
+      for (let right = size - 1; right >= 1; right -= 2) {
+        if (right === 6) right -= 1;
+        for (let step = 0; step < size; step += 1) {
+          const y = upward ? size - 1 - step : step;
+          for (let offset = 0; offset < 2; offset += 1) {
+            const x = right - offset;
+            if (functions[y][x]) continue;
+            const raw = bitIndex < codewordBits.length ? codewordBits[bitIndex] === 1 : false;
+            matrix[y][x] = raw !== ((x + y) % 2 === 0);
+            bitIndex += 1;
+          }
+        }
+        upward = !upward;
+      }
+      const formatData = 8;
+      let remainderBits = formatData << 10;
+      for (let bit = 14; bit >= 10; bit -= 1) {
+        if ((remainderBits >>> bit) & 1) {
+          remainderBits ^= 0x537 << (bit - 10);
+        }
+      }
+      const formatBits = ((formatData << 10) | remainderBits) ^ 0x5412;
+      for (let index = 0; index < 15; index += 1) {
+        const dark = ((formatBits >>> index) & 1) === 1;
+        const verticalY = index < 6 ? index : (index < 8 ? index + 1 : size - 15 + index);
+        const horizontalX = index < 8 ? size - index - 1 : (index === 8 ? 7 : 14 - index);
+        matrix[verticalY][8] = dark;
+        matrix[8][horizontalX] = dark;
+      }
+      matrix[size - 8][8] = true;
+      return matrix;
+    }
+
     function bindEvents() {
       tabs.forEach((tabButton) => {
         tabButton.addEventListener("click", () => switchTab(tabButton.dataset.tab));
@@ -3304,6 +5199,113 @@
       walletImportFillEl.addEventListener("click", () => {
         void hydrateImportedMnemonicInputs();
       });
+      viewsEl.addEventListener("click", (event) => {
+        const actionButton = event.target.closest("[data-asset-action]");
+        if (actionButton) {
+          const action = actionButton.dataset.assetAction || "";
+          if (action === "history") {
+            openWalletHistory();
+          } else {
+            openAssetAction(action);
+          }
+        }
+      });
+      walletHistoryBackEl.addEventListener("click", closeWalletHistory);
+      walletHistoryDialogEl.addEventListener("click", (event) => {
+        if (event.target === walletHistoryDialogEl) {
+          closeWalletHistory();
+          return;
+        }
+        const option = event.target.closest("[data-history-filter-kind]");
+        if (option) {
+          const kind = option.dataset.historyFilterKind;
+          const value = option.dataset.historyFilterValue || "all";
+          if (kind === "chain") {
+            state.walletHistory.chainId = value;
+            closeWalletHistoryMenus();
+            initializeWalletHistoryFilters();
+            renderWalletHistory();
+            void refreshWalletTransactionHistory();
+          } else if (kind === "type") {
+            state.walletHistory.type = value;
+            closeWalletHistoryMenus();
+            initializeWalletHistoryFilters();
+            renderWalletHistory();
+          }
+          return;
+        }
+        if (!walletHistoryChainFilterEl.contains(event.target) && !walletHistoryTypeFilterEl.contains(event.target)) {
+          closeWalletHistoryMenus();
+        }
+      });
+      walletHistoryChainTriggerEl.addEventListener("click", () => {
+        toggleWalletHistoryMenu("chain");
+      });
+      walletHistoryTypeTriggerEl.addEventListener("click", () => {
+        toggleWalletHistoryMenu("type");
+      });
+      walletHistoryListEl.addEventListener("click", (event) => {
+        const item = event.target.closest("[data-wallet-history-hash]");
+        if (!item) {
+          return;
+        }
+        openExternalExplorer(explorerURL(item.dataset.walletHistoryChain || "", "tx", item.dataset.walletHistoryHash || ""));
+      });
+      walletHistoryExplorerEl.addEventListener("click", () => {
+        openExternalExplorer(walletHistoryExplorerTarget());
+      });
+      assetActionCloseEl.addEventListener("click", closeAssetAction);
+      assetActionDialogEl.addEventListener("click", (event) => {
+        if (event.target === assetActionDialogEl) {
+          closeAssetAction();
+        }
+      });
+      assetTokenListEl.addEventListener("click", (event) => {
+        const tokenButton = event.target.closest("[data-asset-token-index]");
+        if (!tokenButton) {
+          return;
+        }
+        const tokenIndex = Number(tokenButton.dataset.assetTokenIndex);
+        if (Number.isSafeInteger(tokenIndex) && tokenIndex >= 0) {
+          void selectAssetActionToken(tokenIndex);
+        }
+      });
+      assetActionChangeTokenEl.addEventListener("click", () => {
+        state.assetAction.token = null;
+        assetActionErrorEl.textContent = "";
+        renderAssetTokenPicker();
+      });
+      assetSendFormEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void prepareAssetSendReview();
+      });
+      assetSendMaxEl.addEventListener("click", () => {
+        void applyNativeMaximum();
+      });
+      assetSendAmountEl.addEventListener("input", () => {
+        state.assetAction.sendMax = false;
+        state.assetAction.plan = null;
+        assetActionErrorEl.textContent = "";
+      });
+      assetSendAddressEl.addEventListener("input", () => {
+        state.assetAction.plan = null;
+        assetActionErrorEl.textContent = "";
+      });
+      assetTransactionConfirmEl.addEventListener("click", () => {
+        void confirmAndBroadcastAssetTransaction();
+      });
+      assetTransactionBackEl.addEventListener("click", () => {
+        if (state.assetAction.busy) {
+          return;
+        }
+        assetTransactionReviewEl.hidden = true;
+        assetActionDetailEl.hidden = false;
+        assetActionTitleEl.textContent = "Send " + (state.assetAction.token ? state.assetAction.token.symbol : "Token");
+        assetActionDescriptionEl.textContent = "填写接收地址与转账数量";
+      });
+      assetReceiveCopyEl.addEventListener("click", () => {
+        void copyAssetReceiveAddress();
+      });
       chainSelectorButtonEl.addEventListener("click", (event) => {
         event.stopPropagation();
         const expanded = chainSelectorButtonEl.getAttribute("aria-expanded") === "true";
@@ -3316,6 +5318,7 @@
           return;
         }
         state.selectedChainId = option.dataset.chainId || "ethereum";
+        closeAssetAction();
         chainSelectorMenuEl.hidden = true;
         chainSelectorButtonEl.setAttribute("aria-expanded", "false");
         renderChainSelector();
@@ -3380,6 +5383,16 @@
         if (event.key === "Escape" && walletAccountDialogEl.classList.contains("visible")) {
           closeWalletAccountDialog();
         }
+        if (event.key === "Escape" && assetActionDialogEl.classList.contains("visible")) {
+          closeAssetAction();
+        }
+        if (event.key === "Escape" && walletHistoryDialogEl.classList.contains("visible")) {
+          if (!walletHistoryChainMenuEl.hidden || !walletHistoryTypeMenuEl.hidden) {
+            closeWalletHistoryMenus();
+          } else {
+            closeWalletHistory();
+          }
+        }
       });
     }
 
@@ -3387,6 +5400,8 @@
       state.activeTab = tab;
       if (tab !== "asset") {
         closeWalletAccountDialog();
+        closeAssetAction();
+        closeWalletHistory();
       }
       if (appShellEl) {
         appShellEl.dataset.activeTab = tab;
@@ -3680,6 +5695,12 @@
         } else if (pendingAction === "accounts") {
           state.wallet.pendingAction = "";
           openWalletAccountDialog();
+        } else if (pendingAction === "wallet-history") {
+          state.wallet.pendingAction = "";
+          openWalletHistory();
+        } else if (pendingAction.startsWith("asset-action:")) {
+          state.wallet.pendingAction = "";
+          openAssetAction(pendingAction.slice("asset-action:".length));
         }
       } catch (_) {
         walletLockErrorEl.textContent = "无法解锁钱包，请检查密码。";
@@ -3804,6 +5825,7 @@
 
     function lockWallet() {
       closeWalletAccountDialog();
+      closeAssetAction();
       if (state.wallet.mode === "export-display") {
         closeWalletUnlock();
       }
@@ -3852,7 +5874,7 @@
       walletAccessButtonEl.disabled = false;
       if (isWalletUnlocked()) {
         walletVaultCardEl.hidden = true;
-        walletVaultCopyEl.textContent = "钱包已解锁。助记词仅存在于当前页面内存，会在 5 分钟无操作、关闭页面或手动锁定时清除。";
+        walletVaultCopyEl.textContent = "钱包已解锁。助记词仅存在于当前页面内存，会在 30 分钟无操作、关闭页面或手动锁定时清除。";
         walletVaultStateEl.textContent = "UNLOCKED";
         walletVaultStateEl.classList.remove("locked");
         walletAddressEl.textContent = "已解锁 · BIP39 助记词已恢复为 seed，BIP44 keyring 将按不同链的标准路径进行派生。";
