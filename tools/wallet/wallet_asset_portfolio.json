@@ -1,0 +1,19 @@
+{
+  "name": "wallet_asset_portfolio",
+  "description": "Get balances for the currently selected supported chain from native chain RPC nodes only. Provide selected_chain_id plus an addresses map that contains the selected chain address. The tool returns that chain's native asset and tracked token balances without querying third-party pricing platforms.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "selected_chain_id": {
+        "type": "string",
+        "description": "The chain to show detailed balances for, such as ethereum, base, arbitrum, optimism, bsc, polygon, avalanche, or numeric chain IDs like 1 and 8453."
+      },
+      "addresses": {
+        "type": "object",
+        "description": "Map of chain IDs to wallet addresses, for example {\"ethereum\":\"0x...\",\"8453\":\"0x...\"}."
+      }
+    },
+    "required": ["selected_chain_id", "addresses"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "wallet_chain_token_balances",
+  "description": "Get a wallet's native balance and token balances on one EVM chain. Provide chain_id, address, and optional token_addresses. If token_addresses is omitted, the tool returns the chain native asset plus five mainstream tracked tokens for that chain.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "chain_id": {
+        "type": "string",
+        "description": "Target chain identifier such as ethereum, base, arbitrum, optimism, bsc, polygon, avalanche, or numeric chain IDs like 1 and 8453."
+      },
+      "address": {
+        "type": "string",
+        "description": "Wallet address on the selected chain."
+      },
+      "token_addresses": {
+        "type": "array",
+        "description": "Optional ERC-20 contract addresses to query on the selected chain. If omitted, the tool uses the chain's default tracked token list.",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": ["chain_id", "address"],
+    "additionalProperties": false
+  }
+}

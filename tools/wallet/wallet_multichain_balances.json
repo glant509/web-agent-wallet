@@ -1,0 +1,22 @@
+{
+  "name": "wallet_multichain_balances",
+  "description": "Get balances across multiple supported EVM chains and calculate the wallet's combined total USD value. Provide an addresses map keyed by chain_id; if chain_ids is omitted, all supported balance chains are queried.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "addresses": {
+        "type": "object",
+        "description": "Map of chain IDs to wallet addresses, for example {\"ethereum\":\"0x...\",\"base\":\"0x...\"}."
+      },
+      "chain_ids": {
+        "type": "array",
+        "description": "Optional chain IDs to limit the aggregation scope.",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": ["addresses"],
+    "additionalProperties": false
+  }
+}
