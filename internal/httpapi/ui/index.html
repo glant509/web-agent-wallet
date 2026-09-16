@@ -297,7 +297,7 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
-    .wallet-export-mnemonic-button {
+    .wallet-export-key-button {
       display: none;
       align-items: center;
       justify-content: center;
@@ -312,17 +312,66 @@
       letter-spacing: 0.02em;
     }
 
-    .wallet-export-mnemonic-button:hover {
+    .wallet-export-key-button:hover {
       border-color: rgba(56, 189, 248, 0.42);
       background: rgba(14, 116, 144, 0.24);
     }
 
-    .app-shell[data-active-tab="asset"] .wallet-export-mnemonic-button:not([hidden]) {
+    .app-shell[data-active-tab="asset"] .wallet-export-key-button:not([hidden]) {
       display: inline-flex;
     }
 
-    .wallet-export-mnemonic-button[hidden] {
+    .wallet-export-key-button[hidden] {
       display: none !important;
+    }
+
+    .wallet-export-key-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      z-index: 13;
+      display: grid;
+      width: min(270px, calc(100vw - 32px));
+      gap: 7px;
+      padding: 9px;
+      border: 1px solid rgba(125, 211, 252, 0.14);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(8, 18, 34, 0.99), rgba(2, 6, 23, 0.99));
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(18px);
+    }
+
+    .wallet-export-key-menu[hidden] {
+      display: none !important;
+    }
+
+    .wallet-export-key-option {
+      display: grid;
+      gap: 3px;
+      min-height: 54px;
+      padding: 10px 11px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      color: #e2e8f0;
+      background: rgba(15, 23, 42, 0.62);
+      text-align: left;
+    }
+
+    .wallet-export-key-option:hover,
+    .wallet-export-key-option:focus-visible {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(14, 165, 233, 0.1);
+      outline: none;
+    }
+
+    .wallet-export-key-option strong {
+      font-size: 12px;
+    }
+
+    .wallet-export-key-option span {
+      color: #64748b;
+      font-size: 10px;
+      line-height: 1.45;
     }
 
     .wallet-chain-logo {
@@ -2378,6 +2427,8 @@
     }
 
     .asset-action-detail[hidden],
+    .asset-send-page[hidden],
+    .asset-receive-page[hidden],
     .asset-token-picker[hidden] {
       display: none;
     }
@@ -2833,6 +2884,73 @@
       display: none !important;
     }
 
+    .wallet-private-key-export {
+      display: grid;
+      gap: 11px;
+      margin-top: 14px;
+      padding: 13px;
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: 14px;
+      background: rgba(127, 29, 29, 0.16);
+    }
+
+    .wallet-private-key-export[hidden] {
+      display: none !important;
+    }
+
+    .wallet-private-key-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .wallet-private-key-head strong {
+      color: #fecaca;
+      font-size: 13px;
+    }
+
+    .wallet-private-key-meta {
+      display: grid;
+      grid-template-columns: 76px minmax(0, 1fr);
+      gap: 7px 10px;
+      padding: 10px;
+      border-radius: 11px;
+      background: rgba(2, 6, 23, 0.45);
+      font-size: 10px;
+    }
+
+    .wallet-private-key-meta span {
+      color: #94a3b8;
+    }
+
+    .wallet-private-key-meta strong {
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .wallet-private-key-value {
+      padding: 11px;
+      border: 1px solid rgba(248, 113, 113, 0.14);
+      border-radius: 11px;
+      color: #fff1f2;
+      background: rgba(2, 6, 23, 0.65);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .wallet-private-key-warning {
+      margin: 0;
+      color: #fecdd3;
+      font-size: 10px;
+      line-height: 1.55;
+    }
+
     .wallet-import-paste {
       display: grid;
       gap: 8px;
@@ -3015,9 +3133,19 @@
           <span class="wallet-chain-code" id="chain-selector-code">ETH</span>
           <span class="wallet-chain-caret">▾</span>
         </button>
-        <button type="button" class="wallet-export-mnemonic-button" id="wallet-export-mnemonic-button" hidden>
-          导出助记词
+        <button type="button" class="wallet-export-key-button" id="wallet-export-key-button" aria-haspopup="menu" aria-expanded="false" hidden>
+          导出密钥
         </button>
+        <div class="wallet-export-key-menu" id="wallet-export-key-menu" role="menu" hidden>
+          <button type="button" class="wallet-export-key-option" data-wallet-key-export="mnemonic" role="menuitem">
+            <strong>导出助记词</strong>
+            <span>展示钱包恢复短语，适用于恢复全部账户。</span>
+          </button>
+          <button type="button" class="wallet-export-key-option" data-wallet-key-export="private-key" role="menuitem">
+            <strong>导出当前地址私钥</strong>
+            <span>展示当前链、当前账户的私钥和 BIP44 路径。</span>
+          </button>
+        </div>
         <div class="wallet-chain-menu" id="chain-selector-menu" hidden>
           <button type="button" class="wallet-chain-option active" data-chain-id="ethereum">
             <span class="wallet-chain-logo chain-ethereum">Ξ</span>
@@ -3389,12 +3517,12 @@
         <div class="asset-token-picker" id="asset-token-picker">
           <div class="asset-token-list" id="asset-token-list"></div>
         </div>
-        <div class="asset-action-detail" id="asset-action-detail" hidden>
+        <div class="asset-action-detail asset-send-page" id="asset-send-page" hidden>
           <div class="asset-action-selected">
-            <strong id="asset-action-selected-token">Token</strong>
-            <button type="button" id="asset-action-change-token">更换 Token</button>
+            <strong id="asset-send-selected-token">Token</strong>
+            <button type="button" id="asset-send-change-token">更换 Token</button>
           </div>
-          <form class="asset-send-form" id="asset-send-form" hidden>
+          <form class="asset-send-form" id="asset-send-form">
             <label>
               接收地址
               <input id="asset-send-address" type="text" autocomplete="off" spellcheck="false" placeholder="输入或粘贴接收地址" />
@@ -3409,12 +3537,19 @@
             <button type="submit" class="asset-send-submit" id="asset-send-next">下一步</button>
             <div class="asset-send-note" id="asset-send-fee-preview">手续费将在下一步通过当前网络实时预估。</div>
           </form>
-          <div class="asset-receive-panel" id="asset-receive-panel" hidden>
+          <div class="asset-action-error" id="asset-action-error"></div>
+        </div>
+        <div class="asset-action-detail asset-receive-page" id="asset-receive-page" hidden>
+          <div class="asset-action-selected">
+            <strong id="asset-receive-selected-token">Token</strong>
+            <button type="button" id="asset-receive-change-token">更换 Token</button>
+          </div>
+          <div class="asset-receive-panel" id="asset-receive-panel">
             <div class="asset-receive-qr" id="asset-receive-qr" aria-label="接收地址二维码"></div>
             <div class="asset-receive-address" id="asset-receive-address"></div>
             <button type="button" class="asset-receive-copy" id="asset-receive-copy">复制接收地址</button>
           </div>
-          <div class="asset-action-error" id="asset-action-error"></div>
+          <div class="asset-action-error" id="asset-receive-error"></div>
         </div>
         <div class="asset-transaction-review" id="asset-transaction-review" hidden>
           <div class="asset-transaction-rows" id="asset-transaction-rows"></div>
@@ -3530,6 +3665,20 @@
               <span>我已离线备份恢复短语，并理解任何获得它的人都能控制钱包。</span>
             </label>
           </div>
+          <div class="wallet-private-key-export" id="wallet-private-key-export" hidden>
+            <div class="wallet-private-key-head">
+              <strong>当前地址私钥</strong>
+              <button type="button" class="wallet-recovery-copy" id="wallet-private-key-copy">copy</button>
+            </div>
+            <div class="wallet-private-key-meta">
+              <span>当前网络</span><strong id="wallet-private-key-chain"></strong>
+              <span>当前地址</span><strong id="wallet-private-key-address"></strong>
+              <span>BIP44 路径</span><strong id="wallet-private-key-path"></strong>
+              <span>密钥格式</span><strong id="wallet-private-key-format"></strong>
+            </div>
+            <div class="wallet-private-key-value" id="wallet-private-key-value"></div>
+            <p class="wallet-private-key-warning">任何获得此私钥的人都能控制该地址资产。请仅在离线安全环境中使用。</p>
+          </div>
           <div class="wallet-recovery" id="wallet-import-step" hidden>
             <div class="wallet-recovery-head">
               <strong>导入已有助记词</strong>
@@ -3578,8 +3727,15 @@
     </nav>
   </div>
 
-  <script src="/ui/wallet_derivation.js"></script>
-  <script src="/ui/evm_signer.js"></script>
+  <script>
+    // The page can run from the Go server or be opened directly from this folder.
+    // Keep wallet cryptography local in both cases and version immutable assets so
+    // a browser cannot reuse an older signer bundle after a wallet update.
+    const walletScriptBase = window.location.protocol === "file:" ? "./" : "/ui/";
+    const walletScriptVersion = "20260917-private-key-v1";
+    document.write('<script src="' + walletScriptBase + 'wallet_derivation.js?v=' + walletScriptVersion + '"><\/script>');
+    document.write('<script src="' + walletScriptBase + 'evm_signer.js?v=' + walletScriptVersion + '"><\/script>');
+  </script>
   <script>
     const chatTabs = ["home"];
     const state = {
@@ -3690,20 +3846,23 @@
     const assetActionDescriptionEl = document.getElementById("asset-action-description");
     const assetTokenPickerEl = document.getElementById("asset-token-picker");
     const assetTokenListEl = document.getElementById("asset-token-list");
-    const assetActionDetailEl = document.getElementById("asset-action-detail");
-    const assetActionSelectedTokenEl = document.getElementById("asset-action-selected-token");
-    const assetActionChangeTokenEl = document.getElementById("asset-action-change-token");
+    const assetSendPageEl = document.getElementById("asset-send-page");
+    const assetReceivePageEl = document.getElementById("asset-receive-page");
+    const assetSendSelectedTokenEl = document.getElementById("asset-send-selected-token");
+    const assetReceiveSelectedTokenEl = document.getElementById("asset-receive-selected-token");
+    const assetSendChangeTokenEl = document.getElementById("asset-send-change-token");
+    const assetReceiveChangeTokenEl = document.getElementById("asset-receive-change-token");
     const assetSendFormEl = document.getElementById("asset-send-form");
     const assetSendAddressEl = document.getElementById("asset-send-address");
     const assetSendAmountEl = document.getElementById("asset-send-amount");
     const assetSendMaxEl = document.getElementById("asset-send-max");
     const assetSendNextEl = document.getElementById("asset-send-next");
     const assetSendFeePreviewEl = document.getElementById("asset-send-fee-preview");
-    const assetReceivePanelEl = document.getElementById("asset-receive-panel");
     const assetReceiveQREl = document.getElementById("asset-receive-qr");
     const assetReceiveAddressEl = document.getElementById("asset-receive-address");
     const assetReceiveCopyEl = document.getElementById("asset-receive-copy");
     const assetActionErrorEl = document.getElementById("asset-action-error");
+    const assetReceiveErrorEl = document.getElementById("asset-receive-error");
     const assetTransactionReviewEl = document.getElementById("asset-transaction-review");
     const assetTransactionRowsEl = document.getElementById("asset-transaction-rows");
     const assetTransactionBackEl = document.getElementById("asset-transaction-back");
@@ -3758,15 +3917,24 @@
     const walletLockButtonEl = document.getElementById("wallet-lock-button");
     const walletChangePasswordButtonEl = document.getElementById("wallet-change-password-button");
     const walletResetButtonEl = document.getElementById("wallet-reset-button");
-    const walletExportMnemonicButtonEl = document.getElementById("wallet-export-mnemonic-button");
+    const walletExportKeyButtonEl = document.getElementById("wallet-export-key-button");
+    const walletExportKeyMenuEl = document.getElementById("wallet-export-key-menu");
     const walletRecoveryCopyButtonEl = document.getElementById("wallet-recovery-copy");
     const walletRecoveryTitleEl = document.getElementById("wallet-recovery-title");
     const walletRecoveryDescriptionEl = document.getElementById("wallet-recovery-description");
     const walletRecoveryConfirmRowEl = document.getElementById("wallet-recovery-confirm-row");
+    const walletPrivateKeyExportEl = document.getElementById("wallet-private-key-export");
+    const walletPrivateKeyCopyEl = document.getElementById("wallet-private-key-copy");
+    const walletPrivateKeyChainEl = document.getElementById("wallet-private-key-chain");
+    const walletPrivateKeyAddressEl = document.getElementById("wallet-private-key-address");
+    const walletPrivateKeyPathEl = document.getElementById("wallet-private-key-path");
+    const walletPrivateKeyFormatEl = document.getElementById("wallet-private-key-format");
+    const walletPrivateKeyValueEl = document.getElementById("wallet-private-key-value");
     const walletSessionTimeoutMs = 30 * 60 * 1000;
     const walletKDFIterations = 600000;
     let bip39EnglishWords = null;
     let walletRecoveryCopyTimer = 0;
+    let walletPrivateKeyCopyTimer = 0;
     let walletMnemonicExportTimer = 0;
     let assetActionReturnTimer = 0;
     let walletAccountRenameIndex = -1;
@@ -3937,7 +4105,7 @@
       if (normalized.length <= 8) {
         return normalized;
       }
-      return normalized.slice(0, 4) + "****" + normalized.slice(-4);
+      return normalized.slice(0, 6) + "***" + normalized.slice(-4);
     }
 
     async function ensureSelectedChainAddress() {
@@ -4246,7 +4414,8 @@
         assetTokenListEl.appendChild(button);
       });
       assetTokenPickerEl.hidden = false;
-      assetActionDetailEl.hidden = true;
+      assetSendPageEl.hidden = true;
+      assetReceivePageEl.hidden = true;
     }
 
     function openAssetAction(mode) {
@@ -4273,6 +4442,7 @@
       state.assetAction.sendMax = false;
       state.assetAction.busy = false;
       assetActionErrorEl.textContent = "";
+      assetReceiveErrorEl.textContent = "";
       assetSendAddressEl.value = "";
       assetSendAmountEl.value = "";
       assetReceiveQREl.replaceChildren();
@@ -4299,6 +4469,9 @@
       state.assetAction.sendMax = false;
       state.assetAction.busy = false;
       assetActionErrorEl.textContent = "";
+      assetReceiveErrorEl.textContent = "";
+      assetSendPageEl.hidden = true;
+      assetReceivePageEl.hidden = true;
       assetReceiveQREl.replaceChildren();
       assetTransactionRowsEl.replaceChildren();
     }
@@ -4650,13 +4823,14 @@
         return;
       }
       state.assetAction.token = token;
-      assetActionSelectedTokenEl.textContent = token.symbol + " · " + getSelectedChain().label;
       assetTokenPickerEl.hidden = true;
-      assetActionDetailEl.hidden = false;
       assetActionErrorEl.textContent = "";
+      assetReceiveErrorEl.textContent = "";
       const isReceive = state.assetAction.mode === "receive";
-      assetSendFormEl.hidden = isReceive;
-      assetReceivePanelEl.hidden = !isReceive;
+      assetSendPageEl.hidden = isReceive;
+      assetReceivePageEl.hidden = !isReceive;
+      assetSendSelectedTokenEl.textContent = token.symbol + " · " + getSelectedChain().label;
+      assetReceiveSelectedTokenEl.textContent = token.symbol + " · " + getSelectedChain().label;
       assetSendMaxEl.hidden = !token.isNative;
       state.assetAction.sendMax = false;
       state.assetAction.plan = null;
@@ -4668,7 +4842,7 @@
       if (isReceive) {
         const address = await ensureSelectedChainAddress();
         if (!address) {
-          assetActionErrorEl.textContent = "当前链接收地址派生失败。";
+          assetReceiveErrorEl.textContent = "当前链接收地址派生失败。";
           return;
         }
         assetReceiveAddressEl.textContent = address;
@@ -4821,7 +4995,7 @@
       appendTransactionDetail("账户编号", account.name + " · #" + account.index);
       appendTransactionDetail("发送地址", from);
       appendTransactionDetail("收款地址", recipient);
-      assetActionDetailEl.hidden = true;
+      assetSendPageEl.hidden = true;
       assetTransactionSuccessEl.hidden = true;
       assetTransactionReviewEl.hidden = false;
       assetTransactionErrorEl.textContent = "";
@@ -5184,11 +5358,32 @@
       walletResetButtonEl.addEventListener("click", () => {
         void requestWalletReset();
       });
-      walletExportMnemonicButtonEl.addEventListener("click", () => {
-        void requestWalletMnemonicExport();
+      walletExportKeyButtonEl.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const expanded = walletExportKeyButtonEl.getAttribute("aria-expanded") === "true";
+        walletExportKeyButtonEl.setAttribute("aria-expanded", String(!expanded));
+        walletExportKeyMenuEl.hidden = expanded;
+        chainSelectorMenuEl.hidden = true;
+        chainSelectorButtonEl.setAttribute("aria-expanded", "false");
+      });
+      walletExportKeyMenuEl.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-wallet-key-export]");
+        if (!option) {
+          return;
+        }
+        walletExportKeyMenuEl.hidden = true;
+        walletExportKeyButtonEl.setAttribute("aria-expanded", "false");
+        if (option.dataset.walletKeyExport === "private-key") {
+          void requestWalletPrivateKeyExport();
+        } else {
+          void requestWalletMnemonicExport();
+        }
       });
       walletRecoveryCopyButtonEl.addEventListener("click", () => {
         void copyWalletRecoveryPhrase();
+      });
+      walletPrivateKeyCopyEl.addEventListener("click", () => {
+        void copyWalletPrivateKey();
       });
       walletGenerateChoiceEl.addEventListener("click", () => {
         void startGeneratedMnemonicFlow();
@@ -5270,9 +5465,16 @@
           void selectAssetActionToken(tokenIndex);
         }
       });
-      assetActionChangeTokenEl.addEventListener("click", () => {
+      assetSendChangeTokenEl.addEventListener("click", () => {
         state.assetAction.token = null;
         assetActionErrorEl.textContent = "";
+        renderAssetTokenPicker();
+      });
+      assetReceiveChangeTokenEl.addEventListener("click", () => {
+        state.assetAction.token = null;
+        assetReceiveErrorEl.textContent = "";
+        assetReceiveQREl.replaceChildren();
+        assetReceiveAddressEl.textContent = "";
         renderAssetTokenPicker();
       });
       assetSendFormEl.addEventListener("submit", (event) => {
@@ -5299,7 +5501,7 @@
           return;
         }
         assetTransactionReviewEl.hidden = true;
-        assetActionDetailEl.hidden = false;
+        assetSendPageEl.hidden = false;
         assetActionTitleEl.textContent = "Send " + (state.assetAction.token ? state.assetAction.token.symbol : "Token");
         assetActionDescriptionEl.textContent = "填写接收地址与转账数量";
       });
@@ -5311,6 +5513,8 @@
         const expanded = chainSelectorButtonEl.getAttribute("aria-expanded") === "true";
         chainSelectorButtonEl.setAttribute("aria-expanded", String(!expanded));
         chainSelectorMenuEl.hidden = expanded;
+        walletExportKeyMenuEl.hidden = true;
+        walletExportKeyButtonEl.setAttribute("aria-expanded", "false");
       });
       chainSelectorMenuEl.addEventListener("click", (event) => {
         const option = event.target.closest("[data-chain-id]");
@@ -5369,6 +5573,10 @@
         if (!chainSelectorMenuEl.contains(event.target) && !chainSelectorButtonEl.contains(event.target)) {
           chainSelectorMenuEl.hidden = true;
           chainSelectorButtonEl.setAttribute("aria-expanded", "false");
+        }
+        if (!walletExportKeyMenuEl.contains(event.target) && !walletExportKeyButtonEl.contains(event.target)) {
+          walletExportKeyMenuEl.hidden = true;
+          walletExportKeyButtonEl.setAttribute("aria-expanded", "false");
         }
       });
       ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
@@ -5492,6 +5700,13 @@
       walletRecoveryTitleEl.textContent = "备份恢复短语";
       walletRecoveryDescriptionEl.textContent = "请离线抄写这 12 个单词。它只显示这一次；确认完成后即可创建新钱包。";
       walletRecoveryEl.hidden = true;
+      walletPrivateKeyExportEl.hidden = true;
+      walletPrivateKeyChainEl.textContent = "";
+      walletPrivateKeyAddressEl.textContent = "";
+      walletPrivateKeyPathEl.textContent = "";
+      walletPrivateKeyFormatEl.textContent = "";
+      walletPrivateKeyValueEl.textContent = "";
+      walletPrivateKeyCopyEl.textContent = "copy";
       walletImportStepEl.hidden = true;
       walletCreateStepEl.hidden = false;
       walletChoiceStepEl.hidden = true;
@@ -5510,18 +5725,20 @@
       const creating = mode === "create" || mode === "backup";
       const changingPassword = mode === "change-password";
       const exportingMnemonic = mode === "export-mnemonic";
+      const exportingPrivateKey = mode === "export-private-key";
+      const exportingSecret = exportingMnemonic || exportingPrivateKey;
       walletPasswordConfirmFieldEl.hidden = !creating && !changingPassword;
       walletNewPasswordFieldEl.hidden = !changingPassword;
       walletPasswordLabelEl.textContent = creating ? "设置钱包密码" : changingPassword ? "当前钱包密码" : "钱包密码";
       walletPasswordConfirmEl.placeholder = changingPassword ? "再次输入新钱包密码" : "再次输入钱包密码";
-      walletLockCopyEl.textContent = exportingMnemonic
-        ? "为保护资产，请再次验证当前钱包密码。验证成功后助记词只在本设备临时显示。"
+      walletLockCopyEl.textContent = exportingSecret
+        ? "为保护资产，请再次验证当前钱包密码。验证成功后敏感密钥只在本设备临时显示。"
         : changingPassword
         ? "验证当前密码后，将使用新的随机盐和 IV 重新加密本地钱包保险库。"
         : creating
         ? "创建后，恢复短语只会在此设备显示一次。保险库仅保存 AES-GCM 加密数据到 IndexedDB。"
         : "输入本地钱包密码以派生密钥并解密保险库。密码和恢复短语不会发送到服务器。";
-      walletLockSubmitEl.textContent = exportingMnemonic ? "验证并显示" : changingPassword ? "确认更换" : creating ? "下一步" : "解锁";
+      walletLockSubmitEl.textContent = exportingSecret ? "验证并显示" : changingPassword ? "确认更换" : creating ? "下一步" : "解锁";
       walletPasswordEl.focus();
     }
 
@@ -5531,6 +5748,8 @@
       }
       window.clearTimeout(walletRecoveryCopyTimer);
       walletRecoveryCopyTimer = 0;
+      window.clearTimeout(walletPrivateKeyCopyTimer);
+      walletPrivateKeyCopyTimer = 0;
       window.clearTimeout(walletMnemonicExportTimer);
       walletMnemonicExportTimer = 0;
       walletLockEl.classList.remove("visible");
@@ -5557,6 +5776,13 @@
       walletImportTextEl.value = "";
       walletMnemonicEl.replaceChildren();
       walletRecoveryEl.hidden = true;
+      walletPrivateKeyExportEl.hidden = true;
+      walletPrivateKeyChainEl.textContent = "";
+      walletPrivateKeyAddressEl.textContent = "";
+      walletPrivateKeyPathEl.textContent = "";
+      walletPrivateKeyFormatEl.textContent = "";
+      walletPrivateKeyValueEl.textContent = "";
+      walletPrivateKeyCopyEl.textContent = "copy";
       walletImportMnemonicEl.replaceChildren();
       state.wallet.pendingPassword = "";
       state.wallet.pendingMnemonic = null;
@@ -5604,6 +5830,15 @@
           return;
         }
         await exportWalletMnemonic(password);
+        return;
+      }
+
+      if (state.wallet.mode === "export-private-key") {
+        if (!isValidWalletPassword(password)) {
+          walletLockErrorEl.textContent = "密码必须是 8-16 位，并且仅包含字母、数字和 !@#$%^&*.";
+          return;
+        }
+        await exportWalletPrivateKey(password);
         return;
       }
 
@@ -5753,6 +5988,13 @@
       openWalletUnlock("export-mnemonic");
     }
 
+    async function requestWalletPrivateKeyExport() {
+      if (!state.wallet.vault) {
+        return;
+      }
+      openWalletUnlock("export-private-key");
+    }
+
     async function exportWalletMnemonic(password) {
       if (!state.wallet.vault) {
         walletLockErrorEl.textContent = "未找到本地钱包保险库。";
@@ -5798,6 +6040,78 @@
       } catch (_) {
         walletLockErrorEl.textContent = "无法导出助记词，请检查钱包密码。";
       } finally {
+        walletLockSubmitEl.disabled = false;
+      }
+    }
+
+    async function exportWalletPrivateKey(password) {
+      if (!state.wallet.vault) {
+        walletLockErrorEl.textContent = "未找到本地钱包保险库。";
+        return;
+      }
+      if (
+        !window.WalletEVMSigner ||
+        typeof window.WalletEVMSigner.derivePrivateKey !== "function" ||
+        !window.WalletAddressDerivation ||
+        typeof window.WalletAddressDerivation.deriveAddress !== "function"
+      ) {
+        walletLockErrorEl.textContent = "当前页面缺少本地私钥派生能力。";
+        return;
+      }
+
+      walletLockSubmitEl.disabled = true;
+      let exportSeed = null;
+      try {
+        const salt = base64ToBytes(state.wallet.vault.salt);
+        const exportKey = await deriveVaultKey(password, salt, state.wallet.vault.kdfParams.iterations);
+        const plaintext = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: base64ToBytes(state.wallet.vault.iv) },
+          exportKey,
+          base64ToBytes(state.wallet.vault.ciphertext)
+        );
+        const payload = JSON.parse(new TextDecoder().decode(plaintext));
+        if (!payload || typeof payload.mnemonic !== "string") {
+          throw new Error("钱包保险库内容无效。");
+        }
+
+        exportSeed = await deriveBIP39Seed(payload.mnemonic);
+        const exportKeyring = normalizeBIP44Keyring(payload.keyring);
+        const account = exportKeyring.accounts.find((item) => item.index === exportKeyring.selectedAccount)
+          || exportKeyring.accounts[0];
+        const exported = await window.WalletEVMSigner.derivePrivateKey(exportSeed, state.selectedChainId, account.index);
+        const address = window.WalletAddressDerivation.deriveAddress(exportSeed, state.selectedChainId, account.index);
+        if (!address || !exported || typeof exported.privateKey !== "string" || typeof exported.path !== "string") {
+          throw new Error("私钥派生结果无效。");
+        }
+
+        state.wallet.mode = "export-display";
+        walletCreateStepEl.hidden = true;
+        walletChoiceStepEl.hidden = true;
+        walletImportStepEl.hidden = true;
+        walletRecoveryEl.hidden = true;
+        walletPrivateKeyExportEl.hidden = false;
+        walletPrivateKeyChainEl.textContent = getSelectedChain().label + " · " + account.name + " (#" + account.index + ")";
+        walletPrivateKeyAddressEl.textContent = address;
+        walletPrivateKeyPathEl.textContent = exported.path;
+        walletPrivateKeyFormatEl.textContent = exported.format || "hex";
+        walletPrivateKeyValueEl.textContent = exported.privateKey;
+        walletLockCopyEl.textContent = "私钥只在本设备临时显示。任何获得它的人都能控制当前地址，请勿截图、联网保存或发送给他人。";
+        walletLockCancelEl.textContent = "关闭";
+        walletLockSubmitEl.textContent = "完成";
+        walletLockErrorEl.textContent = "";
+        walletPasswordEl.value = "";
+        window.clearTimeout(walletMnemonicExportTimer);
+        walletMnemonicExportTimer = window.setTimeout(() => {
+          if (state.wallet.mode === "export-display") {
+            closeWalletUnlock();
+          }
+        }, 60000);
+      } catch (_) {
+        walletLockErrorEl.textContent = "无法导出当前地址私钥，请检查钱包密码。";
+      } finally {
+        if (exportSeed instanceof Uint8Array) {
+          exportSeed.fill(0);
+        }
         walletLockSubmitEl.disabled = false;
       }
     }
@@ -5864,7 +6178,9 @@
         walletLockButtonEl.hidden = true;
         walletChangePasswordButtonEl.hidden = true;
         walletResetButtonEl.hidden = true;
-        walletExportMnemonicButtonEl.hidden = true;
+        walletExportKeyButtonEl.hidden = true;
+        walletExportKeyMenuEl.hidden = true;
+        walletExportKeyButtonEl.setAttribute("aria-expanded", "false");
         renderWalletHeader();
         renderAssetBalances();
         syncPageStatus();
@@ -5884,7 +6200,7 @@
         walletLockButtonEl.hidden = false;
         walletChangePasswordButtonEl.hidden = false;
         walletResetButtonEl.hidden = false;
-        walletExportMnemonicButtonEl.hidden = false;
+        walletExportKeyButtonEl.hidden = false;
         renderWalletHeader();
         syncPageStatus();
         if (state.activeTab === "asset") {
@@ -5911,7 +6227,9 @@
       walletLockButtonEl.hidden = true;
       walletChangePasswordButtonEl.hidden = !hasVault;
       walletResetButtonEl.hidden = !hasVault;
-      walletExportMnemonicButtonEl.hidden = !hasVault;
+      walletExportKeyButtonEl.hidden = !hasVault;
+      walletExportKeyMenuEl.hidden = true;
+      walletExportKeyButtonEl.setAttribute("aria-expanded", "false");
       renderWalletHeader();
       renderAssetBalances();
       syncPageStatus();
@@ -5990,6 +6308,31 @@
         }, 1600);
       } catch (error) {
         walletLockErrorEl.textContent = error instanceof Error ? error.message : "复制恢复短语失败。";
+      }
+    }
+
+    async function copyWalletPrivateKey() {
+      const privateKey = walletPrivateKeyValueEl.textContent.trim();
+      if (!privateKey) {
+        walletLockErrorEl.textContent = "当前没有可复制的私钥。";
+        return;
+      }
+
+      try {
+        await copyTextToClipboard(privateKey);
+        walletLockErrorEl.textContent = "";
+        walletPrivateKeyCopyEl.textContent = "copied";
+        window.clearTimeout(walletPrivateKeyCopyTimer);
+        walletPrivateKeyCopyTimer = window.setTimeout(() => {
+          walletPrivateKeyCopyEl.textContent = "copy";
+        }, 1600);
+      } catch (_) {
+        walletLockErrorEl.textContent = "复制私钥失败。";
+        walletPrivateKeyCopyEl.textContent = "失败";
+        window.clearTimeout(walletPrivateKeyCopyTimer);
+        walletPrivateKeyCopyTimer = window.setTimeout(() => {
+          walletPrivateKeyCopyEl.textContent = "copy";
+        }, 1600);
       }
     }
 

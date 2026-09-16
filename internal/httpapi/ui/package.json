@@ -1,0 +1,13 @@
+{
+  "name": "web3-agent-wallet-ui",
+  "private": true,
+  "scripts": {
+    "build:evm-signer": "esbuild evm_signer_entry.js --bundle --minify --format=iife --outfile=evm_signer.js --legal-comments=eof"
+  },
+  "dependencies": {
+    "ethers": "6.17.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9"
+  }
+}
