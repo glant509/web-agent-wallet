@@ -126,7 +126,7 @@ func fetchBlockscoutTransactions(ctx context.Context, baseURL, address, action s
 	query.Set("action", action)
 	query.Set("address", address)
 	query.Set("page", "1")
-	query.Set("offset", "100")
+	query.Set("offset", "10")
 	query.Set("sort", "desc")
 	endpoint.RawQuery = query.Encode()
 

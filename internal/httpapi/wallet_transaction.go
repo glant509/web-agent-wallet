@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"web3-service-agent/internal/logging"
 
 	wallettool "web3-service-agent/tools/wallet"
 )
@@ -63,6 +64,7 @@ func (s *Server) handleEVMTransactionHistory(w http.ResponseWriter, r *http.Requ
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
 	defer cancel()
+	_ = logging.InfofContext(ctx, "step into handleEVMTransactionHistory, params: %+v", request)
 	items, err := wallettool.FetchEVMTransactionHistory(ctx, request)
 	if err != nil {
 		status := http.StatusBadGateway

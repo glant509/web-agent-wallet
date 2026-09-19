@@ -42,6 +42,11 @@ func TestRootServesMobileUI(t *testing.T) {
 			t.Fatalf("expected transaction history marker %s in body", marker)
 		}
 	}
+	for _, marker := range []string{"createBrowserTraceId", "tracedFetch", `headers.set("traceparent"`, "state.walletHistory.traceId", "state.assetAction.traceId"} {
+		if !strings.Contains(body, marker) {
+			t.Fatalf("expected browser trace propagation marker %s in body", marker)
+		}
+	}
 	if !strings.Contains(body, `normalized.slice(0, 6) + "***" + normalized.slice(-4)`) {
 		t.Fatalf("expected wallet addresses to use the 0x1234***abcd compact format")
 	}

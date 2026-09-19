@@ -4,12 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 	"web3-service-agent/internal/agent"
 	"web3-service-agent/internal/llm"
-	"web3-service-agent/internal/logging"
 
 	"web3-service-agent/internal/session"
 )
@@ -164,38 +162,6 @@ func writeSSE(w http.ResponseWriter, event string, payload any) {
 	_, _ = w.Write([]byte("data: "))
 	_, _ = w.Write(body)
 	_, _ = w.Write([]byte("\n\n"))
-}
-
-type statusRecorder struct {
-	http.ResponseWriter
-	status int
-}
-
-func (r *statusRecorder) WriteHeader(status int) {
-	r.status = status
-	r.ResponseWriter.WriteHeader(status)
-}
-
-func withRequestLogging(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		recorder := &statusRecorder{ResponseWriter: w}
-		next.ServeHTTP(recorder, r)
-		status := recorder.status
-		if status == 0 {
-			status = http.StatusOK
-		}
-
-		message := fmt.Sprintf("%s %s -> %d (%s)", r.Method, r.URL.RequestURI(), status, time.Since(start).Round(time.Millisecond))
-		switch {
-		case status >= http.StatusInternalServerError:
-			logging.Errorf("%s", message)
-		case status >= http.StatusBadRequest:
-			logging.Warnf("%s", message)
-		default:
-			logging.Infof("%s", message)
-		}
-	})
 }
 
 var _ = llm.StreamEvent{}

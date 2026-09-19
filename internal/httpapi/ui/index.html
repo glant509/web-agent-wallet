@@ -3792,7 +3792,8 @@
         token: null,
         plan: null,
         sendMax: false,
-        busy: false
+        busy: false,
+        traceId: ""
       },
       walletHistory: {
         items: [],
@@ -3800,9 +3801,29 @@
         type: "all",
         loading: false,
         error: "",
-        requestToken: 0
+        requestToken: 0,
+        traceId: ""
       }
     };
+
+    function randomTraceHex(byteLength) {
+      const bytes = crypto.getRandomValues(new Uint8Array(byteLength));
+      return Array.from(bytes, (value) => value.toString(16).padStart(2, "0")).join("");
+    }
+
+    function createBrowserTraceId() {
+      return randomTraceHex(16);
+    }
+
+    function tracedFetch(resource, options = {}, traceId = "") {
+      const currentTraceId = /^[0-9a-f]{32}$/i.test(traceId) ? traceId.toLowerCase() : createBrowserTraceId();
+      const clientSpanId = randomTraceHex(8);
+      const headers = new Headers(options.headers || {});
+      headers.set("traceparent", "00-" + currentTraceId + "-" + clientSpanId + "-01");
+      headers.set("X-Trace-ID", currentTraceId);
+      headers.set("X-Span-ID", clientSpanId);
+      return window.fetch(resource, { ...options, headers });
+    }
 
     const views = Array.from(document.querySelectorAll(".view"));
     const tabs = Array.from(document.querySelectorAll(".tabbar button"));
@@ -4327,7 +4348,7 @@
         if (!addresses[selectedChainID]) {
           throw new Error("当前链地址派生失败");
         }
-        const response = await fetch("/v1/asset/portfolio", {
+        const response = await tracedFetch("/v1/asset/portfolio", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -4441,6 +4462,7 @@
       state.assetAction.plan = null;
       state.assetAction.sendMax = false;
       state.assetAction.busy = false;
+      state.assetAction.traceId = createBrowserTraceId();
       assetActionErrorEl.textContent = "";
       assetReceiveErrorEl.textContent = "";
       assetSendAddressEl.value = "";
@@ -4595,6 +4617,7 @@
       state.walletHistory.chainId = state.selectedChainId;
       state.walletHistory.type = "all";
       state.walletHistory.error = "";
+      state.walletHistory.traceId = createBrowserTraceId();
       initializeWalletHistoryFilters();
       renderWalletHistory();
       walletHistoryDialogEl.classList.add("visible");
@@ -4636,11 +4659,11 @@
         if (!address) {
           throw new Error("无法派生当前账户地址");
         }
-        const response = await fetch("/v1/wallet/evm/history", {
+        const response = await tracedFetch("/v1/wallet/evm/history", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ chain_id: normalizeAssetBalanceChainID(chainId), address })
-        });
+        }, state.walletHistory.traceId);
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
           throw new Error(payload.error || "链上历史查询失败");
@@ -4904,7 +4927,7 @@
       if (sendMax && !isValidRecipientAddress(recipient)) {
         recipient = from;
       }
-      const response = await fetch("/v1/wallet/evm/prepare", {
+      const response = await tracedFetch("/v1/wallet/evm/prepare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -4915,7 +4938,7 @@
           amount: sendMax ? "" : assetSendAmountEl.value.trim(),
           send_max: Boolean(sendMax)
         })
-      });
+      }, state.assetAction.traceId);
       const payload = await response.json();
       if (!response.ok) {
         throw new Error(payload.error || "交易手续费预估失败。 ");
@@ -5047,11 +5070,11 @@
           accountIndex,
           transactionForSigning(plan)
         );
-        const response = await fetch("/v1/wallet/evm/broadcast", {
+        const response = await tracedFetch("/v1/wallet/evm/broadcast", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ chain_id: plan.chain_id, raw_transaction: rawTransaction })
-        });
+        }, state.assetAction.traceId);
         rawTransaction = "";
         const payload = await response.json();
         if (!response.ok) {
@@ -6765,7 +6788,7 @@
       if (Array.isArray(bip39EnglishWords)) {
         return bip39EnglishWords;
       }
-      const response = await fetch("/wallet/bip39-english", { cache: "force-cache" });
+      const response = await tracedFetch("/wallet/bip39-english", { cache: "force-cache" });
       if (!response.ok) {
         throw new Error("无法加载 BIP39 词表。");
       }
@@ -6960,7 +6983,7 @@
       renderMarketTopList();
 
       try {
-        const response = await fetch("/v1/market/top");
+        const response = await tracedFetch("/v1/market/top");
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.error || "行情加载失败");
@@ -7052,7 +7075,7 @@
       renderTradeDashboard();
 
       try {
-        const response = await fetch("/v1/trade/token?id=" + encodeURIComponent(assetId));
+        const response = await tracedFetch("/v1/trade/token?id=" + encodeURIComponent(assetId));
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.error || "交易数据加载失败");
@@ -7136,7 +7159,7 @@
       renderTradeDashboard();
 
       try {
-        const response = await fetch("/v1/trade/klines?id=" + encodeURIComponent(state.tradeDashboard.selectedAssetId) + "&interval=15m&limit=32");
+        const response = await tracedFetch("/v1/trade/klines?id=" + encodeURIComponent(state.tradeDashboard.selectedAssetId) + "&interval=15m&limit=32");
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.error || "K 线加载失败");
@@ -7945,16 +7968,16 @@
       inputEl.style.height = Math.min(inputEl.scrollHeight, 144) + "px";
     }
 
-    async function ensureSession() {
+    async function ensureSession(traceId) {
       if (state.sessionId) {
         return state.sessionId;
       }
 
-      const response = await fetch("/v1/sessions", {
+      const response = await tracedFetch("/v1/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({})
-      });
+      }, traceId);
       if (!response.ok) {
         throw new Error("创建会话失败");
       }
@@ -7987,15 +8010,16 @@
       renderThread(tab);
 
       try {
-        const sessionId = await ensureSession();
-        const response = await fetch("/v1/agent/runs", {
+        const traceId = createBrowserTraceId();
+        const sessionId = await ensureSession(traceId);
+        const response = await tracedFetch("/v1/agent/runs", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             session_id: sessionId,
             input: buildAgentInput(tab, text)
           })
-        });
+        }, traceId);
 
         const payload = await response.json();
         if (!response.ok) {
