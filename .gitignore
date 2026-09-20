@@ -50,3 +50,7 @@ secret.*
 .idea/
 .vscode/
 node_modules/
+dist/
+clients/mobile/ios/App/Pods/
+clients/mobile/android/.gradle/
+clients/mobile/android/app/build/

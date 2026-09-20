@@ -34,6 +34,12 @@ func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", server.handleIndex)
 	mux.HandleFunc("GET /ui/{path...}", server.handleUIAsset)
+	for _, asset := range []string{"app.css", "bootstrap.js", "shared.js", "app.js"} {
+		asset := asset
+		mux.HandleFunc("GET /"+asset, func(w http.ResponseWriter, _ *http.Request) {
+			server.serveUIAsset(w, asset)
+		})
+	}
 	mux.HandleFunc("GET /wallet/bip39-english", server.handleBIP39Wordlist)
 	mux.HandleFunc("GET /healthz", server.handleHealthz)
 	mux.HandleFunc("GET /v1/market/top", server.handleMarketTop)
@@ -46,7 +52,9 @@ func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
 	mux.HandleFunc("POST /v1/sessions", server.handleCreateSession)
 	mux.HandleFunc("POST /v1/agent/runs", server.handleRun)
 	mux.HandleFunc("POST /v1/agent/runs/stream", server.handleStream)
-	return withRequestLogging(mux)
+	// Keep request logging outside CORS so rejected preflight requests retain
+	// their trace and response status in the same structured request log.
+	return withRequestLogging(withCORS(mux))
 }
 
 func (s *Server) handleHealthz(w http.ResponseWriter, _ *http.Request) {

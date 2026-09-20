@@ -39,7 +39,26 @@ export OPENAI_API_KEY=your_key
 go run ./cmd/web3-service-agent
 ```
 
-默认监听 `:8080`。
+未配置端口时默认监听 `:8080`；当前仓库的 `etc/application.properties` 配置为 `:8081`。
+
+多端客户端在本地开发时仍可连接该服务。Chrome 插件、iOS 模拟器和 Android 模拟器访问 loopback 服务时会自动获得受限的开发 CORS 支持。非 loopback 环境必须显式配置允许的客户端 Origin：
+
+```bash
+export AGENT_WALLET_ALLOWED_ORIGINS="https://wallet.example.com,chrome-extension://实际插件ID"
+```
+
+不要在生产环境将允许来源配置为通配符。
+
+## 多端客户端
+
+工程已经提供 Web、iOS、Android 和 Chrome 插件的共享构建入口：
+
+```bash
+npm install
+npm run build:clients
+```
+
+移动端同步、Chrome 插件加载方式和平台环境要求见 [`clients/README.md`](clients/README.md)。完整架构和后续实施阶段见 [`MULTIPLATFORM_WALLET_ARCHITECTURE.md`](MULTIPLATFORM_WALLET_ARCHITECTURE.md)。
 
 项目默认从根目录的 `etc/application.properties` 读取配置。
 

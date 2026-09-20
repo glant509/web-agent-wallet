@@ -3,10 +3,12 @@ package httpapi
 import (
 	"embed"
 	"io/fs"
+	"mime"
 	"net/http"
+	"path/filepath"
 )
 
-//go:embed ui/*
+//go:embed ui/index.html ui/app.css ui/bootstrap.js ui/app.js ui/shared.js ui/bip39_english.txt ui/wallet_derivation.js ui/evm_signer.js ui/platform_runtime.js
 var uiFS embed.FS
 
 var uiStaticFS = func() fs.FS {
@@ -46,12 +48,20 @@ func (s *Server) handleUIAsset(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	s.serveUIAsset(w, path)
+}
+
+func (s *Server) serveUIAsset(w http.ResponseWriter, path string) {
 	content, err := fs.ReadFile(uiStaticFS, path)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "404 page not found", http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", http.DetectContentType(content))
+	contentType := mime.TypeByExtension(filepath.Ext(path))
+	if contentType == "" {
+		contentType = http.DetectContentType(content)
+	}
+	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 	_, _ = w.Write(content)
 }

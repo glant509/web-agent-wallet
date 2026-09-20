@@ -148,7 +148,7 @@ func fetchBlockscoutTransactions(ctx context.Context, baseURL, address, action s
 	}
 	if payload.Status != "1" {
 		message := strings.ToLower(payload.Message + " " + string(payload.Result))
-		if strings.Contains(message, "no transaction") || strings.Contains(message, "no record") {
+		if isEmptyBlockscoutHistory(message) {
 			return []blockscoutTransaction{}, nil
 		}
 		return nil, fmt.Errorf("explorer error: %s", strings.TrimSpace(payload.Message))
@@ -158,6 +158,15 @@ func fetchBlockscoutTransactions(ctx context.Context, baseURL, address, action s
 		return nil, fmt.Errorf("decode transaction list: %w", err)
 	}
 	return transactions, nil
+}
+
+func isEmptyBlockscoutHistory(message string) bool {
+	for _, marker := range []string{"no transaction", "no token transfer", "no record"} {
+		if strings.Contains(message, marker) {
+			return true
+		}
+	}
+	return false
 }
 
 func historyItemFromBlockscout(chain evmChain, address string, transaction blockscoutTransaction, symbol string, decimals int, assetKind string) EVMTransactionHistoryItem {

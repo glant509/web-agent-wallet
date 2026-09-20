@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Agent Wallet",
+  "short_name": "Agent Wallet",
+  "version": "0.1.0",
+  "description": "Agent Wallet 的资产、转账、收款、历史和 Agent 快捷入口。",
+  "action": {
+    "default_title": "Agent Wallet",
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "http://localhost:8080/*",
+    "http://127.0.0.1:8080/*",
+    "http://localhost:8081/*",
+    "http://127.0.0.1:8081/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

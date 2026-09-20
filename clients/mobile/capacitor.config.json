@@ -1,0 +1,16 @@
+{
+  "appId": "com.agentwallet.app",
+  "appName": "Agent Wallet",
+  "webDir": "../../dist/mobile",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

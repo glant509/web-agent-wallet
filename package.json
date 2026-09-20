@@ -1,0 +1,28 @@
+{
+  "name": "agent-wallet-multiplatform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build:shared": "esbuild clients/shared/src/global.ts --bundle --format=iife --target=es2022 --outfile=internal/httpapi/ui/shared.js",
+    "typecheck": "tsc --noEmit",
+    "build:clients": "node scripts/build-clients.mjs all",
+    "build:web": "node scripts/build-clients.mjs web",
+    "build:mobile": "node scripts/build-clients.mjs mobile",
+    "build:extension": "node scripts/build-clients.mjs extension",
+    "dev:web": "node scripts/dev-web.mjs",
+    "sync:ios": "npm run build:mobile && node scripts/run-capacitor.mjs sync ios",
+    "sync:android": "npm run build:mobile && node scripts/run-capacitor.mjs sync android",
+    "open:ios": "node scripts/run-capacitor.mjs open ios",
+    "open:android": "node scripts/run-capacitor.mjs open android",
+    "test:clients": "npm run typecheck && node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/cli": "8.5.2",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/ios": "8.5.2",
+    "esbuild": "^0.25.9",
+    "typescript": "^5.9.2"
+  }
+}
