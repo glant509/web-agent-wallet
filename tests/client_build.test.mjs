@@ -42,7 +42,7 @@ test("packaged clients load wallet assets from their own bundle", async () => {
     assert.match(bootstrap, /const walletScriptBase = "\.\/";/);
     const html = await readFile(path.join(root, "dist", target, "index.html"), "utf8");
     const shared = await readFile(path.join(root, "dist", target, "shared.js"), "utf8");
-    assert.match(html, /<script src="\.\/shared\.js\?v=20260921-history-cors-v1"><\/script>/);
+    assert.match(html, /<script src="\.\/shared\.js\?v=20260921-history-bnb-avax-v1"><\/script>/);
     assert.doesNotMatch(html, /<script>/);
     assert.match(shared, /AgentWalletCore/);
     assert.match(shared, /AgentWalletAPI/);

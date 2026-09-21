@@ -41,10 +41,18 @@ func isAllowedOrigin(r *http.Request, origin string) bool {
 			return true
 		}
 	}
+	parsed, err := url.Parse(origin)
+	requestScheme := "http"
+	if r.TLS != nil {
+		requestScheme = "https"
+	}
+	if err == nil && parsed.Scheme == requestScheme && strings.EqualFold(parsed.Host, r.Host) {
+		return true
+	}
 
 	// Packaged clients need CORS while talking to a locally running development
-	// server. This exception never applies when the API is addressed by a LAN or
-	// public hostname; those origins must be explicitly configured above.
+	// server. Cross-origin exceptions do not apply when the API is addressed by a
+	// LAN or public hostname; only the same origin or explicitly configured ones do.
 	if !isLocalDevelopmentHost(r.Host) {
 		return false
 	}
@@ -54,7 +62,6 @@ func isAllowedOrigin(r *http.Request, origin string) bool {
 	if origin == "null" {
 		return true
 	}
-	parsed, err := url.Parse(origin)
 	if err != nil {
 		return false
 	}

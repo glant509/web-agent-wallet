@@ -357,7 +357,7 @@
     return {
       id: String(item.id || item.hash || ""),
       hash: String(item.hash || ""),
-      chainId: String(item.chain_id || item.chainId || ""),
+      chainId: String(item.chain_id || item.chainId || "") === "bsc" ? "bnb" : String(item.chain_id || item.chainId || ""),
       type: String(item.type || ""),
       direction: String(item.direction || ""),
       timestamp: String(item.timestamp || ""),

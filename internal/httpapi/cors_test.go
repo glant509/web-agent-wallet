@@ -64,6 +64,37 @@ func TestCORSAllowsLocalFileOriginForLoopbackDevelopment(t *testing.T) {
 	}
 }
 
+func TestCORSAllowsSameOriginLANWalletPage(t *testing.T) {
+	handler := withCORS(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	request := httptest.NewRequest(http.MethodPost, "http://192.168.1.25:8081/v1/wallet/evm/history", nil)
+	request.Header.Set("Origin", "http://192.168.1.25:8081")
+	recorder := httptest.NewRecorder()
+	handler.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected LAN same-origin request 200, got %d", recorder.Code)
+	}
+	if recorder.Header().Get("Access-Control-Allow-Origin") != "http://192.168.1.25:8081" {
+		t.Fatalf("expected LAN origin response header")
+	}
+}
+
+func TestCORSRejectsOtherLANOrigins(t *testing.T) {
+	handler := withCORS(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	for _, origin := range []string{"http://192.168.1.25:8082", "http://192.168.1.26:8081", "https://192.168.1.25:8081"} {
+		request := httptest.NewRequest(http.MethodPost, "http://192.168.1.25:8081/v1/wallet/evm/history", nil)
+		request.Header.Set("Origin", origin)
+		recorder := httptest.NewRecorder()
+		handler.ServeHTTP(recorder, request)
+		if recorder.Code != http.StatusForbidden {
+			t.Fatalf("expected LAN origin %q to be rejected, got %d", origin, recorder.Code)
+		}
+	}
+}
+
 func TestCORSRejectsUnconfiguredOriginForNonLoopbackAPI(t *testing.T) {
 	handler := withCORS(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)

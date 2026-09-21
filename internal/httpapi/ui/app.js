@@ -251,7 +251,7 @@ const chatTabs = ["home"];
     const walletHistoryController = window.AgentWalletHistoryController.createWalletHistoryController({
       state,
       chains: supportedChains,
-      supportedChainIds: ["ethereum", "base", "arbitrum", "optimism", "polygon"],
+      supportedChainIds: ["ethereum", "base", "arbitrum", "optimism", "bnb", "polygon", "avalanche"],
       maskAddress,
       isWalletUnlocked,
       getSelectedAddress: getSelectedChainAddress,

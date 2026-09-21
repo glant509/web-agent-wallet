@@ -67,6 +67,7 @@ test("history and transaction domains normalize, merge, filter and build signing
   const older = { ...remote, hash: "0xdef", amount: "2", timestamp: "2026-09-18T10:00:00Z" };
   assert.equal(history.merge([remote], [duplicate, older]).length, 2);
   assert.equal(history.filter([older, remote], { chainId: "ethereum", type: "receive" })[0].hash, "0xabc");
+  assert.equal(history.normalizeItem({ hash: "0xbnb", chain_id: "bsc" }).chainId, "bnb");
   assert.equal(history.typeLabel("send"), "发送");
 
   const transactions = globalThis.AgentWalletTransactions;
