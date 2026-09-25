@@ -15,6 +15,7 @@ func TestLoadFromPropertiesFile(t *testing.T) {
 # service
 service.name=runtime-a
 service.port=9090
+service.aiEnabled=true
 service.agentMaxSteps=12
 service.modelProvider=openai
 service.modelName=gpt-5.4-mini
@@ -57,6 +58,9 @@ chains.1.urls.0=https://ignored.example
 	}
 	if cfg.Service.AgentMaxSteps != 12 {
 		t.Fatalf("unexpected max steps: %d", cfg.Service.AgentMaxSteps)
+	}
+	if !cfg.Service.AIEnabled {
+		t.Fatal("expected AI chat to be enabled")
 	}
 	if cfg.Log == nil || cfg.Log.Path != "/var/tmp/web3-agent" {
 		t.Fatalf("unexpected log path: %#v", cfg.Log)
@@ -188,6 +192,9 @@ marketProviders.0.base_url=https://api.coingecko.com/api/v3
 	if cfg.Service.Name != defaultServiceName {
 		t.Fatalf("unexpected default service name: %q", cfg.Service.Name)
 	}
+	if cfg.Service.AIEnabled {
+		t.Fatal("AI chat should be disabled by default")
+	}
 	if cfg.Log == nil || cfg.Log.Path != defaultLogPath {
 		t.Fatalf("unexpected default log path: %#v", cfg.Log)
 	}
@@ -203,6 +210,34 @@ marketProviders.0.base_url=https://api.coingecko.com/api/v3
 	}
 	if model.Name != defaultModelName {
 		t.Fatalf("unexpected default model name: %q", model.Name)
+	}
+}
+
+func TestDisabledAIRequiresNoModelConfiguration(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "application.properties")
+	content := []byte(`
+service.aiEnabled=false
+marketProviders.0.used=true
+marketProviders.0.name=coingecko
+marketProviders.0.base_url=https://api.coingecko.com/api/v3
+`)
+	if err := os.WriteFile(path, content, 0o644); err != nil {
+		t.Fatalf("write properties: %v", err)
+	}
+	if _, err := LoadFrom(path); err != nil {
+		t.Fatalf("AI-disabled service should not require model configuration: %v", err)
+	}
+}
+
+func TestInvalidAIEnabledIsRejected(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "application.properties")
+	if err := os.WriteFile(path, []byte("service.aiEnabled=maybe\n"), 0o644); err != nil {
+		t.Fatalf("write properties: %v", err)
+	}
+	if _, err := LoadFrom(path); err == nil {
+		t.Fatal("expected invalid AI switch to be rejected")
 	}
 }
 

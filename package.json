@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build:clients": "node scripts/build-clients.mjs all",
     "build:web": "node scripts/build-clients.mjs web",
+    "package:web-server": "node scripts/package-web-server.mjs",
     "build:mobile": "node scripts/build-clients.mjs mobile",
     "build:extension": "node scripts/build-clients.mjs extension",
     "dev:web": "node scripts/dev-web.mjs",

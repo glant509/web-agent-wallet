@@ -13,8 +13,9 @@ import (
 )
 
 type Server struct {
-	runtime  *agent.Runtime
-	sessions *session.Manager
+	runtime   *agent.Runtime
+	sessions  *session.Manager
+	aiEnabled bool
 }
 
 type createSessionRequest struct {
@@ -25,10 +26,15 @@ type createSessionResponse struct {
 	SessionID string `json:"session_id"`
 }
 
-func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
+func New(runtimeEngine *agent.Runtime, sessions *session.Manager, aiEnabled ...bool) http.Handler {
+	enabled := runtimeEngine != nil
+	if len(aiEnabled) > 0 {
+		enabled = aiEnabled[0]
+	}
 	server := &Server{
-		runtime:  runtimeEngine,
-		sessions: sessions,
+		runtime:   runtimeEngine,
+		sessions:  sessions,
+		aiEnabled: enabled,
 	}
 
 	mux := http.NewServeMux()
@@ -42,6 +48,7 @@ func New(runtimeEngine *agent.Runtime, sessions *session.Manager) http.Handler {
 	}
 	mux.HandleFunc("GET /wallet/bip39-english", server.handleBIP39Wordlist)
 	mux.HandleFunc("GET /healthz", server.handleHealthz)
+	mux.HandleFunc("GET /v1/config", server.handlePublicConfig)
 	mux.HandleFunc("GET /v1/market/top", server.handleMarketTop)
 	mux.HandleFunc("POST /v1/asset/portfolio", server.handleAssetPortfolio)
 	mux.HandleFunc("POST /v1/wallet/evm/prepare", server.handlePrepareEVMTransaction)
@@ -61,7 +68,23 @@ func (s *Server) handleHealthz(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
+func (s *Server) handlePublicConfig(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Cache-Control", "no-store")
+	writeJSON(w, http.StatusOK, map[string]bool{"ai_enabled": s.aiEnabled})
+}
+
+func (s *Server) rejectDisabledAI(w http.ResponseWriter) bool {
+	if s.aiEnabled && s.runtime != nil {
+		return false
+	}
+	writeError(w, http.StatusForbidden, errors.New("AI chat is disabled"))
+	return true
+}
+
 func (s *Server) handleCreateSession(w http.ResponseWriter, r *http.Request) {
+	if s.rejectDisabledAI(w) {
+		return
+	}
 	var request createSessionRequest
 	if err := decodeJSON(r, &request); err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -75,6 +98,9 @@ func (s *Server) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleRun(w http.ResponseWriter, r *http.Request) {
+	if s.rejectDisabledAI(w) {
+		return
+	}
 	var request agent.RunRequest
 	if err := decodeJSON(r, &request); err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -94,6 +120,9 @@ func (s *Server) handleRun(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleStream(w http.ResponseWriter, r *http.Request) {
+	if s.rejectDisabledAI(w) {
+		return
+	}
 	var request agent.RunRequest
 	if err := decodeJSON(r, &request); err != nil {
 		writeError(w, http.StatusBadRequest, err)

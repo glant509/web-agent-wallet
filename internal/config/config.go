@@ -50,6 +50,7 @@ type Wallet struct {
 type Service struct {
 	Name          string `json:"name" yaml:"name, required"`
 	Port          string `json:"port" yaml:"port, required"`
+	AIEnabled     bool   `json:"aiEnabled" yaml:"aiEnabled"`
 	AgentMaxSteps int    `json:"agentMaxSteps" yaml:"agentMaxSteps, required"`
 	ModelProvider string `json:"modelProvider" yaml:"modelProvider, required"`
 	ModelName     string `json:"modelName" yaml:"modelName, required"`
@@ -78,11 +79,16 @@ func LoadFrom(path string) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+	aiEnabled, err := strconv.ParseBool(getString(properties, "service.aiEnabled", "false"))
+	if err != nil {
+		return Config{}, fmt.Errorf("invalid service.aiEnabled: %w", err)
+	}
 
 	cfg := Config{
 		Service: &Service{
 			Name:          getString(properties, "service.name", defaultServiceName),
 			Port:          getString(properties, "service.port", defaultServicePort),
+			AIEnabled:     aiEnabled,
 			AgentMaxSteps: getInt(properties, "service.agentMaxSteps", defaultAgentMaxSteps),
 			ModelProvider: getString(properties, "service.modelProvider", defaultModelProvider),
 			ModelName:     getString(properties, "service.modelName", defaultModelName),
@@ -110,8 +116,10 @@ func LoadFrom(path string) (Config, error) {
 	}
 	cfg.Chains = chains
 
-	if _, err := cfg.ActiveModel(); err != nil {
-		return Config{}, err
+	if cfg.Service.AIEnabled {
+		if _, err := cfg.ActiveModel(); err != nil {
+			return Config{}, err
+		}
 	}
 	if _, err := cfg.ActiveMarketProvider(); err != nil {
 		return Config{}, err

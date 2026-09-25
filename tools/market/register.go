@@ -2,13 +2,12 @@ package market
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -26,6 +25,12 @@ var (
 	dexScreenerTokenURL = "https://api.dexscreener.com/latest/dex/tokens"
 	marketHTTPClient    = &http.Client{Timeout: 15 * time.Second}
 )
+
+//go:embed market_token_klines.json
+var marketTokenKlinesDefinition []byte
+
+//go:embed market_token_overview.json
+var marketTokenOverviewDefinition []byte
 
 type marketOverviewRequest struct {
 	Token        string `json:"token"`
@@ -63,15 +68,16 @@ type dexLiquidity struct {
 
 func Register(registry *tool.Registry) error {
 	registrations := []struct {
-		path    string
+		name    string
+		content []byte
 		handler tool.Handler
 	}{
-		{path: klinesDefinitionPath(), handler: handleMarketTokenKlines},
-		{path: overviewDefinitionPath(), handler: handleMarketTokenOverview},
+		{name: "market_token_klines.json", content: marketTokenKlinesDefinition, handler: handleMarketTokenKlines},
+		{name: "market_token_overview.json", content: marketTokenOverviewDefinition, handler: handleMarketTokenOverview},
 	}
 
 	for _, item := range registrations {
-		definition, err := tool.LoadDefinition(item.path)
+		definition, err := tool.ParseDefinition(item.name, item.content)
 		if err != nil {
 			return err
 		}
@@ -281,14 +287,4 @@ func formatPrice(value float64) string {
 	default:
 		return strconv.FormatFloat(value, 'f', 10, 64)
 	}
-}
-
-func overviewDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "market_token_overview.json")
-}
-
-func klinesDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "market_token_klines.json")
 }

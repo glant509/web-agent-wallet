@@ -42,11 +42,7 @@ func isAllowedOrigin(r *http.Request, origin string) bool {
 		}
 	}
 	parsed, err := url.Parse(origin)
-	requestScheme := "http"
-	if r.TLS != nil {
-		requestScheme = "https"
-	}
-	if err == nil && parsed.Scheme == requestScheme && strings.EqualFold(parsed.Host, r.Host) {
+	if err == nil && isSameOriginRequest(r, parsed) {
 		return true
 	}
 
@@ -72,6 +68,31 @@ func isAllowedOrigin(r *http.Request, origin string) bool {
 		return parsed.Hostname() == "localhost"
 	}
 	return (parsed.Scheme == "http" || parsed.Scheme == "https") && isLocalDevelopmentHost(parsed.Host)
+}
+
+// isSameOriginRequest also understands the forwarding headers normally set by
+// Nginx, Caddy and Cloudflare. TLS is commonly terminated by the reverse proxy,
+// so r.TLS alone would otherwise make an HTTPS wallet page look cross-origin to
+// the Go service and incorrectly reject it with 403.
+func isSameOriginRequest(r *http.Request, origin *url.URL) bool {
+	requestScheme := "http"
+	if r.TLS != nil {
+		requestScheme = "https"
+	}
+	if forwardedScheme := firstForwardedValue(r.Header.Get("X-Forwarded-Proto")); forwardedScheme != "" {
+		requestScheme = strings.ToLower(forwardedScheme)
+	}
+
+	requestHost := r.Host
+	if forwardedHost := firstForwardedValue(r.Header.Get("X-Forwarded-Host")); forwardedHost != "" {
+		requestHost = forwardedHost
+	}
+	return strings.EqualFold(origin.Scheme, requestScheme) && strings.EqualFold(origin.Host, requestHost)
+}
+
+func firstForwardedValue(value string) string {
+	value, _, _ = strings.Cut(value, ",")
+	return strings.TrimSpace(value)
 }
 
 func isLocalDevelopmentHost(value string) bool {

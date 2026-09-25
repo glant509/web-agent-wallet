@@ -111,7 +111,7 @@ func New(path string, stdout, stderr io.Writer) (*Logger, error) {
 	if base == "" {
 		base = "."
 	}
-	logDir := filepath.Join(base, "logs")
+	logDir := filepath.Clean(base)
 	if err := os.MkdirAll(logDir, 0o755); err != nil {
 		return nil, fmt.Errorf("create log directory %q: %w", logDir, err)
 	}

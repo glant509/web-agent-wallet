@@ -58,9 +58,21 @@ npm install
 npm run build:clients
 ```
 
+Web 页面与 Go 后端部署到同一台 Linux 服务器时，可以在仓库根目录一键生成发布包：
+
+```bash
+npm ci
+npm run package:web-server
+# ARM64 服务器：npm run package:web-server -- --arch=arm64
+```
+
+压缩包生成在 `dist/releases/`。首次命名为 `web3agent.tar.gz`，重复打包依次生成 `web3agent-1.tar.gz`、`web3agent-2.tar.gz`，不会覆盖已有包。压缩包包含已内嵌页面的 Go 可执行文件、无密钥配置模板和服务器部署说明；不包含本机 `.env` 或 `etc/application.properties`。详细步骤见 [`deploy/WEB_SERVER_DEPLOY.md`](deploy/WEB_SERVER_DEPLOY.md)。
+
 移动端同步、Chrome 插件加载方式和平台环境要求见 [`clients/README.md`](clients/README.md)。完整架构和后续实施阶段见 [`MULTIPLATFORM_WALLET_ARCHITECTURE.md`](MULTIPLATFORM_WALLET_ARCHITECTURE.md)。
 
 项目默认从根目录的 `etc/application.properties` 读取配置。
+
+Home 页 AI 聊天由 `service.aiEnabled=true/false` 控制；未配置时默认关闭。关闭后聊天输入与服务端 AI 接口均不可用，资产等钱包功能不受影响；更改配置后需重启服务。
 
 ## 核心配置文件
 

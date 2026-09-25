@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"context"
 	crand "crypto/rand"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io"
 	"math"
 	"math/big"
 	"net/http"
-	"path/filepath"
-	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -31,6 +30,16 @@ const (
 )
 
 var walletHTTPClient = &http.Client{Timeout: 15 * time.Second}
+
+//go:embed wallet_chain_token_balances.json
+var walletChainTokenBalancesDefinition []byte
+
+//go:embed wallet_multichain_balances.json
+var walletMultiChainBalancesDefinition []byte
+
+//go:embed wallet_asset_portfolio.json
+var walletAssetPortfolioDefinition []byte
+
 var chainRPCConfig = struct {
 	mu   sync.RWMutex
 	urls map[string][]string
@@ -217,16 +226,17 @@ var supportedSolanaChains = map[string]solanaChain{
 
 func Register(registry *tool.Registry) error {
 	registrations := []struct {
-		path    string
+		name    string
+		content []byte
 		handler tool.Handler
 	}{
-		{path: chainBalancesDefinitionPath(), handler: handleChainTokenBalances},
-		{path: multiChainBalancesDefinitionPath(), handler: handleMultiChainBalances},
-		{path: assetPortfolioDefinitionPath(), handler: handleAssetPortfolio},
+		{name: "wallet_chain_token_balances.json", content: walletChainTokenBalancesDefinition, handler: handleChainTokenBalances},
+		{name: "wallet_multichain_balances.json", content: walletMultiChainBalancesDefinition, handler: handleMultiChainBalances},
+		{name: "wallet_asset_portfolio.json", content: walletAssetPortfolioDefinition, handler: handleAssetPortfolio},
 	}
 
 	for _, item := range registrations {
-		definition, err := tool.LoadDefinition(item.path)
+		definition, err := tool.ParseDefinition(item.name, item.content)
 		if err != nil {
 			return err
 		}
@@ -1084,19 +1094,4 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
-}
-
-func chainBalancesDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "wallet_chain_token_balances.json")
-}
-
-func multiChainBalancesDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "wallet_multichain_balances.json")
-}
-
-func assetPortfolioDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "wallet_asset_portfolio.json")
 }

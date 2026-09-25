@@ -2,10 +2,9 @@ package dex
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
-	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 
@@ -14,6 +13,12 @@ import (
 )
 
 const dexTokenTradeDashboardToolName = "dex_token_trade_dashboard"
+
+//go:embed dex_token_trade_dashboard.json
+var dexTokenTradeDashboardDefinition []byte
+
+//go:embed dex_token_trade_klines.json
+var dexTokenTradeKlinesDefinition []byte
 
 type TradeDashboardRequest struct {
 	Token      string `json:"token"`
@@ -40,15 +45,16 @@ type TradeDashboard struct {
 
 func Register(registry *tool.Registry) error {
 	registrations := []struct {
-		path    string
+		name    string
+		content []byte
 		handler tool.Handler
 	}{
-		{path: dashboardDefinitionPath(), handler: handleTokenTradeDashboard},
-		{path: klinesDefinitionPath(), handler: handleTokenTradeKlines},
+		{name: "dex_token_trade_dashboard.json", content: dexTokenTradeDashboardDefinition, handler: handleTokenTradeDashboard},
+		{name: "dex_token_trade_klines.json", content: dexTokenTradeKlinesDefinition, handler: handleTokenTradeKlines},
 	}
 
 	for _, item := range registrations {
-		definition, err := tool.LoadDefinition(item.path)
+		definition, err := tool.ParseDefinition(item.name, item.content)
 		if err != nil {
 			return err
 		}
@@ -173,14 +179,4 @@ func formatPercent(value float64) string {
 		sign = "+"
 	}
 	return sign + strconv.FormatFloat(value, 'f', 2, 64) + "%"
-}
-
-func dashboardDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "dex_token_trade_dashboard.json")
-}
-
-func klinesDefinitionPath() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "dex_token_trade_klines.json")
 }

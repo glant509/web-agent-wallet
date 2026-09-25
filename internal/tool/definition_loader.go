@@ -18,13 +18,16 @@ func LoadDefinition(path string) (Definition, error) {
 	if err != nil {
 		return Definition{}, fmt.Errorf("read tool definition %q: %w", path, err)
 	}
+	return ParseDefinition(path, content)
+}
 
+func ParseDefinition(name string, content []byte) (Definition, error) {
 	var file definitionFile
 	if err := json.Unmarshal(content, &file); err != nil {
-		return Definition{}, fmt.Errorf("decode tool definition %q: %w", path, err)
+		return Definition{}, fmt.Errorf("decode tool definition %q: %w", name, err)
 	}
 	if file.Name == "" {
-		return Definition{}, fmt.Errorf("tool definition %q is missing name", path)
+		return Definition{}, fmt.Errorf("tool definition %q is missing name", name)
 	}
 
 	return Definition{

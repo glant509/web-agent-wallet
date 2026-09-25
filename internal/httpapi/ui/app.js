@@ -25,6 +25,8 @@ const chatTabs = ["home"];
     const formEl = document.getElementById("chat-form");
     const inputEl = document.getElementById("chat-input");
     const sendButton = document.getElementById("send-button");
+    const aiAvailabilityEl = document.getElementById("home-ai-availability");
+    let aiChatEnabled = false;
     const pageTitleEl = document.getElementById("page-title");
     const pageSubtitleEl = document.getElementById("page-subtitle");
     const pageStatusEl = document.getElementById("page-status");
@@ -345,7 +347,29 @@ const chatTabs = ["home"];
     walletHistoryController.bind();
     bindEvents();
     switchTab("home");
+    void loadAIAvailability();
     queueMicrotask(() => void initializeWallet());
+
+    async function loadAIAvailability() {
+      let message = "AI 聊天未启用。请在服务端配置 service.aiEnabled=true 并重启服务。";
+      try {
+        const response = await tracedFetch("/v1/config", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("无法读取服务配置");
+        }
+        const config = await response.json();
+        aiChatEnabled = config.ai_enabled === true;
+      } catch (_) {
+        aiChatEnabled = false;
+        message = "无法确认 AI 聊天状态，请稍后刷新页面。";
+      }
+      aiAvailabilityEl.hidden = aiChatEnabled;
+      aiAvailabilityEl.textContent = message;
+      document.querySelectorAll(".home-ai-chat").forEach((element) => {
+        element.hidden = !aiChatEnabled;
+      });
+      switchTab(state.activeTab);
+    }
 
     function ensureDefaultMessages() {
       chatTabs.forEach((tab) => {
@@ -478,7 +502,9 @@ const chatTabs = ["home"];
       }
       pageStatusEl.textContent = state.activeTab === "asset" && !isWalletUnlocked()
         ? "Wallet locked"
-        : (meta.status || "");
+        : state.activeTab === "home" && !aiChatEnabled
+          ? "AI chat unavailable"
+          : (meta.status || "");
     }
 
     function bindEvents() {
@@ -504,7 +530,7 @@ const chatTabs = ["home"];
         }
 
         const promptButton = event.target.closest("[data-prompt]");
-        if (promptButton && chatTabs.includes(state.activeTab)) {
+        if (promptButton && aiChatEnabled && chatTabs.includes(state.activeTab)) {
           inputEl.value = promptButton.dataset.prompt || "";
           autoResize();
           inputEl.focus();
@@ -513,7 +539,7 @@ const chatTabs = ["home"];
 
       formEl.addEventListener("submit", async (event) => {
         event.preventDefault();
-        if (!chatTabs.includes(state.activeTab)) {
+        if (!aiChatEnabled || !chatTabs.includes(state.activeTab)) {
           return;
         }
 
@@ -629,8 +655,9 @@ const chatTabs = ["home"];
       pageTitleEl.textContent = meta.title;
       pageSubtitleEl.textContent = meta.subtitle;
       const isChatTab = chatTabs.includes(tab);
-      const showComposer = tab === "home";
+      const showComposer = tab === "home" && aiChatEnabled;
       composerWrapEl.classList.toggle("hidden", !showComposer);
+      inputEl.disabled = !showComposer;
       inputEl.placeholder = meta.placeholder || "";
       sendButton.disabled = !showComposer || Boolean(state.busyTab);
       syncPageStatus();
@@ -646,7 +673,7 @@ const chatTabs = ["home"];
         stopTradeKlinePolling();
       }
 
-      if (isChatTab) {
+      if (isChatTab && aiChatEnabled) {
         renderThread(tab);
         autoResize();
         requestAnimationFrame(() => {
@@ -1955,6 +1982,9 @@ const chatTabs = ["home"];
     }
 
     async function sendMessage(tab, text) {
+      if (!aiChatEnabled) {
+        return;
+      }
       state.busyTab = tab;
       sendButton.disabled = true;
 
@@ -1997,7 +2027,7 @@ const chatTabs = ["home"];
         pendingMessage.content = error instanceof Error ? error.message : "请求失败";
       } finally {
         state.busyTab = "";
-        if (chatTabs.includes(state.activeTab)) {
+        if (aiChatEnabled && chatTabs.includes(state.activeTab)) {
           sendButton.disabled = false;
         }
         renderThread(tab);

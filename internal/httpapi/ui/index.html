@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f172a">
   <title>web3-service-agent</title>
-  <link rel="stylesheet" href="./app.css?v=20260921-history-bnb-avax-v1">
+  <link rel="stylesheet" href="./app.css?v=20260923-ai-toggle-v1">
 </head>
 <body>
   <div class="app-shell" id="app-shell" data-active-tab="home">
@@ -100,10 +100,11 @@
     <main class="views" id="views">
       <section class="view home-view active" data-view="home">
         <div class="stack">
+          <p class="section-copy" id="home-ai-availability">正在确认 AI 聊天状态…</p>
           <article class="card hero-card">
             <div class="eyebrow">H5 Mobile UI</div>
             <h1 class="hero-title">像手机 App 一样的 Web3 入口</h1>
-            <p class="hero-copy">默认进入 home 页面，底部固定菜单切换到 market、trade、pay、asset。AI 询问框只保留在 home 页面，其他页面聚焦各自的业务看板和操作区。</p>
+            <p class="hero-copy">默认进入 home 页面，底部固定菜单切换到 market、trade、pay、asset。启用 AI 后可在 home 页面聊天，其他页面聚焦各自的业务看板和操作区。</p>
             <div class="phone-preview">
               <div class="preview-header">
                 <div>
@@ -137,7 +138,7 @@
 
           <article class="card info-card">
             <h2 class="section-title">快捷进入</h2>
-            <p class="section-copy">点击任意入口，直接跳到对应业务聊天页。</p>
+            <p class="section-copy">点击任意入口，直接跳到对应业务页面。</p>
             <div class="entry-grid">
               <button type="button" class="entry-button" data-open-tab="market">
                 <strong>market</strong>
@@ -199,7 +200,7 @@
             </div>
           </article>
 
-          <article class="card chat-intro">
+          <article class="card chat-intro home-ai-chat" hidden>
             <h2 class="section-title">home chat</h2>
             <p class="section-copy">这里是 home 页面聊天区，适合做总入口问答、导航问答或通用助手对话。</p>
             <div class="prompt-row">
@@ -209,7 +210,7 @@
             </div>
           </article>
 
-          <article class="card thread-card">
+          <article class="card thread-card home-ai-chat" hidden>
             <div class="thread" id="home-thread"></div>
           </article>
         </div>
@@ -635,8 +636,8 @@
     </nav>
   </div>
 
-  <script src="./bootstrap.js?v=20260921-history-bnb-avax-v1"></script>
-  <script src="./shared.js?v=20260921-history-bnb-avax-v1"></script>
-  <script src="./app.js?v=20260921-history-bnb-avax-v1"></script>
+  <script src="./bootstrap.js?v=20260923-ai-toggle-v1"></script>
+  <script src="./shared.js?v=20260923-ai-toggle-v1"></script>
+  <script src="./app.js?v=20260923-ai-toggle-v1"></script>
 </body>
 </html>

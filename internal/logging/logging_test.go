@@ -35,10 +35,10 @@ func TestNewCreatesLevelFilesAndWritesOutputs(t *testing.T) {
 	logger.Warnf("warn message")
 	logger.Errorf("error message")
 
-	assertFileContains(t, filepath.Join(dir, "logs", "debug.log"), "debug message")
-	assertFileContains(t, filepath.Join(dir, "logs", "info.log"), "info message")
-	assertFileContains(t, filepath.Join(dir, "logs", "warn.log"), "warn message")
-	assertFileContains(t, filepath.Join(dir, "logs", "error.log"), "error message")
+	assertFileContains(t, filepath.Join(dir, "debug.log"), "debug message")
+	assertFileContains(t, filepath.Join(dir, "info.log"), "info message")
+	assertFileContains(t, filepath.Join(dir, "warn.log"), "warn message")
+	assertFileContains(t, filepath.Join(dir, "error.log"), "error message")
 
 	if !strings.Contains(stdout.String(), `"level":"DEBUG"`) || !strings.Contains(stdout.String(), "debug message") {
 		t.Fatalf("stdout missing debug message: %s", stdout.String())

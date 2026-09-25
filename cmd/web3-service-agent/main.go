@@ -73,21 +73,24 @@ func main() {
 		fatalf("register tools: %v", err)
 	}
 
-	llmClient, err := provider.NewClient(&cfg)
-	if err != nil {
-		fatalf("create llm client: %v", err)
+	var runtimeEngine *agent.Runtime
+	if cfg.Service.AIEnabled {
+		llmClient, err := provider.NewClient(&cfg)
+		if err != nil {
+			fatalf("create llm client: %v", err)
+		}
+		runtimeEngine = agent.New(agent.Dependencies{
+			Sessions:      sessionManager,
+			PromptBuilder: promptBuilder,
+			LLM:           llmClient,
+			Tools:         toolRegistry,
+			MaxSteps:      cfg.Service.AgentMaxSteps,
+		})
 	}
-	runtimeEngine := agent.New(agent.Dependencies{
-		Sessions:      sessionManager,
-		PromptBuilder: promptBuilder,
-		LLM:           llmClient,
-		Tools:         toolRegistry,
-		MaxSteps:      cfg.Service.AgentMaxSteps,
-	})
 
 	server := &http.Server{
 		Addr:              cfg.Service.ListenAddr(),
-		Handler:           httpapi.New(runtimeEngine, sessionManager),
+		Handler:           httpapi.New(runtimeEngine, sessionManager, cfg.Service.AIEnabled),
 		ErrorLog:          logging.StandardLogger(logging.LevelError),
 		ReadHeaderTimeout: 10 * time.Second,
 	}

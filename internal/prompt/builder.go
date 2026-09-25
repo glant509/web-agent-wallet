@@ -2,17 +2,20 @@ package prompt
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"text/template"
 
 	"web3-service-agent/internal/tool"
 )
 
-const defaultTemplatePath = "prompts/system_prompt.tmpl"
+const defaultTemplatePath = "internal/prompt/system_prompt.tmpl"
+
+//go:embed system_prompt.tmpl
+var defaultTemplate string
 
 type Builder struct {
 	serviceName string
@@ -25,7 +28,7 @@ type systemPromptData struct {
 }
 
 func NewBuilder(serviceName string) (*Builder, error) {
-	return NewBuilderFromPath(serviceName, defaultTemplateFile())
+	return newBuilder(serviceName, defaultTemplatePath, defaultTemplate)
 }
 
 func NewBuilderFromPath(serviceName, path string) (*Builder, error) {
@@ -33,10 +36,13 @@ func NewBuilderFromPath(serviceName, path string) (*Builder, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read prompt template %q: %w", path, err)
 	}
+	return newBuilder(serviceName, path, string(content))
+}
 
-	tmpl, err := template.New(filepath.Base(path)).Parse(string(content))
+func newBuilder(serviceName, name, content string) (*Builder, error) {
+	tmpl, err := template.New(filepath.Base(name)).Parse(content)
 	if err != nil {
-		return nil, fmt.Errorf("parse prompt template %q: %w", path, err)
+		return nil, fmt.Errorf("parse prompt template %q: %w", name, err)
 	}
 
 	return &Builder{
@@ -64,9 +70,4 @@ func (b *Builder) SystemPrompt(tools []tool.Definition) string {
 	}
 
 	return strings.TrimSpace(out.String())
-}
-
-func defaultTemplateFile() string {
-	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(currentFile), "..", "..", defaultTemplatePath)
 }

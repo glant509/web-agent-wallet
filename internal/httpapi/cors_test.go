@@ -123,3 +123,37 @@ func TestCORSAllowsExplicitOrigin(t *testing.T) {
 		t.Fatalf("expected 200, got %d", recorder.Code)
 	}
 }
+
+func TestCORSAllowsSameOriginBehindHTTPSReverseProxy(t *testing.T) {
+	handler := withCORS(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	request := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8081/v1/wallet/evm/history", nil)
+	request.Host = "127.0.0.1:8081"
+	request.Header.Set("Origin", "https://wallet.example.com")
+	request.Header.Set("X-Forwarded-Proto", "https")
+	request.Header.Set("X-Forwarded-Host", "wallet.example.com")
+	recorder := httptest.NewRecorder()
+	handler.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected reverse-proxied same-origin request 200, got %d", recorder.Code)
+	}
+	if recorder.Header().Get("Access-Control-Allow-Origin") != "https://wallet.example.com" {
+		t.Fatalf("expected reverse-proxied origin response header")
+	}
+}
+
+func TestCORSRejectsDifferentOriginBehindHTTPSReverseProxy(t *testing.T) {
+	handler := withCORS(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	request := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8081/v1/wallet/evm/history", nil)
+	request.Header.Set("Origin", "https://evil.example")
+	request.Header.Set("X-Forwarded-Proto", "https")
+	request.Header.Set("X-Forwarded-Host", "wallet.example.com")
+	recorder := httptest.NewRecorder()
+	handler.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusForbidden {
+		t.Fatalf("expected different reverse-proxied origin 403, got %d", recorder.Code)
+	}
+}
